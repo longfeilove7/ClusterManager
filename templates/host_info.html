@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/static/body.css">
+    <link rel="stylesheet" href="/static/subrange.css">
+</head>
+<body>
+    <div class="pg-header">
+        <div class="title left">
+            超算管理中心
+        </div>
+        <div class="title right">
+            当前用户: {{ obj.username }}
+        </div>
+    </div>
+    <div class="pg-content">
+        <div class="menu">
+            <ul>
+                <li>
+                    <div>
+                        <a href="/host_info/">主机管理</a>
+                    </div>
+                </li>
+                <li style="width: 150px;height: 1px;background-color: white;margin-left: -25px"></li>
+            </ul>
+            <ul>
+                <li>
+                    <div>
+                        <a href="/add_group/">主机组管理</a>
+                    </div>
+                </li>
+                <li style="width: 150px;height: 1px;background-color: white;margin-left: -25px"></li>
+            </ul>
+        </div>
+        {#        右边主机内容#}
+        <div class="content">
+            <div class="add">
+                <a>添加主机</a>
+            </div>
+            <div class="open">
+                <a>批量开机</a>
+            </div>
+            <div class="close">
+                <a>批量关机</a>
+            </div>
+            <div class="edit">
+                <a>批量编辑</a>
+            </div>
+            <div class="delete">
+                <a>批量删除</a>
+            </div>
+            <div style="position: absolute;top: 80px;left: 10px">
+                <table border="1" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>机房</th>
+                            <th>机柜</th>
+                            <th>刀箱</th>
+                            <th>刀片</th>
+                            <th>主机名</th>
+                            <th>业务IP</th>
+                            <th>管理IP</th>
+                            <th>存储IP</th>
+                            <th>主机组</th>
+                            <th>型号</th>
+                            <th>操作系统</th>
+                            <th>开机</th>
+                            <th>开机时间</th>
+                            <th>关机</th>
+                            <th>关机时间</th>
+                            <th>是否在线</th>
+                            <th>运行时长</th>
+                            <th>修改</th>
+                            <th>删除</th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in obj %}
+                        <tr>
+                            <td>{{ row.id }}</td>
+                            <td>{{ row.roomNO }}</td>
+                            <td>{{ row.cabinetNO }}</td>
+                            <td>{{ row.bladeBoxNO }}</td>
+                            <td>{{ row.bladeNO}}</td>
+                            <td>{{ row.hostName }}</td>
+                            <td>{{ row.serviceIP }}</td>
+                            <td>{{ row.manageIP }}</td>
+                            <td>{{ row.storageIP }}</td>
+                            <td>{{ row.hostGroup.hostGroup }}</td>
+                            <td>{{ row.hardware }}</td>
+                            <td>{{ row.service }}</td>
+                            <td>{{ row.powerOn }}</td>
+                            <td>{{ row.powerOnTime }}</td>                            
+                            <td>{{ row.powerOff }}</td>
+                            <td>{{ row.powerOffTime }}</td>
+                            <td>{{ row.checkOnline }}</td>
+                            <td>{{ row.runTime }}</td>
+                            <td><a id="edit" href="/host_edit-{{ row.id }}/" style="color: #00b3ca">修改</a></td>
+{#                            <td><a id="del" href="/host_del-{{ row.id }}/" style="color: #00b3ca">删除</a></td>#}
+                            <td><input type="button" id="{{ row.id }}" style="color: #00b3ca" value="删除" onclick="addElement()"></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {#        模态对话框#}
+    <div id="add-shadow" class="shadow hide"></div>
+    <div id="add-model" class="model hide">
+        <form action="/host_info/" method="post">
+            <ul>
+                <li>
+                    机柜: <input type="text" name="cabinetNO">
+                    刀箱: <input type="text" name="bladeBoxNO">
+                    刀片: <input type="text" name="bladeNO">
+                </li>
+            </ul>
+            <ul>
+                <li>
+                    主机名: <input type="text" name="hostName">
+                    业务IP: <input type="text" name="serviceIP">
+                </li>
+            </ul>
+            <ul>
+                <li>
+                    管理IP: <input type="text" name="manageIP">
+                    业务IP: <input type="text" name="storageIP">
+                </li>
+            </ul>
+            <ul>
+                <li>
+                    操作系统: <input type="text" name="service">
+                    主机型号: <input type="text" name="hardware">
+                </li>
+            </ul>
+            <ul>
+                <li>主机组:
+                    <select  name="hostGroup">
+                        {% for group in group_list %}
+                        <option value="{{ group.id }}">{{ group.hostGroup }}</option>
+                        {% endfor %}
+                    </select>
+                </li>
+            </ul>
+            <div>
+                <ul>
+                    <li>
+                        <input type="submit" value="提交">
+                        <input type="button" value="取消" onclick="cancelElement()">
+                    </li>
+                </ul>
+            </div>
+        </form>
+    </div>
+{#    删除的模态#}
+    <div id="del-shadow" class="shadow hide"></div>
+    <div id="del-model" class="model hide">
+        <div style="position: absolute;top: 40%;left: 20%">
+            <div>你确定要删除吗?</div>
+            <form method="post">
+                <input type="submit" value="确定">
+                <input type="button" value="取消" onclick="cancelAdd()">
+            </form>
+        </div>
+    </div>
+    <script src="/static/jquery-3.2.1.min.js"></script>
+    <script>
+{#        添加主机的模态对话框#}
+         function cancelElement() {
+            $('#add-shadow,#add-model').addClass('hide')
+        }
+        $('.add').click(function () {
+            $('#add-shadow,#add-model').removeClass('hide')
+        });
+{#         删除的模态#}
+        function addElement() {
+{#            获取当前点击事件标签上的id#}
+            document.body.onclick = function (event) {
+                var id = event.target.id;
+                console.log(id);
+                if(id){
+                    var link = "/host_del-" + id + '/';
+                    console.log(link);
+                    $('#del-model form').attr('action',link)
+                }
+
+            };
+
+            $('#del-model,#del-shadow').removeClass('hide')
+        }
+        function cancelAdd() {
+            $('#del-shadow,#del-model').addClass('hide')
+        }
+
+    </script>
+</body>
+</html>

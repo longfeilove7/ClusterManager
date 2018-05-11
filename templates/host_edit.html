@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/static/body.css">
+</head>
+<body>
+    <div class="pg-header">
+        <div class="title left">
+            超算管理中心
+        </div>
+        <div class="title right">
+            当前用户: {{ obj.username }}
+        </div>
+    </div>
+    <div class="pg-content">
+        <div class="menu">
+            <ul>
+                <li>
+                    <div>
+                        <a href="/host_info/">主机管理</a>
+                    </div>
+                </li>
+                <li style="width: 150px;height: 1px;background-color: white;margin-left: -25px"></li>
+            </ul>
+            <ul>
+                <li>
+                    <div>
+                        <a href="/add_group/">主机组管理</a>
+                    </div>
+                </li>
+                <li style="width: 150px;height: 1px;background-color: white;margin-left: -25px"></li>
+            </ul>
+        </div>
+        <div class="content">
+            <div style="position: absolute;top: 80px;left: 10px">
+                <table border="1" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>机房</th>
+                            <th>机柜</th>
+                            <th>刀箱</th>
+                            <th>刀片</th>
+                            <th>主机名</th>
+                            <th>业务IP</th>
+                            <th>管理IP</th>
+                            <th>存储IP</th>
+                            <th>主机组</th>
+                            <th>硬件配置</th>
+                            <th>运行服务</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        {% for row in host_obj %}
+                            <form action="/host_edit-{{ row.id }}/" method="post">
+                            <tr>
+                                <td>{{ row.id }}</td>
+                                <td><input type="text" value="{{ row.roomNO }}" name="roomNO"></td>
+                                <td><input type="text" value="{{ row.cabinetNO }}" name="cabinetNO"></td>
+                                <td><input type="text" value="{{ row.bladeBoxNO }}" name="bladeBoxNO"></td>
+                                <td><input type="text" value="{{ row.bladeNO }}" name="bladeBoxNO"></td>
+                                <td><input type="text" value="{{ row.hostName }}" name="hostName"></td>
+                                <td><input type="text" value="{{ row.serviceIP }}" name="serviceIP"></td>
+                                <td><input type="text" value="{{ row.manageIP }}" name="manageIP"></td>
+                                <td><input type="text" value="{{ row.storageIP }}" name="storageIP"></td>
+                                <td>
+                                    <select  name="hostGroup">
+                                        {% for group in group_list %}
+                                            {% if group.id == row.id %}
+                                            <option value="{{ group.id }}" selected>{{ group.hostGroup }}</option>
+                                            {% else %}
+                                            <option value="{{ group.id }}">{{ group.hostGroup }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                                <td><input type="text" value="{{ row.hardware }}" name="hardware"></td>
+                                <td><input type="text" value="{{ row.service }}" name="service"></td>
+                                <td><input type="submit" value="提交"></td>
+                            </tr>
+                            </form>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

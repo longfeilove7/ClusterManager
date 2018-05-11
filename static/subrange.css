@@ -1,0 +1,32 @@
+        .hide{
+            display: none;
+        }
+        .shadow{
+            position: fixed;
+            top:0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            opacity: 0.6;
+            background-color: black;
+            z-index: 9;
+        }
+        .model{
+            position: fixed;
+            top:50%;
+            left:50%;
+            width: 800px;
+            height: 400px;
+            margin-left: -400px;
+            margin-top: -250px;
+            background-color: #eeeeee;
+            z-index: 10;
+        }
+        .model input{
+            width: 150px;
+            height: 25px;
+            font-size: 15px;
+        }
+        .model div{
+            text-align: center;
+        }

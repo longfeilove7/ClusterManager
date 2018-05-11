@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .pg{
+            position: absolute;
+            width: 400px;
+            height: 300px;
+            left: 50%;
+
+            margin-left: -200px;
+            top: 50%;
+            margin-top: -150px;
+
+        }
+        .pg .user{
+            width: 300px;
+            height: 38px;
+            margin-top: 10px;
+            margin-left: 50px;
+            padding-top: 10px;
+            left: 50px;
+        }
+        .pg .user .login{
+            background-color: #00b3ca;
+            cursor: pointer;
+            color: white;
+        }
+        .pg input{
+            width: 300px;
+            height: 38px;
+            border: none;
+            font-size: 14px;
+        }
+        .pg .register{
+            position: absolute;
+            right: 50px;
+            padding-top: 10px;
+            font-family: "Apple Braille";
+        }
+        .pg a{
+            color: #00b3ca;
+        }
+    </style>
+</head>
+<body style="background-color: #ecf0f5">
+    <div class="pg">
+        <form action="/login/" method="POST">
+            <div class="user">
+                <input type="text" name="user" placeholder="用户名">
+            </div>
+            <div class="user">
+                <input type="password" name="pwd" placeholder="密码">
+            </div>
+            <div class="user">
+                <input class="login" type="submit" value="登录">
+        </div>
+        </form>
+        <div class="register">
+            <a href="/register/">点击注册</a>
+        </div>
+    </div>
+</body>
+</html>

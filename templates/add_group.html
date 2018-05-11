@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/static/body.css">
+    <link rel="stylesheet" href="/static/subrange.css">
+</head>
+<body>
+    <div class="pg-header">
+        <div class="title left">
+            超算管理中心
+        </div>
+        <div class="title right">
+            当前用户: {{ obj.username }}
+        </div>
+    </div>
+    <div class="pg-content">
+        <div class="menu">
+            <ul>
+                <li>
+                    <div>
+                        <a href="/host_info/">主机管理</a>
+                    </div>
+                </li>
+                <li style="width: 150px;height: 1px;background-color: white;margin-left: -25px"></li>
+            </ul>
+            <ul>
+                <li>
+                    <div>
+                        <a href="/add_group/">主机组管理</a>
+                    </div>
+                </li>
+                <li style="width: 150px;height: 1px;background-color: white;margin-left: -25px"></li>
+            </ul>
+        </div>
+        <div class="content">
+            <div class="add">
+                <a>添加主机组</a>
+            </div>
+            <div style="position: absolute;top: 80px;left: 10px">
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>id</th>
+                            <th>组名</th>
+                            <th>修改</th>
+                            <th>删除</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in group_list %}
+                        <tr>
+                            <td>{{ row.id }}</td>
+                            <td>{{ row.hostGroup }}</td>
+                            <td><input class="i1" id="{{ row.id }}" name="{{ row.hostGroup }}" type="button" value="修改"></td>
+                            <td><input class="i2" id="{{ row.id }}" name="{{ row.hostGroup }}" type="button" value="删除"></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{#    模态对话框#}
+    <div id="add-shadow" class="shadow hide"></div>
+    <div id="add-model" class="model hide">
+        <form id="i4" action="/add_group/" method="post">
+            <ul>
+                <li>
+                    组名: <input id="i3" type="text" name="groupName">
+                </li>
+            </ul>
+            <div>
+                <ul>
+                    <li>
+                        <input type="submit" value="提交">
+                        <input type="button" value="取消" onclick="cancelElement()">
+                    </li>
+                </ul>
+            </div>
+        </form>
+    </div>
+{#    删除主机组的模态#}
+    <div id="del-shadow" class="shadow hide"></div>
+    <div id="del-model" class="model hide">
+        <div style="position: absolute;top: 40%;left: 20%">
+            <div>你确定要删除吗?</div>
+            <form id="i5" method="post">
+                <input type="submit" value="确定">
+                <input type="button" value="取消" onclick="cancelAdd()">
+            </form>
+        </div>
+    </div>
+    <script src="/static/jquery-3.2.1.min.js"></script>
+    <script>
+         function cancelElement() {
+            $('.shadow,.model').addClass('hide')
+        }
+        $('.add').click(function () {
+{#            处理脏数据#}
+            $('#i3').attr('value'," ");
+            $('#add-shadow,#add-model').removeClass('hide')
+        });
+{#         修改主机组的模态#}
+        $('.i1').click(function () {
+            var name =$(this).attr('name');
+            var id =$(this).attr('id');
+            var link = "/group_edit-" + id + "/";
+            console.log(link,name);
+{#            改变提交的链接#}
+            $('#i4').attr('action',link);
+{#            获取默认值填写到修改框中#}
+            $('#i3').attr('value',name);
+            $('#add-shadow,#add-model').removeClass('hide')
+        });
+{#        删除主机组的模态#}
+        $('.i2').click(function () {
+            var name = $(this).attr('name');
+            var id =$(this).attr('id');
+            var link = "/group_del-" + id + "/";
+            console.log(link,name);
+            $('#i5').attr('action',link);
+            $('#del-shadow,#del-model').removeClass('hide')
+        });
+        function cancelAdd() {
+            $('#del-shadow,#del-model').addClass('hide')
+        }
+    </script>
+</body>
+</html>

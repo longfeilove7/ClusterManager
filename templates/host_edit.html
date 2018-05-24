@@ -22,12 +22,12 @@
                         <a href="/host_info/">主机管理</a>
                     </div>
                 </li>
-                <li style="width: 150px;height: 1px;background-color: white;margin-left: -25px"></li>
+                <li style="width: 350px;height: 1px;background-color: white;margin-left: -25px"></li>
             </ul>
             <ul>
                 <li>
                     <div>
-                        <a href="/add_group/">主机组管理</a>
+                        <a href="/add_cluster/">主机组管理</a>
                     </div>
                 </li>
                 <li style="width: 150px;height: 1px;background-color: white;margin-left: -25px"></li>
@@ -61,18 +61,18 @@
                                 <td><input type="text" value="{{ row.roomNO }}" name="roomNO"></td>
                                 <td><input type="text" value="{{ row.cabinetNO }}" name="cabinetNO"></td>
                                 <td><input type="text" value="{{ row.bladeBoxNO }}" name="bladeBoxNO"></td>
-                                <td><input type="text" value="{{ row.bladeNO }}" name="bladeBoxNO"></td>
+                                <td><input type="text" value="{{ row.bladeNO }}" name="bladeNO"></td>
                                 <td><input type="text" value="{{ row.hostName }}" name="hostName"></td>
                                 <td><input type="text" value="{{ row.serviceIP }}" name="serviceIP"></td>
                                 <td><input type="text" value="{{ row.manageIP }}" name="manageIP"></td>
                                 <td><input type="text" value="{{ row.storageIP }}" name="storageIP"></td>
                                 <td>
-                                    <select  name="hostGroup">
-                                        {% for group in group_list %}
-                                            {% if group.id == row.id %}
-                                            <option value="{{ group.id }}" selected>{{ group.hostGroup }}</option>
+                                    <select  name="hostCluster">
+                                        {% for cluster in cluster_list %}
+                                            {% if cluster.id == row.id %}
+                                            <option value="{{ cluster.id }}" selected>{{ cluster.hostCluster }}</option>
                                             {% else %}
-                                            <option value="{{ group.id }}">{{ group.hostGroup }}</option>
+                                            <option value="{{ cluster.id }}">{{ cluster.hostCluster }}</option>
                                             {% endif %}
                                         {% endfor %}
                                     </select>

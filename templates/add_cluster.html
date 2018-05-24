@@ -28,7 +28,7 @@
             <ul>
                 <li>
                     <div>
-                        <a href="/add_group/">集群管理</a>
+                        <a href="/add_cluster/">集群管理</a>
                     </div>
                 </li>
                 <li style="width: 150px;height: 1px;background-color: white;margin-left: -25px"></li>
@@ -43,18 +43,18 @@
                     <thead>
                         <tr>
                             <th>id</th>
-                            <th>组名</th>
+                            <th>集群名称</th>
                             <th>修改</th>
                             <th>删除</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for row in group_list %}
+                        {% for row in cluster_list %}
                         <tr>
                             <td>{{ row.id }}</td>
-                            <td>{{ row.hostGroup }}</td>
-                            <td><input class="i1" id="{{ row.id }}" name="{{ row.hostGroup }}" type="button" value="修改"></td>
-                            <td><input class="i2" id="{{ row.id }}" name="{{ row.hostGroup }}" type="button" value="删除"></td>
+                            <td>{{ row.hostCluster }}</td>
+                            <td><input class="i1" id="{{ row.id }}" name="{{ row.hostCluster }}" type="button" value="修改"></td>
+                            <td><input class="i2" id="{{ row.id }}" name="{{ row.hostCluster }}" type="button" value="删除"></td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -65,10 +65,10 @@
 {#    模态对话框#}
     <div id="add-shadow" class="shadow hide"></div>
     <div id="add-model" class="model hide">
-        <form id="i4" action="/add_group/" method="post">
+        <form id="i4" action="/add_cluster/" method="post">
             <ul>
                 <li>
-                    组名: <input id="i3" type="text" name="groupName">
+                    集群名称: <input id="i3" type="text" name="clusterName">
                 </li>
             </ul>
             <div>
@@ -106,7 +106,7 @@
         $('.i1').click(function () {
             var name =$(this).attr('name');
             var id =$(this).attr('id');
-            var link = "/group_edit-" + id + "/";
+            var link = "/cluster_edit-" + id + "/";
             console.log(link,name);
 {#            改变提交的链接#}
             $('#i4').attr('action',link);
@@ -118,7 +118,7 @@
         $('.i2').click(function () {
             var name = $(this).attr('name');
             var id =$(this).attr('id');
-            var link = "/group_del-" + id + "/";
+            var link = "/cluster_del-" + id + "/";
             console.log(link,name);
             $('#i5').attr('action',link);
             $('#del-shadow,#del-model').removeClass('hide')

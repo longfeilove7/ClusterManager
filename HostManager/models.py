@@ -7,8 +7,8 @@ from django.db import models
 #     hname = models.CharField(max_length=64)
 #
 #
-class Groups(models.Model):
-    hostGroup = models.CharField(max_length=32)
+class Clusters(models.Model):
+    hostCluster = models.CharField(max_length=32)
 
 
 # class Services(models.Model):
@@ -30,7 +30,7 @@ class Host(models.Model):
     powerOffTime = models.CharField(max_length=32)
     checkOnline = models.CharField(max_length=32)
     runTime = models.CharField(max_length=32)
-    hostGroup = models.ForeignKey(Groups,on_delete=models.CASCADE)
+    hostCluster = models.ForeignKey(Clusters,on_delete=models.CASCADE)
 
 
 class Users(models.Model):

@@ -34,35 +34,44 @@ def index(request):
 def host_info(request):
     if request.method == 'GET':
         obj = models.Host.objects.all()
-        group_list = models.Groups.objects.all()
-        return render(request, 'host_info.html', {'obj': obj, 'group_list': group_list})
+        cluster_list = models.Clusters.objects.all()
+        return render(request, 'host_info.html', {'obj': obj, 'cluster_list': cluster_list})
     if request.method == 'POST':
+        roomNO = request.POST.get('roomNO')
+        cabinetNO = request.POST.get('cabinetNO')
+        bladeBoxNO = request.POST.get('bladeBoxNO')
+        bladeNO = request.POST.get('bladeNO')
         hostName = request.POST.get('hostName')
         serviceIP = request.POST.get('serviceIP')
         manageIP = request.POST.get('manageIP')
         storageIP = request.POST.get('storageIP')
-        hostGroup = request.POST.get('hostGroup')
+        hostCluster = request.POST.get('hostCluster')
         hardware = request.POST.get('hardware')
         service = request.POST.get('service')
-        models.Host.objects.create(hostName=hostName,
-                                   serviceIP=serviceIP,
-                                   manageIP=manageIP,
-                                   storageIP=storageIP,
-                                   hostGroup_id=hostGroup,
-                                   hardware=hardware,
-                                   service=service,)
-        print(hardware,serviceIP,manageIP,storageIP,hostName,service,hostGroup)
+        models.Host.objects.create(
+                                    roomNO=roomNO,
+                                    cabinetNO=cabinetNO,
+                                    bladeBoxNO=bladeBoxNO,
+                                    bladeNO=bladeNO,
+                                    hostName=hostName,
+                                    serviceIP=serviceIP,
+                                    manageIP=manageIP,
+                                    storageIP=storageIP,
+                                    hostCluster_id=hostCluster,
+                                    hardware=hardware,
+                                    service=service,)
+        print(roomNO,cabinetNO,bladeBoxNO,bladeNO,hardware,serviceIP,manageIP,storageIP,hostName,service,hostCluster)
         return redirect('/host_info/')
 
 
-def add_group(request):
+def add_cluster(request):
     if request.method == 'GET':
-        group_list = models.Groups.objects.all()
-        return render(request, 'add_group.html', {'group_list': group_list})
+        cluster_list = models.Clusters.objects.all()
+        return render(request, 'add_cluster.html', {'cluster_list': cluster_list})
     elif request.method == 'POST':
-        groupName = request.POST.get('groupName')
-        models.Groups.objects.create(hostGroup=groupName)
-        return redirect('/add_group/')
+        clusterName = request.POST.get('clusterName')
+        models.Clusters.objects.create(hostCluster=clusterName)
+        return redirect('/add_cluster/')
 
 
 def host_del(request, nid):
@@ -74,40 +83,49 @@ def host_del(request, nid):
 def host_edit(request, nid):
     if request.method == 'GET':
         host_obj = models.Host.objects.filter(id=nid)
-        group_list = models.Groups.objects.all()
-        return render(request, 'host_edit.html', {'host_obj': host_obj, 'group_list': group_list})
+        cluster_list = models.Clusters.objects.all()
+        return render(request, 'host_edit.html', {'host_obj': host_obj, 'cluster_list': cluster_list})
     if request.method == 'POST':
+        roomNO = request.POST.get('roomNO')
+        cabinetNO = request.POST.get('cabinetNO')
+        bladeBoxNO = request.POST.get('bladeBoxNO')
+        bladeNO = request.POST.get('bladeNO')
         hostName = request.POST.get('hostName')
         serviceIP = request.POST.get('serviceIP')
         manageIP = request.POST.get('manageIP')
         storageIP = request.POST.get('storageIP')
-        hostGroup = request.POST.get('hostGroup')
+        hostCluster = request.POST.get('hostCluster')
         hardware = request.POST.get('hardware')
         service = request.POST.get('service')
-        models.Host.objects.filter(id=nid).update(hostName=hostName,
-                                                  serviceIP=serviceIP,
-                                                  manageIP=manageIP,
-                                                  storageIP=storageIP,
-                                                  hostGroup_id=hostGroup,
-                                                  hardware=hardware,
-                                                  service=service,)
-        print(hardware, serviceIP, manageIP, storageIP, hostName, service, hostGroup)
+        models.Host.objects.filter(id=nid).update(
+                                                    roomNO=roomNO,
+                                                    cabinetNO=cabinetNO,
+                                                    bladeBoxNO=bladeBoxNO,
+                                                    bladeNO=bladeNO,
+                                                    hostName=hostName,
+                                                    serviceIP=serviceIP,
+                                                    manageIP=manageIP,
+                                                    storageIP=storageIP,
+                                                    hostCluster_id=hostCluster,
+                                                    hardware=hardware,
+                                                    service=service,)
+        print(roomNO,cabinetNO,bladeBoxNO,bladeNO,hardware,serviceIP,manageIP,storageIP,hostName,service,hostCluster)
         return redirect('/host_info/')
 
 
-def group_edit(request, nid):
+def cluster_edit(request, nid):
     if request.method == 'POST':
-        groupName = request.POST.get('groupName')
-        models.Groups.objects.filter(id=nid).update(hostGroup=groupName)
-        print(groupName)
-        return redirect('/add_group/')
+        clusterName = request.POST.get('clusterName')
+        models.Clusters.objects.filter(id=nid).update(hostCluster=clusterName)
+        print(clusterName)
+        return redirect('/add_cluster/')
 
 
-def group_del(request, nid):
+def cluster_del(request, nid):
     if request.method == 'POST':
-        obj = models.Host.objects.filter(hostGroup_id=nid).first()
+        obj = models.Host.objects.filter(hostCluster_id=nid).first()
         if obj:
             return HttpResponse('该主机组已经被使用')
         else:
-            models.Groups.objects.filter(id=nid).delete()
-            return redirect('/add_group/')
+            models.Clusters.objects.filter(id=nid).delete()
+            return redirect('/add_cluster/')

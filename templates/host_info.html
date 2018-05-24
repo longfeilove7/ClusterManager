@@ -28,7 +28,7 @@
             <ul>
                 <li>
                     <div>
-                        <a href="/add_group/">主机组管理</a>
+                        <a href="/add_cluster/">集群管理</a>
                     </div>
                 </li>
                 <li style="width: 150px;height: 1px;background-color: white;margin-left: -25px"></li>
@@ -64,7 +64,7 @@
                             <th>业务IP</th>
                             <th>管理IP</th>
                             <th>存储IP</th>
-                            <th>主机组</th>
+                            <th>集群</th>
                             <th>型号</th>
                             <th>操作系统</th>
                             <th>开机</th>
@@ -90,7 +90,7 @@
                             <td>{{ row.serviceIP }}</td>
                             <td>{{ row.manageIP }}</td>
                             <td>{{ row.storageIP }}</td>
-                            <td>{{ row.hostGroup.hostGroup }}</td>
+                            <td>{{ row.hostCluster.hostCluster }}</td>
                             <td>{{ row.hardware }}</td>
                             <td>{{ row.service }}</td>
                             <td>{{ row.powerOn }}</td>
@@ -115,7 +115,12 @@
         <form action="/host_info/" method="post">
             <ul>
                 <li>
+                    机房: <input type="text" name="roomNO">
                     机柜: <input type="text" name="cabinetNO">
+                </li>
+            </ul>
+            <ul>
+                <li>
                     刀箱: <input type="text" name="bladeBoxNO">
                     刀片: <input type="text" name="bladeNO">
                 </li>
@@ -139,10 +144,10 @@
                 </li>
             </ul>
             <ul>
-                <li>主机组:
-                    <select  name="hostGroup">
-                        {% for group in group_list %}
-                        <option value="{{ group.id }}">{{ group.hostGroup }}</option>
+                <li>集群:
+                    <select  name="hostCluster">
+                        {% for cluster in cluster_list %}
+                        <option value="{{ cluster.id }}">{{ cluster.hostCluster }}</option>
                         {% endfor %}
                     </select>
                 </li>

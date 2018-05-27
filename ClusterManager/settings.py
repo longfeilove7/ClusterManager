@@ -37,13 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'HostManager'
-    'crispy_forms',
-    'django_select2',
-    'easy_thumbnails',
-    'image_cropping',
-    'django_ajax',
-    'cruds_adminlte'
+    'HostManager'    
 ]
 
 MIDDLEWARE = [

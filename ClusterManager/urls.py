@@ -14,8 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 # django-cruds-adminlte
-from cruds_adminlte.urls import crud_for_app
-urlpatterns += crud_for_app('testapp')
+
 from django.conf.urls import url
 from django.contrib import admin
 from HostManager import views

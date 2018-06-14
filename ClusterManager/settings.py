@@ -1,3 +1,6 @@
+#from __future__ import absolute_import, unicode_literals 绝对导入，python3默认
+from celery.schedules import crontab
+# -*- coding: utf-8 -*-
 """
 Django settings for ClusterManager project.
 
@@ -31,17 +34,22 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'jet.dashboard',
+    'jet',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'HostManager'    
+    'HostManager',
+    'django_celery_beat', 
+    'django_celery_results',    
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     # 'django.middleware.csrf.CsrfViewMiddleware',
@@ -108,15 +116,30 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
 USE_L10N = True
 
 USE_TZ = True
+
+LANGUAGES = (
+    ('en', ('English')),
+    ('zh-hans', ('中文简体')),
+    ('zh-hant', ('中文繁體')),
+)
+
+#翻译文件所在目录，需要手工创建
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'locale'),
+)
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.core.context_processors.i18n",
+)
 
 
 # Static files (CSS, JavaScript, Images)
@@ -128,3 +151,66 @@ STATICFILES_DIRS = (
 )
 
 # TEMPLATE_DIRS = (os.path.join(BASE_DIR,  'templates'),)
+
+#django-jet themes
+JET_THEMES = [
+    {
+        'theme': 'default', # theme folder name
+        'color': '#47bac1', # color of the theme's button in user menu
+        'title': 'Default' # theme title
+    },
+    {
+        'theme': 'green',
+        'color': '#44b78b',
+        'title': 'Green'
+    },
+    {
+        'theme': 'light-green',
+        'color': '#2faa60',
+        'title': 'Light Green'
+    },
+    {
+        'theme': 'light-violet',
+        'color': '#a464c4',
+        'title': 'Light Violet'
+    },
+    {
+        'theme': 'light-blue',
+        'color': '#5EADDE',
+        'title': 'Light Blue'
+    },
+    {
+        'theme': 'light-gray',
+        'color': '#222',
+        'title': 'Light Gray'
+    }
+]
+
+
+
+CELERY_BROKER_URL = 'pyamqp://guest@localhost//'
+#CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672'
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_ACCEPT_CONTENT = ['json']
+
+
+CELERY_BEAT_SCHEDULE = {
+    # 周期任务
+    'task-one': {
+        'task': 'HostManager.Tasks.printHello',
+        'schedule': crontab(), #每5秒执行一次
+         'args':()
+    },
+    # # 定时任务
+    # 'task-two': {
+    #     'task': 'HostManager.Tasks.printHello',
+    #     'schedule': crontab(minute=0, hour='*/3,10-19'),
+    #      'args':()
+    # },
+    # #共享任务
+    # 'task-one': {
+    #     'task': 'HostManager.Tasks.add',
+    #     'schedule': crontab(), #每5秒执行一次
+    #      'args':(4, 4)
+    # },
+}

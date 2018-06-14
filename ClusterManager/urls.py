@@ -1,3 +1,4 @@
+#from __future__ import absolute_import, unicode_literals 绝对导入，python3默认
 """ClusterManager URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
@@ -18,9 +19,13 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from HostManager import views
+from django.conf.urls import include
 
 urlpatterns = [
     url(r'^$', views.login),
+    url(r'^jet/', include('jet.urls', 'jet')),  # Django JET URLS
+    url(r'^jet/dashboard/', include('jet.dashboard.urls', 'jet-dashboard')),  # Django JET dashboard URLS
+#    url(r'^admin/', include(admin.site.urls)),
     url(r'^admin/', admin.site.urls),
     url(r'^register/', views.register),
     url(r'^login/', views.login),
@@ -31,4 +36,5 @@ urlpatterns = [
     url(r'^add_cluster/', views.add_cluster),
     url(r'^cluster_edit-(?P<nid>\d+)/', views.cluster_edit),
     url(r'^cluster_del-(?P<nid>\d+)/', views.cluster_del),
+    
 ]

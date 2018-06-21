@@ -28,7 +28,7 @@ SECRET_KEY = '!oki@#(pwr6w7&1m-ypyukd+d(0kut_hi@8fd4k&o2m5ev*i-z'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['10.17.248.81']
 
 
 # Application definition
@@ -86,7 +86,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'ClusterManager',
-        'HOST': '',
+        'HOST': '192.168.18.163',
         'PORT': '3306',
         'USER': 'root',
         'PASSWORD': 'neunn',

@@ -93,7 +93,7 @@
                             <td>{{ row.hostCluster.hostCluster }}</td>
                             <td>{{ row.hardware }}</td>
                             <td>{{ row.service }}</td>
-                            <td><a id="edit" href="/power_on" style="color: #00b3ca"></a><input type="button" name="btn" value="获取表格数据" onclick="getTableContent('mytable',this)"></a> </td>
+                            <td><a id="edit" href="/power_on" style="color: #00b3ca"></a><input type="button" name="btn" value="Power On" onclick="getTableContent('mytable',this)"></a> </td>
                             <td>{{ row.powerOnTime }}</td>                            
                             <td><a id="edit" href="/power_off" style="color: #00b3ca">Power Off</a></td>
                             <td>{{ row.powerOffTime }}</td>
@@ -216,13 +216,13 @@
    console.log(getIp)
 //    $.ajax({
 //        type : "post"
-//        url : "",
+//        url : {% url 'scene_update_url' %},
 //        cache : false,
 //        data : {
 //            "ip" : getIp
 //        }
 //    })
- }
+    }
  
 </script>
 </body>

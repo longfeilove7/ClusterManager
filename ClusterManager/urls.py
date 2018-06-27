@@ -39,5 +39,6 @@ urlpatterns = [
     url(r'^cluster_del-(?P<nid>\d+)/', views.cluster_del),
     url(r'^power_on/', views.powerOn),
     url(r'^power_off/', views.powerOff),
+    url(r'^send_ajax$', views.getAjax),
     
 ]

@@ -98,3 +98,13 @@
             text-align: center;
             line-height: 38px;
         }
+        .bootdev{
+            position: absolute;
+            height: 38px;
+            width: 100px;
+            background-color: #2578b5;
+            top: 20px;
+            left: 414px;
+            text-align: center;
+            line-height: 38px;
+        }

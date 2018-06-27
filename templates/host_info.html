@@ -2,9 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Title</title>
     <link rel="stylesheet" href="/static/body.css">
     <link rel="stylesheet" href="/static/subrange.css">
+    <style>
+        td {text-align:center}/*table center*/
+     </style>
+     <script src="/static/jquery-3.3.1.min.js"></script>     
+     <script src="/static/popper.js-1.14.3/dist/umd/popper.min.js"></script>
+     {#<link rel="stylesheet" href="/static/bootstrap-4.1.1/css/bootstrap.min.css">#}
+     <script src="/static/bootstrap-4.1.1/js/bootstrap.min.js"></script>
+     <script src="https://intercoolerreleases-leaddynocom.netdna-ssl.com/intercooler-1.2.1.min.js"></script>
+     
 </head>
 <body>
     <div class="pg-header">
@@ -51,6 +61,16 @@
             <div class="delete">
                 <a>批量删除</a>
             </div>
+            <div class="bootdev">
+                <form method="get">
+                    <select name="app">
+                        <option value="disk">DISK</option>
+                        <option value="pxe">PXE</option>
+                        <option value="cdrom">CDROM</option>
+                        <option value="bios">BIOS</option>
+                    </select>                                
+                </form>                
+            </div>
             <div style="position: absolute;top: 80px;left: 10px">
                 <table id="mytable" border="1" cellspacing="0">
                     <thead>
@@ -71,11 +91,12 @@
                             <th>开机时间</th>
                             <th>关机</th>
                             <th>关机时间</th>
-                            <th>是否在线</th>
+                            <th>状态</th>
                             <th>运行时长</th>
+                            <th>bootdev</th>
                             <th>修改</th>
                             <th>删除</th>
-                            
+                            <th>checkbox</th>                            
                         </tr>
                     </thead>
                     <tbody>
@@ -93,16 +114,26 @@
                             <td>{{ row.hostCluster.hostCluster }}</td>
                             <td>{{ row.hardware }}</td>
                             <td>{{ row.service }}</td>
-                            <td><a id="edit" href="/power_on" style="color: #00b3ca"></a><input type="button" name="btn" value="Power On" onclick="getTableContent('mytable',this)"></a> </td>
+                            <td><a id="edit" href="/power_on" style="color: #00b3ca"><input type="button" name="btn" value="Power On" onclick="getTableContent('mytable',this)"></a></td>
                             <td>{{ row.powerOnTime }}</td>                            
                             <td><a id="edit" href="/power_off" style="color: #00b3ca">Power Off</a></td>
                             <td>{{ row.powerOffTime }}</td>
                             <td>{{ row.checkOnline }}</td>
                             <td>{{ row.runTime }}</td>
+                            <td>
+                                <form method="get">
+                                <select name="app">
+                                    <option value="disk">DISK</option>
+                                    <option value="pxe">PXE</option>
+                                    <option value="cdrom">CDROM</option>
+                                    <option value="bios">BIOS</option>
+                                </select>                                
+                                </form>
+                            </td>
                             <td><a id="edit" href="/host_edit-{{ row.id }}/" style="color: #00b3ca">修改</a></td>
 {#                          <td><a id="del" href="/host_del-{{ row.id }}/" style="color: #00b3ca">删除</a></td>#}
                             <td><input type="button" id="{{ row.id }}" style="color: #00b3ca" value="删除" onclick="addElement()"></td>
-                            <td><input type="button" name="btn" value="获取表格数据" onclick="getTableContent('mytable',this)"></td>
+                            <td><input type="checkbox"/></td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -174,7 +205,7 @@
             </form>
         </div>
     </div>
-    <script src="/static/jquery-3.3.1.min.js"></script>
+    
     <script>
 {#        添加主机的模态对话框#}
          function cancelElement() {
@@ -211,19 +242,34 @@
   * @return Array
   */
  function getTableContent(id,e){
-    var getIp = e.parentNode.parentNode.children[7].innerHTML;
+    var getIp = e.parentNode.parentNode.parentNode.children[7].innerHTML;
    //alert(getIp)
    console.log(getIp)
-//    $.ajax({
-//        type : "post"
-//        url : {% url 'scene_update_url' %},
-//        cache : false,
-//        data : {
-//            "ip" : getIp
-//        }
-//    })
+   $.ajax({
+       type : "post",
+       url : "/send_ajax",
+       cache : false,
+       data : {
+           "ip" : getIp
+       }
+   })
     }
  
 </script>
+<script>
+    $(function(){
+        $("table tr").click(function(){
+            var input = $(this).find("input[type=checkbox]");//获取checkbox    
+             
+            //判断当前checkbox是否为选中状态
+            if(input.is(":checked")){           
+                input.attr("checked",false);
+            }else{
+                input.attr("checked",true);
+            }
+             
+        })  
+    })
+    </script>
 </body>
 </html>

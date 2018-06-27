@@ -163,9 +163,9 @@ def powerOff(request):
     tasks.powerOff.delay()
     return HttpResponse('ok')
 
-# def index(req):
-#     print(req.GET.get('url'))
-#     if req.GET.get('url')=='power_off':
-#         return HttpResponse("hello,this is a test")
-#     else:
-#         return HttpResponse("hahahaha")
+def getAjax(request):
+    print(request.GET.get('url'))
+    if request.GET.get('url')=='send_ajax':
+        return HttpResponse("hello,this is a test")
+    else:
+        return HttpResponse("hahahaha")

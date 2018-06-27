@@ -52,7 +52,7 @@
                 <a>批量删除</a>
             </div>
             <div style="position: absolute;top: 80px;left: 10px">
-                <table border="1" cellspacing="0">
+                <table id="mytable" border="1" cellspacing="0">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -93,19 +93,20 @@
                             <td>{{ row.hostCluster.hostCluster }}</td>
                             <td>{{ row.hardware }}</td>
                             <td>{{ row.service }}</td>
-                            <td>{{ row.powerOn }}</td>
+                            <td><a id="edit" href="/power_on" style="color: #00b3ca"></a><input type="button" name="btn" value="获取表格数据" onclick="getTableContent('mytable',this)"></a> </td>
                             <td>{{ row.powerOnTime }}</td>                            
-                            <td>{{ row.powerOff }}</td>
+                            <td><a id="edit" href="/power_off" style="color: #00b3ca">Power Off</a></td>
                             <td>{{ row.powerOffTime }}</td>
                             <td>{{ row.checkOnline }}</td>
                             <td>{{ row.runTime }}</td>
                             <td><a id="edit" href="/host_edit-{{ row.id }}/" style="color: #00b3ca">修改</a></td>
-{#                            <td><a id="del" href="/host_del-{{ row.id }}/" style="color: #00b3ca">删除</a></td>#}
+{#                          <td><a id="del" href="/host_del-{{ row.id }}/" style="color: #00b3ca">删除</a></td>#}
                             <td><input type="button" id="{{ row.id }}" style="color: #00b3ca" value="删除" onclick="addElement()"></td>
+                            <td><input type="button" name="btn" value="获取表格数据" onclick="getTableContent('mytable',this)"></td>
                         </tr>
                         {% endfor %}
                     </tbody>
-                </table>
+                </table>               
             </div>
         </div>
     </div>
@@ -173,7 +174,7 @@
             </form>
         </div>
     </div>
-    <script src="/static/jquery-3.2.1.min.js"></script>
+    <script src="/static/jquery-3.3.1.min.js"></script>
     <script>
 {#        添加主机的模态对话框#}
          function cancelElement() {
@@ -200,8 +201,29 @@
         }
         function cancelAdd() {
             $('#del-shadow,#del-model').addClass('hide')
-        }
-
+        }        
     </script>
+    <script type="text/javascript">
+ 
+ /** 
+  * 遍历表格内容返回数组
+  * @param Int  id 表格id
+  * @return Array
+  */
+ function getTableContent(id,e){
+    var getIp = e.parentNode.parentNode.children[7].innerHTML;
+   //alert(getIp)
+   console.log(getIp)
+//    $.ajax({
+//        type : "post"
+//        url : "",
+//        cache : false,
+//        data : {
+//            "ip" : getIp
+//        }
+//    })
+ }
+ 
+</script>
 </body>
 </html>

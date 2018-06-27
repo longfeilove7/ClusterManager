@@ -1,6 +1,11 @@
 from django.shortcuts import render, redirect
 from django.shortcuts import HttpResponse
 from HostManager import models
+from celery import shared_task
+from celery import task
+from HostManager import tasks
+from celery import app
+#import os, sys, commands
 # Create your views here.
 
 
@@ -129,3 +134,38 @@ def cluster_del(request, nid):
         else:
             models.Clusters.objects.filter(id=nid).delete()
             return redirect('/add_cluster/')
+
+# def sayHello(request):
+#     """"""
+#     # print('hello')
+#     # time.sleep(5)
+#     # print('work')
+#     tasks.sayHello.delay() # 将任务教给celery执行
+#     return HttpResponse('ok')
+
+def powerOn(request):
+    """"""
+    # print('hello')
+    # time.sleep(5)
+    # print('work')
+    #app.task('test_cmd.excute', args=['ls /'], queue='test_cmd')
+    #tasks.excute('test_cmd.excute', args=['ls /'], queue='test_cmd') # 将任务教给celery执行
+    tasks.powerOn.delay()
+    return HttpResponse('ok')
+
+def powerOff(request):
+    """"""
+    # print('hello')
+    # time.sleep(5)
+    # print('work')
+    #app.task('test_cmd.excute', args=['ls /'], queue='test_cmd')
+    #tasks.excute('test_cmd.excute', args=['ls /'], queue='test_cmd') # 将任务教给celery执行
+    tasks.powerOff.delay()
+    return HttpResponse('ok')
+
+# def index(req):
+#     print(req.GET.get('url'))
+#     if req.GET.get('url')=='power_off':
+#         return HttpResponse("hello,this is a test")
+#     else:
+#         return HttpResponse("hahahaha")

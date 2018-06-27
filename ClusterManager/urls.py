@@ -20,6 +20,7 @@ from django.conf.urls import url
 from django.contrib import admin
 from HostManager import views
 from django.conf.urls import include
+#import os, sys, commands
 
 urlpatterns = [
     url(r'^$', views.login),
@@ -36,5 +37,7 @@ urlpatterns = [
     url(r'^add_cluster/', views.add_cluster),
     url(r'^cluster_edit-(?P<nid>\d+)/', views.cluster_edit),
     url(r'^cluster_del-(?P<nid>\d+)/', views.cluster_del),
+    url(r'^power_on/', views.powerOn),
+    url(r'^power_off/', views.powerOff),
     
 ]

@@ -116,7 +116,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
-LANGUAGE_CODE = 'en'
+LANGUAGE_CODE = 'zh-Hans' #default language
 
 TIME_ZONE = 'Asia/Shanghai'
 
@@ -128,8 +128,8 @@ USE_TZ = True
 
 LANGUAGES = (
     ('en', ('English')),
-    ('zh-hans', ('中文简体')),
-    ('zh-hant', ('中文繁體')),
+    ('zh-Hans', ('中文简体')),
+    ('zh-Hant', ('中文繁體')),
 )
 
 #翻译文件所在目录，需要手工创建

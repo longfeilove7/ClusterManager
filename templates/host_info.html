@@ -13,8 +13,13 @@
      <script src="/static/popper.js-1.14.3/dist/umd/popper.min.js"></script>
      {#<link rel="stylesheet" href="/static/bootstrap-4.1.1/css/bootstrap.min.css">#}
      <script src="/static/bootstrap-4.1.1/js/bootstrap.min.js"></script>
-     <script src="https://intercoolerreleases-leaddynocom.netdna-ssl.com/intercooler-1.2.1.min.js"></script>
-     
+     <script src="/static/intercooler-1.2.1.min.js"></script>
+     <script type="text/javascript">
+        $(document).ready(function(){
+            $("#mytable").find("tr").css("background-color", "#D1F7FA");
+            $("#mytable").find("tr:odd").css("background-color", "#D1F0FA");
+        });
+        </script>
 </head>
 <body>
     <div class="pg-header">
@@ -114,9 +119,9 @@
                             <td>{{ row.hostCluster.hostCluster }}</td>
                             <td>{{ row.hardware }}</td>
                             <td>{{ row.service }}</td>
-                            <td><a id="edit" href="/power_on" style="color: #00b3ca"><input type="button" name="btn" value="Power On" onclick="getTableContent('mytable',this)"></a></td>
+                            <td><input type="button" name="btn" value="Power On" onclick="toPowerOn('mytable',this)"></td>
                             <td>{{ row.powerOnTime }}</td>                            
-                            <td><a id="edit" href="/power_off" style="color: #00b3ca">Power Off</a></td>
+                            <td><input type="button" name="btn" value="Power Off" onclick="toPowerOff('mytable',this)"></td>
                             <td>{{ row.powerOffTime }}</td>
                             <td>{{ row.checkOnline }}</td>
                             <td>{{ row.runTime }}</td>
@@ -234,28 +239,162 @@
             $('#del-shadow,#del-model').addClass('hide')
         }        
     </script>
-    <script type="text/javascript">
+
+<script type="text/javascript">
  
+ // using jQuery
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+var csrftoken = getCookie('csrftoken');
+
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+});
+
  /** 
   * 遍历表格内容返回数组
   * @param Int  id 表格id
   * @return Array
   */
- function getTableContent(id,e){
-    var getIp = e.parentNode.parentNode.parentNode.children[7].innerHTML;
-   //alert(getIp)
-   console.log(getIp)
+ function toPowerOn(id,e){
+    var getID = e.parentNode.parentNode.children[0].innerHTML;
+    var getIP = e.parentNode.parentNode.children[7].innerHTML;
+   //alert("Power on  " + getIP);
+   //console.log(getIP);
+   //getIP =  $(getIP).val()
+   if(confirm("Power on "+ getIP)){
    $.ajax({
-       type : "post",
-       url : "/send_ajax",
+       contentType: "application/x-www-form-urlencoded; charset=utf-8",
+       //contentType: "application/json; charset=utf-8", //django not support json,don't use this
+       //dataType: "json", //django not support json,don't use this
+       url : "/power_on/",
+       type : "POST",
        cache : false,
        data : {
-           "ip" : getIp
-       }
-   })
+            'ID':getID, 
+            'IP':getIP
+              },       
+       beforeSend: function (xhr, settings) {
+       //此处调用刚刚加入的js方法
+        var csrftoken = getCookie('csrftoken'); 
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+       },
+       success: function(data){                                                       
+                            //console.log(data)
+                            //alert(data)
+                            e.parentNode.parentNode.children[13].innerHTML=data
+                            //以上是后端函数返回成功的信息
+                        },
+        error: function(request,info,e){
+                        alert("false");
+                        console.log(e)
+                        }
+            })
+        }
     }
  
 </script>
+
+<script type="text/javascript">
+ 
+    // using jQuery
+   function getCookie(name) {
+       var cookieValue = null;
+       if (document.cookie && document.cookie !== '') {
+           var cookies = document.cookie.split(';');
+           for (var i = 0; i < cookies.length; i++) {
+               var cookie = jQuery.trim(cookies[i]);
+               // Does this cookie string begin with the name we want?
+               if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                   cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                   break;
+               }
+           }
+       }
+       return cookieValue;
+   }
+   var csrftoken = getCookie('csrftoken');
+   
+   function csrfSafeMethod(method) {
+       // these HTTP methods do not require CSRF protection
+       return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+   }
+   $.ajaxSetup({
+       beforeSend: function(xhr, settings) {
+           if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+               xhr.setRequestHeader("X-CSRFToken", csrftoken);
+           }
+       }
+   });
+   
+    /** 
+     * 遍历表格内容返回数组
+     * @param Int  id 表格id
+     * @return Array
+     */
+    function toPowerOff(id,e){
+       var getID = e.parentNode.parentNode.children[0].innerHTML;
+       var getIP = e.parentNode.parentNode.children[7].innerHTML;
+      //alert("Power off  " + getIP);
+      //console.log(getIP);
+      //getIP =  $(getIP).val()
+      if(confirm("Power off "+ getIP)){
+      $.ajax({
+          contentType: "application/x-www-form-urlencoded; charset=utf-8",
+          //contentType: "application/json; charset=utf-8", //django not support json,don't use this
+          //dataType: "json", //django not support json,don't use this
+          url : "/power_off/",
+          type : "POST",
+          cache : false,
+          data : {
+               'ID':getID, 
+               'IP':getIP
+                 },       
+          beforeSend: function (xhr, settings) {
+          //此处调用刚刚加入的js方法
+           var csrftoken = getCookie('csrftoken'); 
+           if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+           xhr.setRequestHeader("X-CSRFToken", csrftoken);
+               }
+          },
+          success: function(data){ 
+                                e.parentNode.parentNode.children[15].innerHTML=data                                                                                 
+                                //console.log(data)
+                                //以上是后端函数返回成功的信息
+                           },
+           error: function(request,info,e){
+                           alert("false");
+                           console.log(e)
+                           }
+            })
+        }
+    }
+    
+   </script>
+
 <script>
     $(function(){
         $("table tr").click(function(){

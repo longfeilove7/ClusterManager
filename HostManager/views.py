@@ -1,10 +1,15 @@
 from django.shortcuts import render, redirect
 from django.shortcuts import HttpResponse
+from django.http import HttpRequest
 from HostManager import models
 from celery import shared_task
 from celery import task
 from HostManager import tasks
 from celery import app
+from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.csrf import csrf_exempt
+import json
+import datetime
 #import os, sys, commands
 # Create your views here.
 
@@ -53,6 +58,10 @@ def host_info(request):
         hostCluster = request.POST.get('hostCluster')
         hardware = request.POST.get('hardware')
         service = request.POST.get('service')
+        powerOnTime = request.POST.get('powerOnTime')
+        powerOffTime = request.POST.get('powerOffTime')
+        checkOnline = request.POST.get('checkOnline')
+        runTime = request.POST.get('runTime')
         models.Host.objects.create(
                                     roomNO=roomNO,
                                     cabinetNO=cabinetNO,
@@ -64,7 +73,11 @@ def host_info(request):
                                     storageIP=storageIP,
                                     hostCluster_id=hostCluster,
                                     hardware=hardware,
-                                    service=service,)
+                                    service=service,
+                                    powerOnTime=powerOnTime,
+                                    powerOffTime=powerOffTime,
+                                    checkOnline=checkOnline,
+                                    runTime=runTime,)
         print(roomNO,cabinetNO,bladeBoxNO,bladeNO,hardware,serviceIP,manageIP,storageIP,hostName,service,hostCluster)
         return redirect('/host_info/')
 
@@ -143,29 +156,49 @@ def cluster_del(request, nid):
 #     tasks.sayHello.delay() # 将任务教给celery执行
 #     return HttpResponse('ok')
 
+@csrf_protect #为当前函数强制设置防跨站请求伪造功能，即便settings中没有设置全局中间件。
+#@csrf_exempt #取消当前函数防跨站请求伪造功能，即便settings中设置了全局中间件。
 def powerOn(request):
     """"""
-    # print('hello')
-    # time.sleep(5)
-    # print('work')
-    #app.task('test_cmd.excute', args=['ls /'], queue='test_cmd')
-    #tasks.excute('test_cmd.excute', args=['ls /'], queue='test_cmd') # 将任务教给celery执行
-    tasks.powerOn.delay()
-    return HttpResponse('ok')
-
+    context = {}
+    if  request.method == 'POST':   
+        ipmiIP = request.POST.get('IP')       
+        ipmiHost = ipmiIP        
+        result = tasks.powerOn.delay(ipmiHost).get()
+        print(result)
+        print(result[1])                  
+        #context['result'] = ipmiIP #for return        
+        #return HttpResponse(json.dumps(context)) #for return to ajax success.
+        ipmiID = request.POST.get('ID')
+        print(ipmiID)
+        models.Host.objects.filter(id=ipmiID).update(
+            powerOnTime = result[1],
+        )
+        return HttpResponse(result[1])     
+    elif request.method == 'GET':
+        print(request.GET)
+        return ()        
+    else:
+        return render(request, 'host_info.html', context)
+        
 def powerOff(request):
     """"""
-    # print('hello')
-    # time.sleep(5)
-    # print('work')
-    #app.task('test_cmd.excute', args=['ls /'], queue='test_cmd')
-    #tasks.excute('test_cmd.excute', args=['ls /'], queue='test_cmd') # 将任务教给celery执行
-    tasks.powerOff.delay()
-    return HttpResponse('ok')
-
-def getAjax(request):
-    print(request.GET.get('url'))
-    if request.GET.get('url')=='send_ajax':
-        return HttpResponse("hello,this is a test")
+    context = {}
+    if  request.method == 'POST':           
+        ipmiIP = request.POST.get('IP')        
+        ipmiHost = ipmiIP
+        nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')        
+        tasks.powerOff.delay(ipmiHost)             
+        #context['result'] = ipmiIP #for return        
+        #return HttpResponse(json.dumps(context)) #for return to ajax success.
+        ipmiID = request.POST.get('ID')
+        print(ipmiID)
+        models.Host.objects.filter(id=ipmiID).update(
+            powerOnTime = nowTime,
+        )
+        return HttpResponse(nowTime)
+    elif request.method == 'GET':
+        print(request.GET)
+        return ()        
     else:
-        return HttpResponse("hahahaha")
+        return render(request, 'host_info.html', context)

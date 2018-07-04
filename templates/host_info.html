@@ -93,20 +93,21 @@
                             <th>型号</th>
                             <th>操作系统</th>
                             <th>开机</th>
+                            <th>关机</th>                           
+                            <th>重启</th>
                             <th>开机时间</th>
-                            <th>关机</th>
                             <th>关机时间</th>
-                            <th>状态</th>
+                            <th>状态</th>                            
                             <th>运行时长</th>
                             <th>bootdev</th>
                             <th>修改</th>
                             <th>删除</th>
-                            <th>checkbox</th>                            
+                            <th><input type ="checkbox" onclick="chooseAll()" id="chooseAll" name="chooseAll" ></th>                            
                         </tr>
                     </thead>
                     <tbody>
                         {% for row in obj %}
-                        <tr>
+                        <tr>                            
                             <td>{{ row.id }}</td>
                             <td>{{ row.roomNO }}</td>
                             <td>{{ row.cabinetNO }}</td>
@@ -119,11 +120,12 @@
                             <td>{{ row.hostCluster.hostCluster }}</td>
                             <td>{{ row.hardware }}</td>
                             <td>{{ row.service }}</td>
-                            <td><input type="button" name="btn" value="Power On" onclick="toPowerOn('mytable',this)"></td>
-                            <td>{{ row.powerOnTime }}</td>                            
-                            <td><input type="button" name="btn" value="Power Off" onclick="toPowerOff('mytable',this)"></td>
-                            <td>{{ row.powerOffTime }}</td>
-                            <td>{{ row.checkOnline }}</td>
+                            <td><input type="button" id="btn1" name="btn" value="On" onclick="toPowerOn('mytable',this)"></td>
+                            <td><input type="button" id="btn2" name="btn" value="Off" onclick="toPowerOff('mytable',this)"></td>
+                            <td><input type="button" id="btn3" name="btn" value="Cycle" onclick="toPowerCycle('mytable',this)"></td>
+                            <td>{{ row.powerOnTime|date:"Y-m-d H:i:s" }}</td>
+                            <td>{{ row.powerOffTime|date:"Y-m-d H:i:s" }}</td>
+                            <td>{{ row.checkOnline }}</td>                            
                             <td>{{ row.runTime }}</td>
                             <td>
                                 <form method="get">
@@ -150,6 +152,7 @@
     <div id="add-shadow" class="shadow hide"></div>
     <div id="add-model" class="model hide">
         <form action="/host_info/" method="post">
+            {% csrf_token %}
             <ul>
                 <li>
                     机房: <input type="text" name="roomNO">
@@ -205,6 +208,7 @@
         <div style="position: absolute;top: 40%;left: 20%">
             <div>你确定要删除吗?</div>
             <form method="post">
+                {% csrf_token %}
                 <input type="submit" value="确定">
                 <input type="button" value="取消" onclick="cancelAdd()">
             </form>
@@ -280,14 +284,12 @@ $.ajaxSetup({
  function toPowerOn(id,e){
     var getID = e.parentNode.parentNode.children[0].innerHTML;
     var getIP = e.parentNode.parentNode.children[7].innerHTML;
-   //alert("Power on  " + getIP);
-   //console.log(getIP);
-   //getIP =  $(getIP).val()
+   
    if(confirm("Power on "+ getIP)){
    $.ajax({
        contentType: "application/x-www-form-urlencoded; charset=utf-8",
        //contentType: "application/json; charset=utf-8", //django not support json,don't use this
-       //dataType: "json", //django not support json,don't use this
+       dataType: "json", //for to get json
        url : "/power_on/",
        type : "POST",
        cache : false,
@@ -303,10 +305,13 @@ $.ajaxSetup({
             }
        },
        success: function(data){                                                       
-                            //console.log(data)
+                            console.log(data)
                             //alert(data)
-                            e.parentNode.parentNode.children[13].innerHTML=data
                             //以上是后端函数返回成功的信息
+                            e.parentNode.parentNode.children[15].innerHTML=data[1]
+                            if (data[2] == "fail"){
+                                alert(data[0] + "poweron" + data[2])
+                            }                            
                         },
         error: function(request,info,e){
                         alert("false");
@@ -358,14 +363,12 @@ $.ajaxSetup({
     function toPowerOff(id,e){
        var getID = e.parentNode.parentNode.children[0].innerHTML;
        var getIP = e.parentNode.parentNode.children[7].innerHTML;
-      //alert("Power off  " + getIP);
-      //console.log(getIP);
-      //getIP =  $(getIP).val()
+      
       if(confirm("Power off "+ getIP)){
       $.ajax({
           contentType: "application/x-www-form-urlencoded; charset=utf-8",
           //contentType: "application/json; charset=utf-8", //django not support json,don't use this
-          //dataType: "json", //django not support json,don't use this
+          dataType: "json", //for to get json
           url : "/power_off/",
           type : "POST",
           cache : false,
@@ -381,8 +384,171 @@ $.ajaxSetup({
                }
           },
           success: function(data){ 
-                                e.parentNode.parentNode.children[15].innerHTML=data                                                                                 
-                                //console.log(data)
+                                e.parentNode.parentNode.children[16].innerHTML=data[1]
+                                e.parentNode.parentNode.children[18].innerHTML=data[3]
+                                if (data[2] == "fail"){
+                                alert(data[0] + "poweroff" + data[2])
+                            }                                                                                       
+                                console.log(data)
+                                //alert(data[1])
+                                //以上是后端函数返回成功的信息
+                           },
+           error: function(request,info,e){
+                           alert("false");
+                           console.log(e)
+                           }
+            })
+        }
+    }
+    
+   </script>
+
+<script type="text/javascript">
+ 
+    // using jQuery
+   function getCookie(name) {
+       var cookieValue = null;
+       if (document.cookie && document.cookie !== '') {
+           var cookies = document.cookie.split(';');
+           for (var i = 0; i < cookies.length; i++) {
+               var cookie = jQuery.trim(cookies[i]);
+               // Does this cookie string begin with the name we want?
+               if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                   cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                   break;
+               }
+           }
+       }
+       return cookieValue;
+   }
+   var csrftoken = getCookie('csrftoken');
+   
+   function csrfSafeMethod(method) {
+       // these HTTP methods do not require CSRF protection
+       return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+   }
+   $.ajaxSetup({
+       beforeSend: function(xhr, settings) {
+           if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+               xhr.setRequestHeader("X-CSRFToken", csrftoken);
+           }
+       }
+   });
+   
+    /** 
+     * 遍历表格内容返回数组
+     * @param Int  id 表格id
+     * @return Array
+     */
+    function toPowerCycle(id,e){
+       var getID = e.parentNode.parentNode.children[0].innerHTML;
+       var getIP = e.parentNode.parentNode.children[7].innerHTML;
+      
+      if(confirm("Power cycle "+ getIP)){
+      $.ajax({
+          contentType: "application/x-www-form-urlencoded; charset=utf-8",
+          //contentType: "application/json; charset=utf-8", //django not support json,don't use this
+          dataType: "json", //for to get json
+          url : "/power_cycle/",
+          type : "POST",
+          cache : false,
+          data : {
+               'ID':getID, 
+               'IP':getIP
+                 },       
+          beforeSend: function (xhr, settings) {
+          //此处调用刚刚加入的js方法
+           var csrftoken = getCookie('csrftoken'); 
+           if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+           xhr.setRequestHeader("X-CSRFToken", csrftoken);
+               }
+          },
+          success: function(data){ 
+                                e.parentNode.parentNode.children[15].innerHTML=data[1]
+                                if (data[2] == "fail"){
+                                alert(data[0] + "poweron" + data[2])
+                            }                                                                                       
+                                console.log(data)
+                                //alert(data[1])
+                                //以上是后端函数返回成功的信息
+                           },
+           error: function(request,info,e){
+                           alert("false");
+                           console.log(e)
+                           }
+            })
+        }
+    }
+    
+   </script>
+
+<script type="text/javascript">
+ 
+    // using jQuery
+   function getCookie(name) {
+       var cookieValue = null;
+       if (document.cookie && document.cookie !== '') {
+           var cookies = document.cookie.split(';');
+           for (var i = 0; i < cookies.length; i++) {
+               var cookie = jQuery.trim(cookies[i]);
+               // Does this cookie string begin with the name we want?
+               if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                   cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                   break;
+               }
+           }
+       }
+       return cookieValue;
+   }
+   var csrftoken = getCookie('csrftoken');
+   
+   function csrfSafeMethod(method) {
+       // these HTTP methods do not require CSRF protection
+       return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+   }
+   $.ajaxSetup({
+       beforeSend: function(xhr, settings) {
+           if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+               xhr.setRequestHeader("X-CSRFToken", csrftoken);
+           }
+       }
+   });
+   
+    /** 
+     * 遍历表格内容返回数组
+     * @param Int  id 表格id
+     * @return Array
+     */
+    function tobatchPowerOn(id,e){
+       var getID = e.parentNode.parentNode.children[0].innerHTML;
+       var getIP = e.parentNode.parentNode.children[7].innerHTML;
+      
+      if(confirm("Power cycle "+ getIP)){
+      $.ajax({
+          contentType: "application/x-www-form-urlencoded; charset=utf-8",
+          //contentType: "application/json; charset=utf-8", //django not support json,don't use this
+          dataType: "json", //for to get json
+          url : "/power_cycle/",
+          type : "POST",
+          cache : false,
+          data : {
+               'ID':getID, 
+               'IP':getIP
+                 },       
+          beforeSend: function (xhr, settings) {
+          //此处调用刚刚加入的js方法
+           var csrftoken = getCookie('csrftoken'); 
+           if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+           xhr.setRequestHeader("X-CSRFToken", csrftoken);
+               }
+          },
+          success: function(data){ 
+                                e.parentNode.parentNode.children[15].innerHTML=data[1]
+                                if (data[2] == "fail"){
+                                alert(data[0] + "poweron" + data[2])
+                            }                                                                                       
+                                console.log(data)
+                                //alert(data[1])
                                 //以上是后端函数返回成功的信息
                            },
            error: function(request,info,e){
@@ -396,7 +562,16 @@ $.ajaxSetup({
    </script>
 
 <script>
+//     $(function(){
+//         //$('table tr:not(:first)').remove();
+//         var len = $('table tr').length;
+//         for(var i = 1;i<len;i++){
+//             $('table tr:eq('+i+') td:first').text(i);
+//         }
+            
+// });
     $(function(){
+        
         $("table tr").click(function(){
             var input = $(this).find("input[type=checkbox]");//获取checkbox    
              

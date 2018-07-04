@@ -156,49 +156,116 @@ def cluster_del(request, nid):
 #     tasks.sayHello.delay() # 将任务教给celery执行
 #     return HttpResponse('ok')
 
-@csrf_protect #为当前函数强制设置防跨站请求伪造功能，即便settings中没有设置全局中间件。
+class TasksClass():
+    def __init__(self):
+        self.powerOnTime = powerOnTime
+        self.powerOffTime = powerOffTime
+#@csrf_protect #为当前函数强制设置防跨站请求伪造功能，即便settings中没有设置全局中间件。
 #@csrf_exempt #取消当前函数防跨站请求伪造功能，即便settings中设置了全局中间件。
-def powerOn(request):
-    """"""
-    context = {}
-    if  request.method == 'POST':   
-        ipmiIP = request.POST.get('IP')       
-        ipmiHost = ipmiIP        
-        result = tasks.powerOn.delay(ipmiHost).get()
-        print(result)
-        print(result[1])                  
-        #context['result'] = ipmiIP #for return        
-        #return HttpResponse(json.dumps(context)) #for return to ajax success.
-        ipmiID = request.POST.get('ID')
-        print(ipmiID)
+    def powerOn(request):
+        """"""
+        context = {}
+        if  request.method == 'POST':   
+            ipmiIP = request.POST.get('IP')               
+            ipmiHost = ipmiIP        
+            result = tasks.powerOn.delay(ipmiHost).get()
+            data=json.dumps(result).encode()        
+            print(result)        
+            ipmiID = request.POST.get('ID')
+            print(ipmiID)
+            powerOnTime = result[1]
+            models.Host.objects.filter(id=ipmiID).update(
+                powerOnTime = result[1],
+            )
+            return HttpResponse(data)     
+        elif request.method == 'GET':
+            print(request.GET)
+            return ()        
+        else:
+            return render(request, 'host_info.html', context)
+            
+    def powerOff(request):
+        """"""
+        context = {}
+        if  request.method == 'POST':           
+            ipmiIP = request.POST.get('IP')        
+            ipmiHost = ipmiIP
+            result = tasks.powerOff.delay(ipmiHost).get()                    
+            print(result)
+            print(type(result))
+                                      
+            ipmiID = request.POST.get('ID')
+            print(ipmiID)
+            powerOffTime = result[1]
+            runTime = TasksClass.runTimeCalculate(ipmiID,powerOffTime)
+            result.append(str(runTime))
+            print(result)
+            models.Host.objects.filter(id=ipmiID).update(                
+                powerOffTime = result[1],
+            )            
+            data=json.dumps(result).encode()           
+            return HttpResponse(data)
+        elif request.method == 'GET':
+            print(request.GET)
+            return ()        
+        else:
+            return render(request, 'host_info.html', context)
+
+    def powerCycle(request):
+        """"""
+        context = {}
+        if  request.method == 'POST':           
+            ipmiIP = request.POST.get('IP')        
+            ipmiHost = ipmiIP
+            result = tasks.powerCycle.delay(ipmiHost).get()
+            data=json.dumps(result).encode()        
+            print(result)              
+            ipmiID = request.POST.get('ID')
+            print(ipmiID)
+            models.Host.objects.filter(id=ipmiID).update(
+                powerOnTime = result[1],
+            )
+            return HttpResponse(data)
+        elif request.method == 'GET':
+            print(request.GET)
+            return ()        
+        else:
+            return render(request, 'host_info.html', context)
+
+    def runTimeCalculate(ipmiID,powerOffTime):
+        """"""     
+        db_dict = models.Host.objects.filter(id=ipmiID).values()[0]
+        db_tuple = models.Host.objects.filter().values_list()[0]
+        print(db_dict)
+        print(db_tuple)
+        print(db_dict['powerOnTime'])
+        print(db_dict['powerOffTime'])
+        print(powerOffTime)
+        runTime = datetime.datetime.strptime(powerOffTime,'%Y-%m-%d %H:%M:%S') - db_dict['powerOnTime']            
+        print(runTime)        
         models.Host.objects.filter(id=ipmiID).update(
-            powerOnTime = result[1],
-        )
-        return HttpResponse(result[1])     
-    elif request.method == 'GET':
-        print(request.GET)
-        return ()        
-    else:
-        return render(request, 'host_info.html', context)
-        
-def powerOff(request):
-    """"""
-    context = {}
-    if  request.method == 'POST':           
-        ipmiIP = request.POST.get('IP')        
-        ipmiHost = ipmiIP
-        nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')        
-        tasks.powerOff.delay(ipmiHost)             
-        #context['result'] = ipmiIP #for return        
-        #return HttpResponse(json.dumps(context)) #for return to ajax success.
-        ipmiID = request.POST.get('ID')
-        print(ipmiID)
-        models.Host.objects.filter(id=ipmiID).update(
-            powerOnTime = nowTime,
-        )
-        return HttpResponse(nowTime)
-    elif request.method == 'GET':
-        print(request.GET)
-        return ()        
-    else:
-        return render(request, 'host_info.html', context)
+            runTime = str(runTime),                       
+            )               
+        return  (runTime)
+
+    def batchPowerOn(request):        
+        """"""
+        context = {}
+        if  request.method == 'POST':   
+            ipmiIP = request.POST.get('IP')               
+            ipmiHost = ipmiIP        
+            result = tasks.powerOn.delay(ipmiHost).get()
+            data=json.dumps(result).encode()        
+            print(result)        
+            ipmiID = request.POST.get('ID')
+            print(ipmiID)
+            powerOnTime = result[1]
+            models.Host.objects.filter(id=ipmiID).update(
+                powerOnTime = result[1],
+            )
+            return HttpResponse(data)     
+        elif request.method == 'GET':
+            print(request.GET)
+            return ()        
+        else:
+            return render(request, 'host_info.html', context)

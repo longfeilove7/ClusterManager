@@ -37,7 +37,9 @@ urlpatterns = [
     url(r'^add_cluster/', views.add_cluster),
     url(r'^cluster_edit-(?P<nid>\d+)/', views.cluster_edit),
     url(r'^cluster_del-(?P<nid>\d+)/', views.cluster_del),
-    url(r'^power_on/', views.powerOn),
-    url(r'^power_off/', views.powerOff),
+    url(r'^power_on/', views.TasksClass.powerOn),
+    url(r'^power_off/', views.TasksClass.powerOff),
+    url(r'^power_cycle/', views.TasksClass.powerCycle),
+    url(r'^batch_power_on/', views.TasksClass.batchPowerOn),
     
 ]

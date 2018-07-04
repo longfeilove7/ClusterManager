@@ -4,6 +4,7 @@ from celery import shared_task
 from celery import task
 import os, sys, time
 import datetime
+from HostManager import models
 
 ipmiUser = "admin"
 ipmiPassword = "admin"
@@ -17,7 +18,7 @@ def powerStatus(ipmiHost):
     if "off" in returnRead:         
         return ipmiHost, nowTime, "success"
     else:
-        return ipmiHost, nowTime, " fail"
+        return ipmiHost, nowTime, "fail"
 
 @shared_task(name='HostManager.Tasks.powerOn')
 def powerOn(ipmiHost):
@@ -29,7 +30,7 @@ def powerOn(ipmiHost):
     if "Up/On" in returnRead:                 
         return ipmiHost, nowTime, "success"
     else:
-        return ipmiHost, nowTime, " fail" 
+        return ipmiHost, nowTime, "fail" 
     
 @shared_task(name='HostManager.Tasks.powerOff')
 def powerOff(ipmiHost):
@@ -41,7 +42,7 @@ def powerOff(ipmiHost):
     if "Down/Off" in returnRead:         
         return ipmiHost, nowTime, "success"
     else:
-        return ipmiHost, nowTime, " fail"
+        return ipmiHost, nowTime, "fail"
 
 @shared_task(name='HostManager.Tasks.powerCycle')
 def powerCycle(ipmiHost):
@@ -50,10 +51,10 @@ def powerCycle(ipmiHost):
     returnRead = powerCycle.read()
     print(returnRead)
     nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    if "Down/Off" in returnRead:         
+    if "Cycle" in returnRead:         
         return ipmiHost, nowTime, "success"
     else:
-        return ipmiHost, nowTime, " fail"
+        return ipmiHost, nowTime, "fail"
 
 @shared_task(name='HostManager.Tasks.powerReset')
 def powerReset(ipmiHost):
@@ -65,7 +66,7 @@ def powerReset(ipmiHost):
     if "Down/Off" in returnRead:         
         return ipmiHost, nowTime, "success"
     else:
-        return ipmiHost, nowTime, " fail"
+        return ipmiHost, nowTime, "fail"
 
 @shared_task(name='HostManager.Tasks.powerSoft')
 def powerSoft(ipmiHost):
@@ -77,7 +78,7 @@ def powerSoft(ipmiHost):
     if "Down/Off" in returnRead:         
         return ipmiHost, nowTime, "success"
     else:
-        return ipmiHost, nowTime, " fail"
+        return ipmiHost, nowTime, "fail"
 
 @shared_task(name='HostManager.Tasks.bootdevPxe')
 def bootdevPxe(ipmiHost):
@@ -89,7 +90,7 @@ def bootdevPxe(ipmiHost):
     if "Down/Off" in returnRead:         
         return ipmiHost, nowTime, "success"
     else:
-        return ipmiHost, nowTime, " fail"
+        return ipmiHost, nowTime, "fail"
 
 @shared_task(name='HostManager.Tasks.bootdevDisk')
 def bootdevDisk(ipmiHost):
@@ -101,7 +102,7 @@ def bootdevDisk(ipmiHost):
     if "Down/Off" in returnRead:         
         return ipmiHost, nowTime, "success"
     else:
-        return ipmiHost, nowTime, " fail"
+        return ipmiHost, nowTime, "fail"
 
 @shared_task(name='HostManager.Tasks.bootdevSafe')
 def bootdevSafe(ipmiHost):
@@ -113,7 +114,7 @@ def bootdevSafe(ipmiHost):
     if "Down/Off" in returnRead:         
         return ipmiHost, nowTime, "success"
     else:
-        return ipmiHost, nowTime, " fail"
+        return ipmiHost, nowTime, "fail"
 
 @shared_task(name='HostManager.Tasks.bootdevDiag')
 def bootdevDiag(ipmiHost):
@@ -125,7 +126,7 @@ def bootdevDiag(ipmiHost):
     if "Down/Off" in returnRead:         
         return ipmiHost, nowTime, "success"
     else:
-        return ipmiHost, nowTime, " fail"
+        return ipmiHost, nowTime, "fail"
 
 @shared_task(name='HostManager.Tasks.bootdevCdrom')
 def bootdevCdrom(ipmiHost):
@@ -137,7 +138,7 @@ def bootdevCdrom(ipmiHost):
     if "Down/Off" in returnRead:         
         return ipmiHost, nowTime, "success"
     else:
-        return ipmiHost, nowTime, " fail"
+        return ipmiHost, nowTime, "fail"
 
 @shared_task(name='HostManager.Tasks.bootdevBios')
 def bootdevBios(ipmiHost):
@@ -149,4 +150,20 @@ def bootdevBios(ipmiHost):
     if "Down/Off" in returnRead:         
         return ipmiHost, nowTime, "success"
     else:
-        return ipmiHost, nowTime, " fail"
+        return ipmiHost, nowTime, "fail"
+
+@task(name='HostManager.Tasks.fping')
+def fping():
+    # db_dict = models.Host.objects.filter(id=ipmiID).values()[0]
+    # print(db_dict)
+    # return(db_dict)
+    
+    fping = "fping 10.18.10.10"
+    fping = os.popen(fping)
+    returnRead = fping.read()
+    print(returnRead)
+    nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    if "alive" in returnRead:
+        return  ipmiHost, nowTime, "alive"
+    else:
+        return  ipmiHost, nowTime, "dead"  

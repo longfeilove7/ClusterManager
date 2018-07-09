@@ -1,0 +1,73 @@
+        body{
+            margin: 0;
+        } 
+         .pg-header{
+            height: 48px;
+            color: white;
+            line-height: 48px;
+            background-color: #ffffff;
+        } 
+        .title{
+            width: 200px;
+            text-align: center;
+            font-family: Arial;
+            font-size: 18px;
+        } 
+        .pg-header .left{
+            float: left;
+        }
+        .pg-header .right{
+            float: right;
+        } 
+        .pg-content .menu{
+            position: absolute;
+            top: 48px;
+            bottom: 0;
+            width: 200px;
+            background-color: #37444b;
+        }
+        .pg-content .content{
+            position: absolute;
+            left: 200px;
+            top: 48px;
+            bottom: 0;
+            right: 0;
+            overflow: auto;
+            min-width: 500px;
+        } 
+         li{
+            list-style: none;
+        }
+        li div{
+            height: 38px;
+            font-family: Arial;
+            font-size: 14px;
+        }
+        a{
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+        }        
+       
+        .batchButton{
+            cursor:pointer;
+            background-color: #2578b5;            
+            border: transparent;
+            color: aliceblue;
+            height: 38px;
+            font-family: Arial;
+            font-size: 17px;
+        }
+        .singleButton{
+            cursor:pointer;
+            background: transparent;
+            border: transparent;
+            color: black;
+            height: 38px;
+            font-family: Arial;
+            font-size: 17px;
+            width: 20px;
+        }
+        .navdiv{
+            background-color: #2578b5;
+        }

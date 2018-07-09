@@ -1,0 +1,831 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Title</title>
+    <link rel="stylesheet" href="/static/css/custom/body.css">
+    <link rel="stylesheet" href="/static/css/custom/subrange.css">
+    <style>
+        td {text-align:center}/*table center*/
+     </style>
+     <script src="/static/js/vendor/jquery-3.3.1.min.js"></script>     
+     <script src="/static/js/vendor/popper.min.js"></script>
+     <!--<link rel="stylesheet" href="/static/bootstrap-4.1.1/css/bootstrap.min.css">-->
+     <script src="/static/js/vendor/bootstrap.min.js"></script>
+     <script src="/static/js/vendor/intercooler-1.2.1.min.js"></script>
+     <script type="text/javascript">
+        $(document).ready(function(){
+            $("#mytable").find("tr").css("background-color", "#D1F7FA");
+            $("#mytable").find("tr:odd").css("background-color", "#D1F0FA");
+        });
+        </script>
+</head>
+<body>
+    <div class="pg-header">
+        <div class="title left">
+            超算管理中心
+        </div>
+        <div class="title right">
+            当前用户: {{ obj.username }}
+        </div>
+    </div>
+    <div class="pg-content">
+        <div class="menu">
+            <ul>
+                <li>
+                    <div>
+                        <a href="/host_info/">主机管理</a>
+                    </div>
+                </li>
+                <li style="width: 150px;height: 1px;background-color: white;margin-left: -25px"></li>
+            </ul>
+            <ul>
+                <li>
+                    <div>
+                        <a href="/add_cluster/">集群管理</a>
+                    </div>
+                </li>
+                <li style="width: 150px;height: 1px;background-color: white;margin-left: -25px"></li>
+            </ul>
+            <ul>
+                    <li>
+                        <div>
+                            <a href="/import/">import</a>
+                        </div>
+                    </li>
+                    <li style="width: 150px;height: 1px;background-color: white;margin-left: -25px"></li>
+                </ul>
+            <ul>
+                    <li>
+                        <div>
+                            <a href="/export/">export</a>
+                        </div>
+                    </li>
+                    <li style="width: 150px;height: 1px;background-color: white;margin-left: -25px"></li>
+                </ul>
+        </div>
+        {#        右边主机内容#}
+        <div class="content">
+            <div class="add">
+                <a>添加主机</a>
+            </div>
+            <div class="open">
+                <input type="button" id="batchBtn1" name="btn" class="batchButton" value="批量开机" onclick="toBatchPowerOn('mytable',this)">
+            </div>
+            <div class="close">
+                <input type="button" id="batchBtn2" name="btn" class="batchButton" value="批量off机" onclick="toBatchPowerOff('mytable',this)">
+            </div>
+            <div class="edit">
+                <a>批量编辑</a>
+            </div>
+            <div class="delete">
+                <a>批量删除</a>
+            </div>            
+            <div class="bootdev">
+                <form method="get">
+                    <select name="app">
+                        <option value="disk">DISK</option>
+                        <option value="pxe">PXE</option>
+                        <option value="cdrom">CDROM</option>
+                        <option value="bios">BIOS</option>
+                    </select>                                
+                </form>                
+            </div>
+            <div class="search">
+                    <input type="text"  id="searchbox" style="width:257px" value="search"/>
+            </div>
+            <div style="position: absolute;top: 80px;left: 10px">
+                <table id="mytable" border="1" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>机房</th>
+                            <th>机柜</th>
+                            <th>刀箱</th>
+                            <th>刀片</th>
+                            <th>主机名</th>
+                            <th>业务IP</th>
+                            <th>管理IP</th>
+                            <th>存储IP</th>
+                            <th>集群</th>
+                            <th>型号</th>
+                            <th>操作系统</th>
+                            <th>开机</th>
+                            <th>关机</th>                           
+                            <th>重启</th>
+                            <th>开机时间</th>
+                            <th>关机时间</th>
+                            <th>状态</th>                            
+                            <th>运行时长</th>
+                            <th>bootdev</th>
+                            <th>修改</th>
+                            <th>删除</th>
+                            <th><input type ="checkbox" id="select-all" onclick="selectAll()"></th>                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in obj %}
+                        <tr>                            
+                            <td>{{ row.id }}</td>
+                            <td>{{ row.roomNO }}</td>
+                            <td>{{ row.cabinetNO }}</td>
+                            <td>{{ row.bladeBoxNO }}</td>
+                            <td>{{ row.bladeNO}}</td>
+                            <td>{{ row.hostName }}</td>
+                            <td>{{ row.serviceIP }}</td>
+                            <td>{{ row.manageIP }}</td>
+                            <td>{{ row.storageIP }}</td>
+                            <td>{{ row.hostCluster.hostCluster }}</td>
+                            <td>{{ row.hardware }}</td>
+                            <td>{{ row.service }}</td>
+                            <td><input type="button" id="btn1" class="singleButton" name="btn" value="On" onclick="toPowerOn('mytable',this)"></td>
+                            <td><input type="button" id="btn2" class="singleButton" name="btn" value="Off" onclick="toPowerOff('mytable',this)"></td>
+                            <td><input type="button" id="btn3" class="singleButton" name="btn" value="Cycle" onclick="toPowerCycle('mytable',this)"></td>
+                            <td>{{ row.powerOnTime|date:"Y-m-d H:i:s" }}</td>
+                            <td>{{ row.powerOffTime|date:"Y-m-d H:i:s" }}</td>
+                            <td>{{ row.checkOnline }}</td>                            
+                            <td>{{ row.runTime }}</td>
+                            <td>
+                                <form method="get">
+                                <select name="app">
+                                    <option value="disk">DISK</option>
+                                    <option value="pxe">PXE</option>
+                                    <option value="cdrom">CDROM</option>
+                                    <option value="bios">BIOS</option>
+                                </select>                                
+                                </form>
+                            </td>
+                            <td><a id="edit" href="/host_edit-{{ row.id }}/" class="singleButton">修改</a></td>
+{#                          <td><a id="del" href="/host_del-{{ row.id }}/" style="color: #00b3ca">删除</a></td>#}
+                            <td><input type="button" class="singleButton" id="{{ row.id }}"  value="删除" onclick="addElement()"></td>
+                            <td><input type="checkbox" name="selected" value={'ID':{{row.id}},'manageIP':'{{row.manageIP}}'} onclick="oneToAll()"/></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>               
+            </div>
+        </div>
+    </div>
+    {#        模态对话框#}
+    <div id="add-shadow" class="shadow hide"></div>
+    <div id="add-model" class="model hide">
+        <form action="/host_info/" method="post">
+            {% csrf_token %}
+            <ul>
+                <li>
+                    机房: <input type="text" name="roomNO">
+                    机柜: <input type="text" name="cabinetNO">
+                </li>
+            </ul>
+            <ul>
+                <li>
+                    刀箱: <input type="text" name="bladeBoxNO">
+                    刀片: <input type="text" name="bladeNO">
+                </li>
+            </ul>
+            <ul>
+                <li>
+                    主机名: <input type="text" name="hostName">
+                    业务IP: <input type="text" name="serviceIP">
+                </li>
+            </ul>
+            <ul>
+                <li>
+                    管理IP: <input type="text" name="manageIP">
+                    业务IP: <input type="text" name="storageIP">
+                </li>
+            </ul>
+            <ul>
+                <li>
+                    操作系统: <input type="text" name="service">
+                    主机型号: <input type="text" name="hardware">
+                </li>
+            </ul>
+            <ul>
+                <li>集群:
+                    <select  name="hostCluster">
+                        {% for cluster in cluster_list %}
+                        <option value="{{ cluster.id }}">{{ cluster.hostCluster }}</option>
+                        {% endfor %}
+                    </select>
+                </li>
+            </ul>
+            <div>
+                <ul>
+                    <li>
+                        <input type="submit" value="提交">
+                        <input type="button" value="取消" onclick="cancelElement()">
+                    </li>
+                </ul>
+            </div>
+        </form>
+    </div>
+{#    删除的模态#}
+    <div id="del-shadow" class="shadow hide"></div>
+    <div id="del-model" class="model hide">
+        <div style="position: absolute;top: 40%;left: 20%">
+            <div>你确定要删除吗?</div>
+            <form method="post">
+                {% csrf_token %}
+                <input type="submit" value="确定">
+                <input type="button" value="取消" onclick="cancelAdd()">
+            </form>
+        </div>
+    </div>
+    
+    <script>
+{#        添加主机的模态对话框#}
+         function cancelElement() {
+            $('#add-shadow,#add-model').addClass('hide')
+        }
+        $('.add').click(function () {
+            $('#add-shadow,#add-model').removeClass('hide')
+        });
+{#         删除的模态#}
+        function addElement() {
+{#            获取当前点击事件标签上的id#}
+            document.body.onclick = function (event) {
+                var id = event.target.id;
+                console.log(id);
+                if(id){
+                    var link = "/host_del-" + id + '/';
+                    console.log(link);
+                    $('#del-model form').attr('action',link)
+                }
+
+            };
+
+            $('#del-model,#del-shadow').removeClass('hide')
+        }
+        function cancelAdd() {
+            $('#del-shadow,#del-model').addClass('hide')
+        }        
+    </script>
+
+<script type="text/javascript">
+ 
+ // using jQuery
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+var csrftoken = getCookie('csrftoken');
+
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+});
+
+ /** 
+  * 遍历表格内容返回数组
+  * @param Int  id 表格id
+  * @return Array
+  */
+ function toPowerOn(id,e){
+    var getID = e.parentNode.parentNode.children[0].innerHTML;
+    var getIP = e.parentNode.parentNode.children[7].innerHTML;
+   
+   if(confirm("Power on "+ getIP)){
+   $.ajax({
+       contentType: "application/x-www-form-urlencoded; charset=utf-8",
+       //contentType: "application/json; charset=utf-8", //django not support json,don't use this
+       dataType: "json", //for to get json
+       url : "/power_on/",
+       type : "POST",
+       cache : false,
+       data : {
+            'ID':getID, 
+            'IP':getIP
+              },       
+       beforeSend: function (xhr, settings) {
+       //此处调用刚刚加入的js方法
+        var csrftoken = getCookie('csrftoken'); 
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+       },
+       success: function(data){                                                       
+                            console.log(data)
+                            //alert(data)
+                            //以上是后端函数返回成功的信息
+                            e.parentNode.parentNode.children[15].innerHTML=data[1]
+                            if (data[2] == "fail"){
+                                alert(data[0] + "poweron" + data[2])
+                            }                            
+                        },
+        error: function(request,info,e){
+                        alert("false");
+                        console.log(e)
+                        }
+            })
+        }
+    }
+ 
+</script>
+
+<script type="text/javascript">
+ 
+    // using jQuery
+   function getCookie(name) {
+       var cookieValue = null;
+       if (document.cookie && document.cookie !== '') {
+           var cookies = document.cookie.split(';');
+           for (var i = 0; i < cookies.length; i++) {
+               var cookie = jQuery.trim(cookies[i]);
+               // Does this cookie string begin with the name we want?
+               if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                   cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                   break;
+               }
+           }
+       }
+       return cookieValue;
+   }
+   var csrftoken = getCookie('csrftoken');
+   
+   function csrfSafeMethod(method) {
+       // these HTTP methods do not require CSRF protection
+       return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+   }
+   $.ajaxSetup({
+       beforeSend: function(xhr, settings) {
+           if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+               xhr.setRequestHeader("X-CSRFToken", csrftoken);
+           }
+       }
+   });
+   
+    /** 
+     * 遍历表格内容返回数组
+     * @param Int  id 表格id
+     * @return Array
+     */
+    function toPowerOff(id,e){
+       var getID = e.parentNode.parentNode.children[0].innerHTML;
+       var getIP = e.parentNode.parentNode.children[7].innerHTML;
+      
+      if(confirm("Power off "+ getIP)){
+      $.ajax({
+          contentType: "application/x-www-form-urlencoded; charset=utf-8",
+          //contentType: "application/json; charset=utf-8", //django not support json,don't use this
+          dataType: "json", //for to get json
+          url : "/power_off/",
+          type : "POST",
+          cache : false,
+          data : {
+               'ID':getID, 
+               'IP':getIP
+                 },       
+          beforeSend: function (xhr, settings) {
+          //此处调用刚刚加入的js方法
+           var csrftoken = getCookie('csrftoken'); 
+           if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+           xhr.setRequestHeader("X-CSRFToken", csrftoken);
+               }
+          },
+          success: function(data){ 
+                                e.parentNode.parentNode.children[16].innerHTML=data[1]
+                                e.parentNode.parentNode.children[18].innerHTML=data[3]
+                                if (data[2] == "fail"){
+                                alert(data[0] + "poweroff" + data[2])
+                            }                                                                                       
+                                console.log(data)
+                                //alert(data[1])
+                                //以上是后端函数返回成功的信息
+                           },
+           error: function(request,info,e){
+                           alert("false");
+                           console.log(e)
+                           }
+            })
+        }
+    }
+    
+   </script>
+
+<script type="text/javascript">
+ 
+    // using jQuery
+   function getCookie(name) {
+       var cookieValue = null;
+       if (document.cookie && document.cookie !== '') {
+           var cookies = document.cookie.split(';');
+           for (var i = 0; i < cookies.length; i++) {
+               var cookie = jQuery.trim(cookies[i]);
+               // Does this cookie string begin with the name we want?
+               if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                   cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                   break;
+               }
+           }
+       }
+       return cookieValue;
+   }
+   var csrftoken = getCookie('csrftoken');
+   
+   function csrfSafeMethod(method) {
+       // these HTTP methods do not require CSRF protection
+       return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+   }
+   $.ajaxSetup({
+       beforeSend: function(xhr, settings) {
+           if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+               xhr.setRequestHeader("X-CSRFToken", csrftoken);
+           }
+       }
+   });
+   
+    /** 
+     * 遍历表格内容返回数组
+     * @param Int  id 表格id
+     * @return Array
+     */
+    function toPowerCycle(id,e){
+       var getID = e.parentNode.parentNode.children[0].innerHTML;
+       var getIP = e.parentNode.parentNode.children[7].innerHTML;
+      
+      if(confirm("Power cycle "+ getIP)){
+      $.ajax({
+          contentType: "application/x-www-form-urlencoded; charset=utf-8",
+          //contentType: "application/json; charset=utf-8", //django not support json,don't use this
+          dataType: "json", //for to get json
+          url : "/power_cycle/",
+          type : "POST",
+          cache : false,
+          data : {
+               'ID':getID, 
+               'IP':getIP
+                 },       
+          beforeSend: function (xhr, settings) {
+          //此处调用刚刚加入的js方法
+           var csrftoken = getCookie('csrftoken'); 
+           if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+           xhr.setRequestHeader("X-CSRFToken", csrftoken);
+               }
+          },
+          success: function(data){ 
+                                e.parentNode.parentNode.children[15].innerHTML=data[1]
+                                if (data[2] == "fail"){
+                                alert(data[0] + "poweron" + data[2])
+                            }                                                                                       
+                                console.log(data)
+                                //alert(data[1])
+                                //以上是后端函数返回成功的信息
+                           },
+           error: function(request,info,e){
+                           alert("false");
+                           console.log(e)
+                           }
+            })
+        }
+    }
+    
+   </script>
+
+<script type="text/javascript">
+ 
+    // using jQuery
+   function getCookie(name) {
+       var cookieValue = null;
+       if (document.cookie && document.cookie !== '') {
+           var cookies = document.cookie.split(';');
+           for (var i = 0; i < cookies.length; i++) {
+               var cookie = jQuery.trim(cookies[i]);
+               // Does this cookie string begin with the name we want?
+               if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                   cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                   break;
+               }
+           }
+       }
+       return cookieValue;
+   }
+   var csrftoken = getCookie('csrftoken');
+   
+   function csrfSafeMethod(method) {
+       // these HTTP methods do not require CSRF protection
+       return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+   }
+   $.ajaxSetup({
+       beforeSend: function(xhr, settings) {
+           if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+               xhr.setRequestHeader("X-CSRFToken", csrftoken);
+           }
+       }
+   });
+   
+    /** 
+     * 遍历表格内容返回数组
+     * @param Int  id 表格id
+     * @return Array
+     */
+function toBatchPowerOn(id,e){
+    var allValue = queryCheckedValue()
+    if (allValue.length == 0){
+        alert("null")
+        }
+    else{
+    //    var getIP = e.parentNode.parentNode.children[7].innerHTML;
+      console.log(allValue)
+      strAllValue = allValue.join("-");
+      console.log(strAllValue)
+      if(confirm("batch Power On [ "+ allValue.length + " ] server")){
+      $.ajax({
+          contentType: "application/x-www-form-urlencoded; charset=utf-8",
+          //contentType: "application/json; charset=utf-8", //django not support json,don't use this
+          dataType: "json", //for to get json
+          url : "/batch_power_on/",
+          type : "POST",
+          cache : false,
+          data :{ 
+               'allValue':strAllValue
+          },       
+          beforeSend: function (xhr, settings) {
+          //此处调用刚刚加入的js方法
+           var csrftoken = getCookie('csrftoken'); 
+           if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+           xhr.setRequestHeader("X-CSRFToken", csrftoken);
+               }
+          },
+          success: function(data){                                                                                     
+                                console.log(data)
+                                for(var i=0;i<data.length;i++){
+                                    //console.log("shis" + data[i]);
+                                    var newdata = new Array();
+                                    newdata = data[i];
+                                    console.log(newdata);
+                                    getID = newdata[0];
+                                    var index=0;
+                                    // from the ID to get the rowID
+                                    $("table tr").each(function(i){
+                                        
+                                        if($($(this).find("td").get(0)).text()==getID){
+                                        index=i;
+                                        //console.log("index" + index)
+                                            }   
+                                        }) 
+                                    rowID = index;
+                                    console.log("rowID "+ rowID)
+                                    //e.parentNode.parentNode.children[15].innerHTML=data[1]
+                                    mytable.rows[rowID].cells[15].innerHTML=newdata[2];                                    
+                                    if (newdata[3] == "fail"){
+                                    alert(newdata[1] + "poweron" + newdata[3]);
+                                        }                                  
+                                    }
+                                //alert(data[1])
+                                //以上是后端函数返回成功的信息
+                           },
+           error: function(request,info,e){
+                           alert("false");
+                           console.log(e)
+                           }
+            })
+        }
+    }
+}
+    
+   </script>
+
+<script type="text/javascript">
+ 
+    // using jQuery
+   function getCookie(name) {
+       var cookieValue = null;
+       if (document.cookie && document.cookie !== '') {
+           var cookies = document.cookie.split(';');
+           for (var i = 0; i < cookies.length; i++) {
+               var cookie = jQuery.trim(cookies[i]);
+               // Does this cookie string begin with the name we want?
+               if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                   cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                   break;
+               }
+           }
+       }
+       return cookieValue;
+   }
+   var csrftoken = getCookie('csrftoken');
+   
+   function csrfSafeMethod(method) {
+       // these HTTP methods do not require CSRF protection
+       return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+   }
+   $.ajaxSetup({
+       beforeSend: function(xhr, settings) {
+           if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+               xhr.setRequestHeader("X-CSRFToken", csrftoken);
+           }
+       }
+   });
+   
+    /** 
+     * 遍历表格内容返回数组
+     * @param Int  id 表格id
+     * @return Array
+     */
+function toBatchPowerOff(id,e){
+    var allValue = queryCheckedValue()
+    if(allValue.length==0){
+        alert("null")
+        }
+    else{
+    //    var getIP = e.parentNode.parentNode.children[7].innerHTML;
+      console.log(allValue)
+      strAllValue = allValue.join("-");
+      console.log(strAllValue)
+      if(confirm("batch Power Off [ "+ allValue.length + " ] server")){
+      $.ajax({
+          contentType: "application/x-www-form-urlencoded; charset=utf-8",
+          //contentType: "application/json; charset=utf-8", //django not support json,don't use this
+          dataType: "json", //for to get json
+          url : "/batch_power_off/",
+          type : "POST",
+          cache : false,
+          data :{ 
+               'allValue':strAllValue
+          },       
+          beforeSend: function (xhr, settings) {
+          //此处调用刚刚加入的js方法
+           var csrftoken = getCookie('csrftoken'); 
+           if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+           xhr.setRequestHeader("X-CSRFToken", csrftoken);
+               }
+          },
+          success: function(data){                                                                                     
+                                console.log(data)
+                                for(var i=0;i<data.length;i++){
+                                    //console.log("shis" + data[i]);
+                                    var newdata = new Array();
+                                    newdata = data[i];
+                                    console.log(newdata);
+                                    getID = newdata[0];
+                                    var index=0;
+                                    // from the ID to get the rowID
+                                    $("table tr").each(function(i){
+                                        
+                                        if($($(this).find("td").get(0)).text()==getID){
+                                        index=i;
+                                        //console.log("index" + index)
+                                            }   
+                                        }) 
+                                    rowID = index;
+                                    console.log("rowID "+ rowID)
+                                    //e.parentNode.parentNode.children[15].innerHTML=data[1]
+                                    mytable.rows[rowID].cells[16].innerHTML=newdata[2];
+                                    mytable.rows[rowID].cells[18].innerHTML=newdata[4];
+                                    if (newdata[3] == "fail"){
+                                    alert(newdata[1] + "poweroff" + newdata[3]);
+                                        }                                  
+                                    }
+                                //alert(data[1])
+                                //以上是后端函数返回成功的信息
+                           },
+           error: function(request,info,e){
+                           alert("false");
+                           console.log(e)
+                           }
+            })
+        }
+    }
+} 
+   </script>
+
+<script>
+//     $(function(){
+//         //$('table tr:not(:first)').remove();
+//         var len = $('table tr').length;
+//         for(var i = 1;i<len;i++){
+//             $('table tr:eq('+i+') td:first').text(i);
+//         }
+            
+// });
+    function selectAll() {
+
+    if ($("#select-all").is(":checked")) {
+
+    $("[name='selected']").prop("checked", true);
+    var allValue = queryCheckedValue();    
+        } 
+        else {
+
+    $("[name='selected']").prop("checked", false);
+        }
+
+    } 
+
+    //获取所有选中checkbox的值
+
+    function queryCheckedValue() {
+    
+    var arrayObj = new Array();
+
+    $("input:checkbox[name='selected']:checked").each(function(i) {
+
+    var val = $(this).val();
+    
+    arrayObj.push(val)
+    });
+    console.log(arrayObj)
+    return arrayObj;
+
+    }
+
+    //所有的name为‘selected’的checkbox的值
+    function noCheckedValue() {
+
+    var str = "";
+    $("input:checkbox[name='selected']").each(function(i) {
+
+    var val = $(this).val();
+    str = str + "," + val;
+    });
+    return str;
+    }
+
+    //判断所有的子checkbox全部选中时，总checkbox选中，否则，反之；
+    function oneToAll() {
+
+    var allChecked = 0;//所有选中checkbox的数量
+
+    var all = 0;//所有checkbox的数量
+
+    $("input:checkbox[name='selected']").each(function(i) {
+    all++;
+    if ($(this).is(":checked")) {
+    allChecked++;
+    }
+
+    });
+
+    if(allChecked==all){//相等时，则所有的checkbox都选中了，否则，反之；
+
+    $("#select-all").prop("checked",true);
+
+    }else{
+
+    $("#select-all").prop("checked",false);
+
+    }
+
+    }
+
+    // $(function(){
+        
+        
+    //     $("table tr").click(function(){
+    //         var input = $(this).find("input[type=checkbox]");//获取checkbox    
+             
+    //         //判断当前checkbox是否为选中状态
+    //         if(input.is(":checked")){           
+    //             input.attr("checked",false);
+    //         }else{
+    //             input.attr("checked",true);
+    //         }
+             
+    //     })  
+    // })
+    </script>
+
+    
+
+    <script>
+        $(function(){
+            $("#searchbox").keyup(function(){
+                if($(this).val()!="search"){
+                    $("table tbody tr").hide()
+                .filter(":contains('"+($(this).val())+"')").show();//filter and contains
+                }
+                
+            }).keyup();
+        });
+        $("#searchbox").focus(function(){
+            if($(this).val()=="search"){
+                $(this).val("");
+            }
+        }).blur(function(){
+            if($(this).val()==""){
+                $(this).val("search");
+            }
+        })
+    </script>
+</body>
+</html>

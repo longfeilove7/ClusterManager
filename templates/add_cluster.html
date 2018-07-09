@@ -66,6 +66,7 @@
     <div id="add-shadow" class="shadow hide"></div>
     <div id="add-model" class="model hide">
         <form id="i4" action="/add_cluster/" method="post">
+            {% csrf_token %}
             <ul>
                 <li>
                     集群名称: <input id="i3" type="text" name="clusterName">
@@ -87,6 +88,7 @@
         <div style="position: absolute;top: 40%;left: 20%">
             <div>你确定要删除吗?</div>
             <form id="i5" method="post">
+                {% csrf_token %}
                 <input type="submit" value="确定">
                 <input type="button" value="取消" onclick="cancelAdd()">
             </form>

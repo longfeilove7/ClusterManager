@@ -192,6 +192,22 @@ JET_THEMES = [
     }
 ]
 
+JET_SIDE_MENU_ITEMS = [
+    {'label':'ssss' ,'app_label': 'auth', 'items': [
+        {'name': 'group'},
+        {'name': 'user'},
+    ]},
+    {'app_label': 'django_celery_results', 'items': [
+        {'name': 'taskresult'},
+    ]},
+    {'app_label': 'django_celery_beat', 'items': [
+        {'name': 'crontabschedule'},
+        {'name': 'intervalschedule'},
+        {'name': 'periodictask'},
+        {'name': 'solarschedule'},
+    ]},
+]
+
 
 
 CELERY_BROKER_URL = 'pyamqp://guest@localhost//'
@@ -220,3 +236,6 @@ CELERY_BEAT_SCHEDULE = {
     #      'args':(4, 4)
     # },
 }
+
+FILE_UPLOAD_HANDLERS = ("django_excel.ExcelMemoryFileUploadHandler",
+                        "django_excel.TemporaryExcelFileUploadHandler")

@@ -70,6 +70,7 @@
 <body style="background-color: #ecf0f5">
     <div class="pg">
         <form action="/register/" method="POST">
+            {% csrf_token %}
             <div class="user">
                 <input type="text" name="user" placeholder="输入用户名">
             </div>

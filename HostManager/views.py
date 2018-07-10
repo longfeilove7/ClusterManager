@@ -96,7 +96,9 @@ def add_cluster(request):
 
 
 def host_del(request, nid):
-    if request.method == 'POST':
+     print("testsss")
+     if request.method == 'POST':
+        print("testsss")
         models.Host.objects.filter(id=nid).delete()
         return redirect('/host_info/')
 

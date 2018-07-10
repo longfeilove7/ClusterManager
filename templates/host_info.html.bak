@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Title</title>
-    <link rel="stylesheet" href="/static/css/custom/body.css">
+    <link rel="stylesheet" href="/static/css/custom/bodybak.css">
     <link rel="stylesheet" href="/static/css/custom/subrange.css">
     <style>
         td {text-align:center}/*table center*/

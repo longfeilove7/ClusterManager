@@ -130,15 +130,7 @@ body {
   #wrapper.toggled #page-content-wrapper {
     position: relative;
     margin-right: 0;
-  }
-  .search{            
-    height: 38px;
-    width: 280px;
-    background-color: rgb(108,117,125);
-    top: 0px;            
-    text-align: center;
-    line-height: 38px;
-}
+  }  
 .navbar-brand{
   color: #fff;
 }

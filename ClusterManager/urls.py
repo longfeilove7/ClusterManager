@@ -23,26 +23,39 @@ from django.conf.urls import include
 #import os, sys, commands
 
 urlpatterns = [
-    url(r'^$', views.login),
+    url(r'^$', views.signin),
     url(r'^jet/', include('jet.urls', 'jet')),  # Django JET URLS
     url(r'^jet/dashboard/', include('jet.dashboard.urls', 'jet-dashboard')),  # Django JET dashboard URLS
 #    url(r'^admin/', include(admin.site.urls)),
-    url(r'^admin/', admin.site.urls),
-    url(r'^register/', views.register),
-    url(r'^login/', views.login),
+    url(r'^admin/', admin.site.urls),    
+    url(r'^sign-up/', views.signup),
+    url(r'^sign-in/', views.signin),    
     url(r'^index/', views.index),
     
     url(r'^host_info/', views.host_info),
+    url(r'^inspect_info/', views.inspect_info),
     url(r'^host_edit-(?P<nid>\d+)/', views.host_edit),
     url(r'^host_del-(?P<nid>\d+)/', views.host_del),
+    url(r'^add_host/', views.add_host),
     url(r'^add_cluster/', views.add_cluster),
     url(r'^cluster_edit-(?P<nid>\d+)/', views.cluster_edit),
     url(r'^cluster_del-(?P<nid>\d+)/', views.cluster_del),
+    url(r'^task_result/', views.task_result),
+    url(r'^solar_schedule/', views.task_result),
+    url(r'^periodic_task/', views.task_result),
+    url(r'^interval_schedule/', views.task_result),
+    url(r'^crontab_schedulet/', views.task_result),
+
+
+    #for celery tasks
     url(r'^power_on/', views.TasksClass.powerOn),
     url(r'^power_off/', views.TasksClass.powerOff),
     url(r'^power_cycle/', views.TasksClass.powerCycle),
     url(r'^batch_power_on/', views.TasksClass.batchPowerOn),
     url(r'^batch_power_off/', views.TasksClass.batchPowerOff),
+    url(r'^batch_inspect_sdr/', views.TasksClass.batchInspectSdr),    
+    url(r'^inspect_sdr/', views.TasksClass.inspectSdr),    
+
     
     #for django-excel
     url(r'^django_excel', views.upload, name='uplink'),

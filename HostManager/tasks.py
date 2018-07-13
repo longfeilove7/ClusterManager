@@ -152,12 +152,28 @@ def bootdevBios(ipmiHost,ipmiUser,ipmiPassword):
     else:
         return ipmiHost, nowTime, "fail"
 
+@shared_task(name='HostManager.Tasks.inspectSdr')
+def inspectSdr(ipmiHost,ipmiUser,ipmiPassword):
+    nowTime = datetime.datetime.now()    
+    print(type(nowTime))
+    inspectTime = nowTime.strftime('%Y-%m-%d-%H-%M-%S')
+    inspectSdr = "ipmitool -H " + ipmiHost + " -U " + ipmiUser + " -P " + ipmiPassword + " sdr  >>" + "inspect/"+ inspectTime + ".csv"
+    inspectTitle = "echo IPMI:" + ipmiHost + "  Time:" + inspectTime  + ">>" + "inspect/"+ inspectTime + ".csv"
+    os.popen(inspectTitle)   
+    inspectSdr = os.popen(inspectSdr)
+    returnRead = inspectSdr.read()
+    print(returnRead)  
+    nowTime = nowTime.strftime('%Y-%m-%d %H:%M:%S')    
+    if "Unable" not in returnRead:         
+        return ipmiHost, nowTime, "success"
+    else:
+        return ipmiHost, nowTime, "fail"
+
 @task(name='HostManager.Tasks.fping')
 def fping(ipHost,ipmiUser,ipmiPassword):
     # db_dict = models.Host.objects.filter(id=ipmiID).values()[0]
     # print(db_dict)
-    # return(db_dict)
-    
+    # return(db_dict)    
     fping = "fping " + ipHost
     fping = os.popen(fping)
     returnRead = fping.read()

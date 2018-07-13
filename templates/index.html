@@ -1,99 +1,89 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>NEUNN</title>
-    <style>
-        body{
-            margin: 0;
-        }
-        .pg-header{
-            height: 48px;
-            color: white;
-            line-height: 48px;
-            background-color: #2578b5;
-        }
-        .title{
-            width: 200px;
-            text-align: center;
-            font-family: Arial;
-            font-size: 18px;
-        }
-        .pg-header .left{
-            float: left;
-        }
-        .pg-header .right{
-            float: right;
-        }
-        .pg-content .menu{
-            position: absolute;
-            top: 48px;
-            bottom: 0;
-            width: 200px;
-            background-color: #37444b;
-        }
-        .pg-content .content{
-            position: absolute;
-            left: 200px;
-            top: 48px;
-            bottom: 0;
-            right: 0;
-            overflow: auto;
-            min-width: 500px;
-        }
-        li{
-            list-style: none;
-        }
-        li div{
-            height: 38px;
-            font-family: Arial;
-            font-size: 14px;
-        }
-        a{
-            color: white;
-            text-decoration: none;
-        }
-    </style>
-</head>
-<body>
-    <div class="pg-header">
-        <div class="title left">
-            超算管理中心
-        </div>
-        <div class="title right">
-            当前用户: {{ obj.username }}
-        </div>
-    </div>
-    <div class="pg-content">
-        <div class="menu">
-            <ul>
-                <li>
-                    <div>
-                        <a href="/host_info/">主机管理</a>
-                    </div>
-                </li>
-                <li style="width: 150px;height: 1px;background-color: white;margin-left: -25px"></li>
-            </ul>
-            <ul>
-                <li>
-                    <div>
-                        <a href="/add_cluster/">集群管理</a>
-                    </div>
-                </li>
-                <li style="width: 150px;height: 1px;background-color: white;margin-left: -25px"></li>
-            </ul>
-            <ul>
-                    <li>
-                        <div>
-                            <a href="/import_export/">import</a>
-                        </div>
-                    </li>
-                    <li style="width: 150px;height: 1px;background-color: white;margin-left: -25px"></li>
-                </ul>
-        </div>
-        <div class="content">
+{% extends 'extends/base.html' %} 
+{% block baseCss %}
+<link rel="stylesheet" href="/static/fontawesome/css/all.css">
+<link rel="stylesheet" href="/static/css/custom/body.css">
+<link rel="stylesheet" href="/static/css/custom/subrange.css">
+<link rel="stylesheet" href="/static/css/custom/sidebar.css">
+<link rel="stylesheet" href="/static/css/vendor/bootstrap.min.css">
+<link rel="manifest" href="site.webmanifest">
+<link rel="apple-touch-icon" href="icon.png">
+<!-- Place favicon.ico in the root directory -->
 
-        </div>
+<link rel="stylesheet" href="/static/css/normalize.css">
+<link rel="stylesheet" href="/static/css/main.css">
+{% endblock %}
+{% block baseBody %}
+
+<!-- Add your site or application content here -->
+{% include "include/sidebar.html"%}
+
+        <!-- /#sidebar-wrapper -->
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+
+            <!--  右边主机内容-->
+            
+                <nav class="navbar navbar-expand-md bg-secondary navbar-dark">
+                    <a class="navbar-brand" href="#">主机管理</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarCollapse">
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#" id="btnBatAdd" data-toggle="modal" data-target="#addModal">添加主机</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" id="btnBatEdit">批量编辑</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" id="btnBatDelete">批量删除</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" id="batchBtn1" onclick="toBatchPowerOn('mytable',this)">批量开机</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" id="batchBtn2" onclick="toBatchPowerOff('mytable',this)">批量关机</a>
+                            </li>
+                            <!-- Dropdown -->
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                                    启动顺序
+                                </a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" herf="#">DISK</a>
+                                    <a class="dropdown-item" herf="#">PXE</a>
+                                    <a class="dropdown-item" herf="#">CDROM</a>
+                                    <a class="dropdown-item" herf="#">BIOS</a>
+                                </div>
+                            </li>                                      
+                        </ul>
+                        <form class="form-inline mt-2 mt-md-0">
+                                <input class="form-control mr-sm-2" id="searchbox" type="text" placeholder="Search" aria-label="Search">
+                                <!-- <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>                      -->
+                    </div>
+                </nav>
+ 
+
+           
+
+      
+
+        <!-- /#page-content-wrapper -->
     </div>
-</body>
-</html>
+    <!-- /#wrapper -->
+
+    {% endblock %} {% block baseScript %}
+    <script src="/static/js/vendor/modernizr-3.6.0.min.js"></script>
+    <script src="/static/js/vendor/jquery-3.3.1.min.js"></script>
+    <script src="/static/js/vendor/popper.min.js"></script>
+    <script src="/static/js/vendor/bootstrap.min.js"></script>
+    <script src="/static/js/vendor/intercooler-1.2.1.min.js"></script>
+    <script></script>
+    <script src="/static/js/plugins.js"></script>
+    <script src="/static/js/main.js"></script>
+    <!-- custom -->    
+    <!-- Menu Toggle Script -->
+  <script src="/static/js/custom/sidebar.js"></script>
+  <script src="/static/js/custom/search.js"></script>
+     {% endblock %}

@@ -8,7 +8,15 @@ from django.db import models
 #
 #
 class Clusters(models.Model):
-    hostCluster = models.CharField(max_length=32)
+    clusterName = models.CharField(max_length=32,null=True)
+    deviceNumber = models.CharField(max_length=32,null=True)  
+    customerName = models.CharField(max_length=32,null=True)
+    contactPerson = models.CharField(max_length=32,null=True)
+    contactPhone = models.CharField(max_length=32,null=True)
+    contactEmail = models.EmailField(max_length=32,null=True)
+    contactQQ = models.CharField(max_length=32,null=True)
+    contactWeicat = models.CharField(max_length=32,null=True)
+
 
 
 # class Services(models.Model):
@@ -32,7 +40,12 @@ class Host(models.Model):
     runTime = models.CharField(max_length=32,null=True)
     ipmiUser = models.CharField(max_length=64,null=True)
     ipmiPassword = models.CharField(max_length=64,null=True)
-    hostCluster = models.ForeignKey(Clusters,on_delete=models.CASCADE)
+    clusterName = models.ForeignKey(Clusters,on_delete=models.CASCADE)
+
+class Automate(models.Model):
+    inspectTime =models.CharField(max_length=32,null=True)
+    
+    
 
 
 class Users(models.Model):

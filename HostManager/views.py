@@ -2,6 +2,12 @@ from django.shortcuts import render, redirect
 from django.shortcuts import HttpResponse
 from django.http import HttpRequest, HttpResponseBadRequest
 from HostManager import models
+from django_celery_beat.models import PeriodicTask
+from django_celery_beat.models import PeriodicTasks
+from django_celery_beat.models import CrontabSchedule
+from django_celery_beat.models import IntervalSchedule
+from django_celery_beat.models import SolarSchedule
+from django_celery_results.models import TaskResult
 from celery import shared_task
 from celery import task
 from HostManager import tasks
@@ -17,38 +23,44 @@ from django import forms
 # Create your views here.
 
 
-def login(request):
+def signin(request):
     if request.method == "POST":
         u = request.POST.get('user')
         p = request.POST.get('pwd')
+        print(u,p)
         obj = models.Users.objects.filter(username=u, password=p).first()
         if obj:
             return render(request, 'index.html', {'obj': obj})
         else:
-            return render(request, 'login.html')
+            return render(request, 'sign-in.html')
     else:
-        return render(request, 'login.html')
+        return render(request, 'sign-in.html')
 
 
-def register(request):
+def signup(request):
     if request.method == "POST":
         u = request.POST.get('user')
         p = request.POST.get('pwd')
         models.Users.objects.create(username=u, password=p)
         return render(request, 'sucess.html')
     else:
-        return render(request, 'register.html')
+        return render(request, 'sign-up.html')
 
 
 def index(request):
     return render(request, 'index.html')
-
 
 def host_info(request):
     if request.method == 'GET':
         obj = models.Host.objects.all()
         cluster_list = models.Clusters.objects.all()
         return render(request, 'host_info.html', {'obj': obj, 'cluster_list': cluster_list})
+
+def add_host(request):
+    if request.method == 'GET':
+        obj = models.Host.objects.all()
+        cluster_list = models.Clusters.objects.all()
+        return render(request, 'add_host.html', {'obj': obj, 'cluster_list': cluster_list})
     if request.method == 'POST':
         roomNO = request.POST.get('roomNO')
         cabinetNO = request.POST.get('cabinetNO')
@@ -58,13 +70,15 @@ def host_info(request):
         serviceIP = request.POST.get('serviceIP')
         manageIP = request.POST.get('manageIP')
         storageIP = request.POST.get('storageIP')
-        hostCluster = request.POST.get('hostCluster')
+        clusterName = request.POST.get('clusterName')
         hardware = request.POST.get('hardware')
         service = request.POST.get('service')
         powerOnTime = request.POST.get('powerOnTime')
         powerOffTime = request.POST.get('powerOffTime')
         checkOnline = request.POST.get('checkOnline')
         runTime = request.POST.get('runTime')
+        ipmiUser = request.POST.get('ipmiUser')
+        ipmiPassword = request.POST.get('ipmiPassword')
         models.Host.objects.create(
                                     roomNO=roomNO,
                                     cabinetNO=cabinetNO,
@@ -74,15 +88,67 @@ def host_info(request):
                                     serviceIP=serviceIP,
                                     manageIP=manageIP,
                                     storageIP=storageIP,
-                                    hostCluster_id=hostCluster,
+                                    clusterName_id=clusterName,
                                     hardware=hardware,
                                     service=service,
                                     powerOnTime=powerOnTime,
                                     powerOffTime=powerOffTime,
                                     checkOnline=checkOnline,
-                                    runTime=runTime,)
-        print(roomNO,cabinetNO,bladeBoxNO,bladeNO,hardware,serviceIP,manageIP,storageIP,hostName,service,hostCluster)
-        return redirect('/host_info/')
+                                    runTime=runTime,
+                                    ipmiUser=ipmiUser,
+                                    ipmiPassword=ipmiPassword,)
+        print(roomNO,cabinetNO,bladeBoxNO,bladeNO,hardware,serviceIP,manageIP,storageIP,hostName,service,clusterName)
+        return redirect('/add_host/')
+
+def inspect_info(request):
+    if request.method == 'GET':
+        obj = models.Host.objects.all()
+        cluster_list = models.Clusters.objects.all()
+        return render(request, 'inspect_info.html', {'obj': obj, 'cluster_list': cluster_list})
+    if request.method == 'POST':
+        roomNO = request.POST.get('roomNO')
+        cabinetNO = request.POST.get('cabinetNO')
+        bladeBoxNO = request.POST.get('bladeBoxNO')
+        bladeNO = request.POST.get('bladeNO')
+        hostName = request.POST.get('hostName')
+        serviceIP = request.POST.get('serviceIP')
+        manageIP = request.POST.get('manageIP')
+        storageIP = request.POST.get('storageIP')
+        clusterName = request.POST.get('clusterName')
+        hardware = request.POST.get('hardware')
+        service = request.POST.get('service')
+        powerOnTime = request.POST.get('powerOnTime')
+        powerOffTime = request.POST.get('powerOffTime')
+        checkOnline = request.POST.get('checkOnline')
+        runTime = request.POST.get('runTime')
+        ipmiUser = request.POST.get('ipmiUser')
+        ipmiPassword = request.POST.get('ipmiPassword')
+        models.Host.objects.create(
+                                    roomNO=roomNO,
+                                    cabinetNO=cabinetNO,
+                                    bladeBoxNO=bladeBoxNO,
+                                    bladeNO=bladeNO,
+                                    hostName=hostName,
+                                    serviceIP=serviceIP,
+                                    manageIP=manageIP,
+                                    storageIP=storageIP,
+                                    clusterName_id=clusterName,
+                                    hardware=hardware,
+                                    service=service,
+                                    powerOnTime=powerOnTime,
+                                    powerOffTime=powerOffTime,
+                                    checkOnline=checkOnline,
+                                    runTime=runTime,
+                                    ipmiUser=ipmiUser,
+                                    ipmiPassword=ipmiPassword,)
+        print(roomNO,cabinetNO,bladeBoxNO,bladeNO,hardware,serviceIP,manageIP,storageIP,hostName,service,clusterName)
+        return redirect('/inspect_info/')
+
+def task_result(request):
+    if request.method == 'GET':
+       # obj = django.dbmodel.django_celery_beat_crontabschedule.objects.all()
+        results_list = TaskResult.objects.all()
+        return render(request, 'task_result.html', { 'results_list': results_list})
 
 
 def add_cluster(request):
@@ -91,16 +157,29 @@ def add_cluster(request):
         return render(request, 'add_cluster.html', {'cluster_list': cluster_list})
     elif request.method == 'POST':
         clusterName = request.POST.get('clusterName')
-        models.Clusters.objects.create(hostCluster=clusterName)
+        deviceNumber = request.POST.get('deviceNumber')
+        customerName = request.POST.get('customerName')
+        contactPerson = request.POST.get('contactPerson')
+        contactPhone = request.POST.get('contactPhone')
+        contactEmail = request.POST.get('contactEmail')
+        contactQQ = request.POST.get('contactQQ')
+        contactWeicat = request.POST.get('contactWeicat')
+        models.Clusters.objects.create(clusterName=clusterName,
+                                                        deviceNumber=deviceNumber,
+                                                        customerName=customerName,
+                                                        contactPerson=contactPerson,
+                                                        contactPhone=contactPhone,
+                                                        contactEmail=contactEmail,
+                                                        contactQQ=contactQQ,
+                                                        contactWeicat=contactWeicat,)
+
         return redirect('/add_cluster/')
 
 
-def host_del(request, nid):
-     print("testsss")
-     if request.method == 'POST':
-        print("testsss")
+def host_del(request, nid):     
+     if request.method == 'POST':        
         models.Host.objects.filter(id=nid).delete()
-        return redirect('/host_info/')
+        return redirect('/add_host/')
 
 
 def host_edit(request, nid):
@@ -117,7 +196,7 @@ def host_edit(request, nid):
         serviceIP = request.POST.get('serviceIP')
         manageIP = request.POST.get('manageIP')
         storageIP = request.POST.get('storageIP')
-        hostCluster = request.POST.get('hostCluster')
+        clusterName = request.POST.get('clusterName')
         hardware = request.POST.get('hardware')
         service = request.POST.get('service')
         models.Host.objects.filter(id=nid).update(
@@ -129,24 +208,38 @@ def host_edit(request, nid):
                                                     serviceIP=serviceIP,
                                                     manageIP=manageIP,
                                                     storageIP=storageIP,
-                                                    hostCluster_id=hostCluster,
+                                                    clusterName_id=clusterName,
                                                     hardware=hardware,
                                                     service=service,)
-        print(roomNO,cabinetNO,bladeBoxNO,bladeNO,hardware,serviceIP,manageIP,storageIP,hostName,service,hostCluster)
-        return redirect('/host_info/')
+        print(roomNO,cabinetNO,bladeBoxNO,bladeNO,hardware,serviceIP,manageIP,storageIP,hostName,service,clusterName)
+        return redirect('/add_host/')
 
 
 def cluster_edit(request, nid):
     if request.method == 'POST':
         clusterName = request.POST.get('clusterName')
-        models.Clusters.objects.filter(id=nid).update(hostCluster=clusterName)
+        deviceNumber = request.POST.get('deviceNumber')
+        customerName = request.POST.get('customerName')
+        contactPerson = request.POST.get('contactPerson')
+        contactPhone = request.POST.get('contactPhone')
+        contactEmail = request.POST.get('contactEmail')
+        contactQQ = request.POST.get('contactQQ')
+        contactWeicat = request.POST.get('contactWeicat')
+        models.Clusters.objects.filter(id=nid).update(clusterName=clusterName,
+                                                                            deviceNumber=deviceNumber,
+                                                                            customerName=customerName,
+                                                                            contactPerson=contactPerson,
+                                                                            contactPhone=contactPhone,
+                                                                            contactEmail=contactEmail,
+                                                                            contactQQ=contactQQ,
+                                                                            contactWeicat=contactWeicat,)        
         print(clusterName)
         return redirect('/add_cluster/')
 
 
 def cluster_del(request, nid):
     if request.method == 'POST':
-        obj = models.Host.objects.filter(hostCluster_id=nid).first()
+        obj = models.Host.objects.filter(clusterName_id=nid).first()
         if obj:
             return HttpResponse('该主机组已经被使用')
         else:
@@ -364,6 +457,80 @@ class TasksClass():
             return ()        
         else:
             return render(request, 'host_info.html', context)
+
+    def batchInspectSdr(request):
+        """"""
+        context = {}
+        if  request.method == 'POST':   
+            allValue = request.POST.get('allValue')
+            print(allValue)
+            listAllValue = allValue.split("-")
+            print(listAllValue)
+            listResult = []
+            for dictAllValue in listAllValue:
+                print(type(dictAllValue))
+                
+                dictAllValue = eval(dictAllValue)
+                ipmiIP = dictAllValue['manageIP']
+                print("this is inspect ip" + ipmiIP)
+                ipmiID = dictAllValue['ID']
+                print(ipmiID)
+                db_dict = models.Host.objects.filter(id=ipmiID).values()[0]
+                ipmiUser = db_dict['ipmiUser']
+                print(ipmiUser)
+                ipmiPassword = db_dict['ipmiPassword']
+                print(ipmiPassword)                   
+                ipmiHost = ipmiIP        
+                result = tasks.inspectSdr.delay(ipmiHost,ipmiUser,ipmiPassword).get()
+                inspectTime = result[1]                
+                
+                print(request)
+                print(type(result))
+                
+                listResult.append(result)
+                
+                print(listResult)       
+                print(type(listResult))        
+               
+                result.insert(0,ipmiID)
+                powerOnTime = result[1]
+                models.Automate.objects.filter(id=ipmiID).update(
+                    inspectTime = result[2],
+                )
+            data=json.dumps(listResult).encode()    
+            return HttpResponse(data)     
+        elif request.method == 'GET':
+            print(request.GET)
+            return ()        
+        else:
+            return render(request, 'inspect_sdr.html', context)
+
+    def inspectSdr(request):
+        """"""
+        context = {}
+        if  request.method == 'POST':           
+            ipmiIP = request.POST.get('IP')        
+            ipmiHost = ipmiIP
+            ipmiID = request.POST.get('ID')
+            print(ipmiID)
+            db_dict = models.Host.objects.filter(id=ipmiID).values()[0]
+            ipmiUser = db_dict['ipmiUser']
+            print(ipmiUser)
+            ipmiPassword = db_dict['ipmiPassword']
+            print(ipmiPassword)        
+            result = tasks.inspectSdr.delay(ipmiHost,ipmiUser,ipmiPassword).get()
+            data=json.dumps(result).encode()        
+            print(result)              
+            
+            models.Automate.objects.filter(id=ipmiID).update(
+                inspectTime = result[1],
+            )
+            return HttpResponse(data)
+        elif request.method == 'GET':
+            print(request.GET)
+            return ()        
+        else:
+            return render(request, 'inspect_info.html', context)
 
 data = [
     [1, 2, 3],

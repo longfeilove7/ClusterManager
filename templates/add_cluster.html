@@ -1,133 +1,164 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" href="/static/body.css">
-    <link rel="stylesheet" href="/static/subrange.css">
-</head>
-<body>
-    <div class="pg-header">
-        <div class="title left">
-            超算管理中心
-        </div>
-        <div class="title right">
-            当前用户: {{ obj.username }}
-        </div>
+{% extends 'extends/base.html' %} 
+{% block baseCss %}
+<link rel="stylesheet" href="/static/fontawesome/css/all.css">
+<link rel="stylesheet" href="/static/css/custom/body.css">
+<link rel="stylesheet" href="/static/css/custom/subrange.css">
+<link rel="stylesheet" href="/static/css/custom/sidebar.css">
+<link rel="stylesheet" href="/static/css/vendor/bootstrap.min.css">
+<link rel="manifest" href="site.webmanifest">
+<link rel="apple-touch-icon" href="icon.png">
+<!-- Place favicon.ico in the root directory -->
+
+<link rel="stylesheet" href="/static/css/normalize.css">
+<link rel="stylesheet" href="/static/css/main.css">
+{% endblock %}
+{% block baseBody %}
+
+<!-- Add your site or application content here -->
+{% include "include/sidebar.html"%}
+
+        <!-- /#sidebar-wrapper -->
+        <!-- Page Content -->
+ {% include 'include/add_cluster_content.html' %}     
+           
+
+      
+
+        <!-- /#page-content-wrapper -->
     </div>
-    <div class="pg-content">
-        <div class="menu">
-            <ul>
-                <li>
-                    <div>
-                        <a href="/host_info/">主机管理</a>
-                    </div>
-                </li>
-                <li style="width: 150px;height: 1px;background-color: white;margin-left: -25px"></li>
-            </ul>
-            <ul>
-                <li>
-                    <div>
-                        <a href="/add_cluster/">集群管理</a>
-                    </div>
-                </li>
-                <li style="width: 150px;height: 1px;background-color: white;margin-left: -25px"></li>
-            </ul>
-        </div>
-        <div class="content">
-            <div class="add">
-                <a>添加集群</a>
-            </div>
-            <div style="position: absolute;top: 80px;left: 10px">
-                <table border="1">
-                    <thead>
-                        <tr>
-                            <th>id</th>
-                            <th>集群名称</th>
-                            <th>修改</th>
-                            <th>删除</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for row in cluster_list %}
-                        <tr>
-                            <td>{{ row.id }}</td>
-                            <td>{{ row.hostCluster }}</td>
-                            <td><input class="i1" id="{{ row.id }}" name="{{ row.hostCluster }}" type="button" value="修改"></td>
-                            <td><input class="i2" id="{{ row.id }}" name="{{ row.hostCluster }}" type="button" value="删除"></td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-{#    模态对话框#}
-    <div id="add-shadow" class="shadow hide"></div>
-    <div id="add-model" class="model hide">
-        <form id="i4" action="/add_cluster/" method="post">
-            {% csrf_token %}
-            <ul>
-                <li>
-                    集群名称: <input id="i3" type="text" name="clusterName">
-                </li>
-            </ul>
-            <div>
-                <ul>
-                    <li>
-                        <input type="submit" value="提交">
-                        <input type="button" value="取消" onclick="cancelElement()">
-                    </li>
-                </ul>
-            </div>
-        </form>
-    </div>
-{#    删除集群的模态#}
-    <div id="del-shadow" class="shadow hide"></div>
-    <div id="del-model" class="model hide">
-        <div style="position: absolute;top: 40%;left: 20%">
-            <div>你确定要删除吗?</div>
-            <form id="i5" method="post">
-                {% csrf_token %}
-                <input type="submit" value="确定">
-                <input type="button" value="取消" onclick="cancelAdd()">
-            </form>
-        </div>
-    </div>
-    <script src="/static/jquery-3.3.1.min.js"></script>
-    <script>
-         function cancelElement() {
-            $('.shadow,.model').addClass('hide')
-        }
-        $('.add').click(function () {
-{#            处理脏数据#}
-            $('#i3').attr('value'," ");
-            $('#add-shadow,#add-model').removeClass('hide')
-        });
-{#         修改集群的模态#}
-        $('.i1').click(function () {
-            var name =$(this).attr('name');
-            var id =$(this).attr('id');
-            var link = "/cluster_edit-" + id + "/";
-            console.log(link,name);
-{#            改变提交的链接#}
-            $('#i4').attr('action',link);
-{#            获取默认值填写到修改框中#}
-            $('#i3').attr('value',name);
-            $('#add-shadow,#add-model').removeClass('hide')
-        });
-{#        删除集群的模态#}
-        $('.i2').click(function () {
-            var name = $(this).attr('name');
-            var id =$(this).attr('id');
-            var link = "/cluster_del-" + id + "/";
-            console.log(link,name);
-            $('#i5').attr('action',link);
-            $('#del-shadow,#del-model').removeClass('hide')
-        });
-        function cancelAdd() {
-            $('#del-shadow,#del-model').addClass('hide')
-        }
+    <!-- /#wrapper -->
+
+    {% endblock %} {% block baseScript %}
+    <script src="/static/js/vendor/modernizr-3.6.0.min.js"></script>
+    <script src="/static/js/vendor/jquery-3.3.1.min.js"></script>
+    <script src="/static/js/vendor/popper.min.js"></script>
+    <script src="/static/js/vendor/bootstrap.min.js"></script>
+    <script src="/static/js/vendor/intercooler-1.2.1.min.js"></script>
+    <script></script>
+    <script src="/static/js/plugins.js"></script>
+    <script src="/static/js/main.js"></script>
+    <!-- custom -->    
+    <!-- Menu Toggle Script -->
+  <script src="/static/js/custom/sidebar.js"></script>
+  <script src="/static/js/custom/search.js"></script>
+
+  <script>       
+        /*         删除的模态*/
+        function toDeleteCluster(id, e) {
+            /*            获取当前点击事件标签上的id*/
+
+            var getID = e.parentNode.parentNode.children[0].innerHTML;
+            console.log("getid = " + getID)
+            // document.body.onclick = function (event) { 部分浏览器不支持此方法，改用如上parentNode方式。
+            //     var id = event.target.id;
+            //     console.log(id);
+            if (getID) {
+                var link = "/cluster_del-" + getID + '/';
+                console.log(link);
+                /*set the form action*/
+                $('#delFormCluster').attr('action', link)
+                $("#spanId").html(getID);
+
+            }
+
+        };
+
     </script>
-</body>
-</html>
+
+<script>
+        //     $(function(){
+        //         //$('table tr:not(:first)').remove();
+        //         var len = $('table tr').length;
+        //         for(var i = 1;i<len;i++){
+        //             $('table tr:eq('+i+') td:first').text(i);
+        //         }
+
+        // });
+        function selectAll() {
+
+            if ($("#select-all").is(":checked")) {
+
+                $("[name='selected']").prop("checked", true);
+                var allValue = queryCheckedValue();
+            }
+            else {
+
+                $("[name='selected']").prop("checked", false);
+            }
+
+        }
+
+        //获取所有选中checkbox的值
+
+        function queryCheckedValue() {
+
+            var arrayObj = new Array();
+
+            $("input:checkbox[name='selected']:checked").each(function (i) {
+
+                var val = $(this).val();
+
+                arrayObj.push(val)
+            });
+            console.log(arrayObj)
+            return arrayObj;
+
+        }
+
+        //所有的name为‘selected’的checkbox的值
+        function noCheckedValue() {
+
+            var str = "";
+            $("input:checkbox[name='selected']").each(function (i) {
+
+                var val = $(this).val();
+                str = str + "," + val;
+            });
+            return str;
+        }
+
+        //判断所有的子checkbox全部选中时，总checkbox选中，否则，反之；
+        function oneToAll() {
+
+            var allChecked = 0;//所有选中checkbox的数量
+
+            var all = 0;//所有checkbox的数量
+
+            $("input:checkbox[name='selected']").each(function (i) {
+                all++;
+                if ($(this).is(":checked")) {
+                    allChecked++;
+                }
+
+            });
+
+            if (allChecked == all) {//相等时，则所有的checkbox都选中了，否则，反之；
+
+                $("#select-all").prop("checked", true);
+
+            } else {
+
+                $("#select-all").prop("checked", false);
+
+            }
+
+        }
+
+        // $(function(){
+
+
+        //     $("table tr").click(function(){
+        //         var input = $(this).find("input[type=checkbox]");//获取checkbox    
+
+        //         //判断当前checkbox是否为选中状态
+        //         if(input.is(":checked")){           
+        //             input.attr("checked",false);
+        //         }else{
+        //             input.attr("checked",true);
+        //         }
+
+        //     })  
+        // })
+    </script>
+
+     {% endblock %}

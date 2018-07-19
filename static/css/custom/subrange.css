@@ -1,32 +1,33 @@
-        .hide{
-            display: none;
-        }
-        .shadow{
-            position: fixed;
-            top:0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            opacity: 0.6;
-            background-color: black;
-            z-index: 9;
-        }
-        .model{
-            position: fixed;
-            top:50%;
-            left:50%;
-            width: 800px;
-            height: 400px;
-            margin-left: -400px;
-            margin-top: -250px;
-            background-color: #eeeeee;
-            z-index: 10;
-        }
-        .model input{
-            width: 150px;
-            height: 25px;
-            font-size: 15px;
-        }
-        .model div{
-            text-align: center;
-        }
+    /*表格居中*/
+.table tbody tr td{
+    vertical-align: middle;          
+}
+/*按钮图标大小*/
+.fa-plug{
+    font-size:25px;
+    text-align: center;
+    color: green;
+}        
+.fa-power-off{
+    font-size:22px;
+    text-align: center;
+    color: red;
+}
+.fa-recycle{
+    font-size:22px;
+    text-align: center;
+    color:yellowgreen;
+}
+.fa-edit{
+    font-size:22px;
+    text-align: center;
+    color:yellowgreen;
+}
+.fa-trash-alt{
+    font-size:22px;
+    text-align: center;
+    color:yellowgreen;
+}
+.fixdhead{
+    position:fixed;
+}

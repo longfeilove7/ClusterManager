@@ -1,0 +1,145 @@
+<div id="page-content-wrapper">
+
+        <!--  右边主机内容-->
+        
+            <nav class="navbar navbar-expand-md bg-secondary navbar-dark">
+                <a class="navbar-brand" href="#">间隔配置</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <ul class="navbar-nav mr-auto">                            
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#" id="btnBatAdd" data-toggle="modal" data-target="#addIntervalSchedule">创建间隔</a>
+                        </li>       
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="btnBatDelete">批量删除</a>
+                        </li>                      
+                            </ul>
+                        </li>                                      
+                    </ul>
+                    <form class="form-inline mt-2 mt-md-0">
+                            <input class="form-control mr-sm-2" id="searchbox" type="text" placeholder="Search" aria-label="Search">
+                            <!-- <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>                      -->
+                            </form>
+                </div>
+            </nav>
+
+
+       
+            <table id="mytable" class="table table-striped table-hover table-sm" data-toggle="table">
+                <thead class="thead-light">
+                    <tr>
+                        <th>ID</th>
+                        <th class="hidden-xs">每</th>
+                        <th class="visible-xs-block">时期</th>
+                        <th>编辑</th>
+                        <th>删除</th>                                
+                        <th>
+                            <input type="checkbox" id="select-all" onclick="selectAll()">
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in interval_list %}
+                    <tr>
+                        <td>{{ row.id }}</td>
+                        <td class="hidden-xs">{{ row.every }}</td>
+                        <td  class="visible-xs-block">{{ row.period }}</td>  
+                        <td>
+                            <button type="button" class="singleButton" id="{{ row.id }}" name="btn" onclick="toEditCluster('mytable',this)" data-toggle="modal"
+                            data-target="#editModalCluster">
+                            <i class="fa fa-edit fa-4"></i>
+                        </button>
+                        </td>
+                        <td>
+                            <button type="button" class="singleButton" id="{{ row.id }}" name="btn" onclick="toDeleteCluster('mytable',this)" data-toggle="modal"
+                                data-target="#delModalCluster">
+                                <i class="fas fa-trash-alt fa-4"></i>
+                            </button>
+                        </td>                       
+                        <td>
+                            <input type="checkbox" name="selected" value="{'ID':{{ row.id }},'manageIP':'{{ row.manageIP}}'}" onclick="oneToAll()" />
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!--  添加设备模态对话框-->
+    <form role="form" action="/interval_schedule/" method="post">
+        <!-- 模态框 -->
+        <div class="modal fade" id="addIntervalSchedule">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+
+                    <!-- 模态框头部 -->
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel">
+                            添加设备
+                        </h4>
+                    </div>
+
+                    <!-- 模态框主体 -->
+
+                    <div class="modal-body">
+
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-lg-12 form-group">
+                                <input class="form-control" type="number" name="every" placeholder="每" required>
+                            </div>
+                            <div class="col-lg-12 form-group" aria-required="true">
+                                <select class="form-control" name="period" required>
+                                    <option value="">时期</option>                                 
+                                    <option value="days">天</option>
+                                    <option value="hours">小时</option>     
+                                    <option value="minutes">分</option>    
+                                    <option value="seconds">秒</option>     
+                                    <option value="microseconds">微秒</option>                      
+                                </select>
+                    
+
+                    </div>
+
+
+                    <!-- 模态框底部 -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                        <button type="submit" class="btn btn-primary">提交</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </form>
+
+
+    <!--  删除设备的模态-->
+    <form method="post" role="form" id="delForm">
+        {% csrf_token %}
+        <div id="delModalHost" class="modal fade">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <!-- 模态框头部 -->
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel">
+                            删除设备
+                        </h4>
+                    </div>
+
+                    <!-- 模态框主体 -->
+                    <div class="modal-body">
+                        确定要删除ID为[<span id="spanId"></span>]的设备吗?
+                    </div>
+
+                    <!-- 模态框底部 -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                        <button type="submit" class="btn btn-danger">删除</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>

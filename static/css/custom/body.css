@@ -1,5 +1,7 @@
         body{
             margin: 0;
+            color: aqua;
+            background-color: #2578b5;
         } 
          .pg-header{
             height: 48px;
@@ -116,9 +118,6 @@
             color: black;
             height: 38px;
             font-family: Arial;
-            font-size: 17px;
-            width: 20px;
+            font-size: 17px;            
         }
-        .table tbody tr td{
-            vertical-align: middle;            
-        }
+        

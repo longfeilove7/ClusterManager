@@ -33,7 +33,7 @@ body {
   height: 100%;
   margin-left: -250px;
   overflow-y: auto;
-  background: rgb(51,51,51);
+  background: rgb(51,51,51);/*左侧sidebar背景色*/
   -webkit-transition: all 0.5s ease;
   -moz-transition: all 0.5s ease;
   -o-transition: all 0.5s ease;
@@ -47,7 +47,7 @@ body {
 #page-content-wrapper {
   width: 100%;
   position: absolute;
-  padding: 15px;
+  padding: 15px;  
 }
 
 #wrapper.toggled #page-content-wrapper {
@@ -140,4 +140,8 @@ body {
   padding-right: 0;
 }
    
+}
+#toolbar{  
+  padding-top: 0px;
+  padding-bottom: 0px;
 }

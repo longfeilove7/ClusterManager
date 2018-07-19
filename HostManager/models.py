@@ -35,12 +35,22 @@ class Host(models.Model):
     hardware = models.CharField(max_length=64,null=True)
     service = models.CharField(max_length=32,null=True)
     powerOnTime = models.DateTimeField(null=True)
+    powerCycleTime = models.DateTimeField(null=True)
     powerOffTime = models.DateTimeField(null=True)
     checkOnline = models.CharField(max_length=32,null=True)
     runTime = models.CharField(max_length=32,null=True)
     ipmiUser = models.CharField(max_length=64,null=True)
     ipmiPassword = models.CharField(max_length=64,null=True)
     clusterName = models.ForeignKey(Clusters,on_delete=models.CASCADE)
+
+
+class HostPowerHistory(models.Model):
+    host = models.ForeignKey(Host,on_delete=models.CASCADE) 
+    powerOnTimeHistory = models.DateTimeField(null=True)
+    powerCycleTimes = models.CharField(max_length = 32,default="0")
+    powerOffTimeHistory = models.DateTimeField(null=True)
+    runTimeHistory = models.CharField(max_length=32,null=True)
+    
 
 class Automate(models.Model):
     inspectTime =models.CharField(max_length=32,null=True)

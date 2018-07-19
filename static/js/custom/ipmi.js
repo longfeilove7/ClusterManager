@@ -153,8 +153,7 @@ function toPowerCycle(id, e) {
                         xhr.setRequestHeader("X-CSRFToken", csrftoken);
                     }
                 },
-                success: function (data) {
-                    e.parentNode.parentNode.children[15].innerHTML = data[1]
+                success: function (data) {                    
                     if (data[2] == "fail") {
                         alert(data[0] + "poweron" + data[2])
                     }

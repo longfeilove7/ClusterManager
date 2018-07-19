@@ -1,16 +1,10 @@
 {% extends 'extends/base.html' %} 
 {% block baseCss %}
-
+{% include 'include/css.html' %}
 <link rel="stylesheet" href="/static/css/custom/signin.css">
-<link rel="stylesheet" href="/static/css/vendor/bootstrap.min.css">
-<link rel="manifest" href="site.webmanifest">
-<link rel="apple-touch-icon" href="icon.png">
-<!-- Place favicon.ico in the root directory -->
-
-<link rel="stylesheet" href="/static/css/normalize.css">
-<link rel="stylesheet" href="/static/css/main.css">
 {% endblock %}
 {% block baseBody %}
+
 <body class="text-center">
     <form class="form-signin" action="/sign-in/" method="POST">
       {% csrf_token %}

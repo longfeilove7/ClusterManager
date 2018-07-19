@@ -1,0 +1,210 @@
+<div id="page-content-wrapper">
+
+    <!--  右边主机内容-->
+
+    <nav class="navbar navbar-expand-md bg-secondary navbar-dark">
+        <a class="navbar-brand" href="#">主机管理</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse"
+            aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#" id="btnBatAdd" data-toggle="modal" data-target="#addModalCrontab">创建周期</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="btnBatDelete">批量删除</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+            <form class="form-inline mt-2 mt-md-0">
+                <input class="form-control mr-sm-2" id="searchbox" type="text" placeholder="Search" aria-label="Search">
+                <!-- <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>                      -->
+            </form>
+        </div>
+    </nav>
+
+
+
+    <table id="mytable" class="table table-striped table-hover table-sm" data-toggle="table">
+        <thead class="thead-light">
+            <tr>
+                <th>ID</th>
+                <th class="hidden-xs">分钟</th>
+                <th class="visible-xs-block">小时</th>
+                <th>每周</th>
+                <th>每月</th>
+                <th>每年</th>
+                <th>编辑</th>
+                <th>删除</th>
+                <th>
+                    <input type="checkbox" id="select-all" onclick="selectAll()">
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in crontab_list %}
+            <tr>
+                <td>{{ row.id }}</td>
+                <td class="hidden-xs">{{ row.minute }}</td>
+                <td class="visible-xs-block">{{ row.hour }}</td>
+                <td>{{ row.day_of_week }}</td>
+                <td>{{ row.day_of_month}}</td>
+                <td>{{ row.month_of_year }}</td>
+                <td>
+                    <button type="button" class="singleButton" id="{{ row.id }}" name="btn" onclick="toEditCrontab('mytable',this)" data-toggle="modal"
+                        data-target="#editModalCrontab">
+                        <i class="fa fa-edit"></i>
+                    </button>
+                </td>
+                <td>
+                    <button type="button" class="singleButton" id="{{ row.id }}" name="btn" onclick="toDeleteCrontab('mytable',this)" data-toggle="modal"
+                        data-target="#delModalCrontab">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </td>
+                <td>
+                    <input type="checkbox" name="selected" value="{'ID':{{ row.id }},'manageIP':'{{ row.manageIP}}'}" onclick="oneToAll()" />
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!--  添加周期模态对话框-->
+<form role="form" action="/crontab_schedule/" method="post">
+    <!-- 模态框 -->
+    <div class="modal fade" id="addModalCrontab">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <!-- 模态框头部 -->
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">
+                        创建周期
+                    </h4>
+                </div>
+
+                <!-- 模态框主体 -->
+
+                <div class="modal-body">
+
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-lg-12 form-group">
+                            <input class="form-control" type="text" name="minute" value="*" placeholder="分钟">
+                        </div>
+                        <div class="col-lg-12 form-group">
+                            <input class="form-control" type="text" name="hour" placeholder="小时" value="*">
+                        </div>
+                        <div class="col-lg-12 form-group">
+                            <input class="form-control" type="text" name="day_of_week" placeholder="每周" value="*">
+                        </div>
+                        <div class="col-lg-12 form-group">
+                            <input class="form-control" type="text" name="day_of_month" placeholder="每月" value="*">
+                        </div>
+                        <div class="col-lg-12 form-group">
+                            <input class="form-control" type="text" name="month_of_year" placeholder="每年" value="*">
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <!-- 模态框底部 -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="submit" class="btn btn-primary">提交</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<!--  编辑周期模态对话框-->
+<form role="form" method="post" id="editFormCrontab">
+    <!-- 模态框 -->
+    <div class="modal fade" id="editModalCrontab">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <!-- 模态框头部 -->
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">
+                        编辑周期
+                    </h4>
+                </div>
+
+                <!-- 模态框主体 -->
+
+                <div class="modal-body">
+
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-lg-12 form-group">
+                            <input class="form-control" type="text" name="minute" value="*" placeholder="分钟">
+                        </div>
+                        <div class="col-lg-12 form-group">
+                            <input class="form-control" type="text" name="hour" placeholder="小时" value="*">
+                        </div>
+                        <div class="col-lg-12 form-group">
+                            <input class="form-control" type="text" name="day_of_week" placeholder="每周" value="*">
+                        </div>
+                        <div class="col-lg-12 form-group">
+                            <input class="form-control" type="text" name="day_of_month" placeholder="每月" value="*">
+                        </div>
+                        <div class="col-lg-12 form-group">
+                            <input class="form-control" type="text" name="month_of_year" placeholder="每年" value="*">
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <!-- 模态框底部 -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="submit" class="btn btn-primary">提交</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<!--  删除设备的模态-->
+<form method="post" role="form" id="delForm">
+    {% csrf_token %}
+    <div id="delModalCrontab" class="modal fade">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <!-- 模态框头部 -->
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">
+                        删除周期
+                    </h4>
+                </div>
+
+                <!-- 模态框主体 -->
+                <div class="modal-body">
+                    确定要删除ID为[
+                    <span id="spanId"></span>]的周期吗?
+                </div>
+
+                <!-- 模态框底部 -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="submit" class="btn btn-danger">删除</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

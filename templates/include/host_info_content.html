@@ -45,12 +45,12 @@
 
 
        
-            <table id="mytable" class="table table-striped table-hover table-sm">
+            <table id="mytable" class="table table-striped table-hover table-sm" data-toggle="table">
                 <thead class="thead-light">
                     <tr>
                         <th>ID</th>
-                        <th class="hidden-xs">机房</th>
-                        <th class="visible-xs-block">机柜</th>
+                        <th>机房</th>
+                        <th>机柜</th>
                         <th>刀箱</th>
                         <th>刀片</th>
                         <th>主机名</th>
@@ -67,7 +67,7 @@
                         <th>关机时间</th>
                         <th>状态</th>
                         <th>运行时长</th>
-                        <th>bootdev</th>                           
+                        <th>启动顺序</th>                           
                         <th>
                             <input type="checkbox" id="select-all" onclick="selectAll()">
                         </th>
@@ -77,8 +77,8 @@
                     {% for row in obj %}
                     <tr>
                         <td>{{ row.id }}</td>
-                        <td class="hidden-xs">{{ row.roomNO }}</td>
-                        <td  class="visible-xs-block">{{ row.cabinetNO }}</td>
+                        <td>{{ row.roomNO }}</td>
+                        <td>{{ row.cabinetNO }}</td>
                         <td>{{ row.bladeBoxNO }}</td>
                         <td>{{ row.bladeNO}}</td>
                         <td>{{ row.hostName }}</td>
@@ -90,17 +90,18 @@
                         <td>{{ row.service }}</td>
                         <td>
                             <button type="button" id="btn1" class="singleButton" name="btn" onclick="toPowerOn('mytable',this)">
-                                <i class="fa fa-plug fa-4"></i>
+                                <i class="fa fa-plug"></i>
+                                
                             </button>
                         </td>
                         <td>
                             <button type="button" id="btn2" class="singleButton" name="btn" onclick="toPowerOff('mytable',this)">
-                                <i class="fa fa-power-off fa-4"></i>
+                                <i class="fa fa-power-off"></i>
                             </button>
                         </td>
                         <td>
                             <button type="button" id="btn3" class="singleButton" name="btn" onclick="toPowerCycle('mytable',this)">
-                                <i class="fa fa-recycle fa-4"></i>
+                                <i class="fa fa-recycle"></i>
                             </button>
                         </td>
                         <td>{{ row.powerOnTime|date:"Y-m-d H:i:s" }}</td>
@@ -108,8 +109,8 @@
                         <td>{{ row.checkOnline }}</td>
                         <td>{{ row.runTime }}</td>
                         <td>
-                            <form method="get">
-                                <select name="app">
+                            <form role="form" method="post">
+                                <select name="app"  class="form-control">
                                     <option value="disk">DISK</option>
                                     <option value="pxe">PXE</option>
                                     <option value="cdrom">CDROM</option>

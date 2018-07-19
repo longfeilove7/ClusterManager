@@ -11,42 +11,19 @@
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item">
                             <a class="nav-link active" href="#" id="btnBatAdd" data-toggle="modal" data-target="#addModalCluster">添加集群</a>
-                        </li>
-                        <!-- <li class="nav-item">
-                            <a class="nav-link" href="#" id="btnBatEdit">批量编辑</a>
-                        </li>
+                        </li>                       
                         <li class="nav-item">
                             <a class="nav-link" href="#" id="btnBatDelete">批量删除</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#" id="batchBtn1" onclick="toBatchPowerOn('mytable',this)">批量开机</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#" id="batchBtn2" onclick="toBatchPowerOff('mytable',this)">批量关机</a>
-                        </li>
-                        <!-- Dropdown -->
-                        <!--li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-                                启动顺序
-                            </a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" herf="#">DISK</a>
-                                <a class="dropdown-item" herf="#">PXE</a>
-                                <a class="dropdown-item" herf="#">CDROM</a>
-                                <a class="dropdown-item" herf="#">BIOS</a>
-                            </div>
-                        </li>                                       -->
+                        </li>                        
                     </ul>
                     <form class="form-inline mt-2 mt-md-0">
                             <input class="form-control mr-sm-2" id="searchbox" type="text" placeholder="Search" aria-label="Search">
                             <!-- <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>                      -->
                             </form>
                 </div>
-            </nav>
-
-            <div class="content">
+            </nav>            
                     
-                    <table id="mytable" class="table table-striped table-hover table-sm">
+                    <table id="mytable" class="table table-striped table-hover table-sm" data-toggle="table">
                             <thead class="thead-light">
                                 <tr>
                                     <th>id</th>
@@ -168,7 +145,7 @@
 </form>
 
 <!--  修改集群模态对话框-->
-<form role="form"  method="post">
+<form role="form"  method="post" id="editFormCluster">
 <!-- 模态框 -->
 <div class="modal fade" id="editModalCluster">
     <div class="modal-dialog modal-lg">
@@ -177,7 +154,7 @@
             <!-- 模态框头部 -->
             <div class="modal-header">
                 <h4 class="modal-title" id="myModalLabel">
-                    添加集群
+                    修改集群                    
                 </h4>
             </div>
 
@@ -188,7 +165,7 @@
                 {% csrf_token %}
                 <div class="row">
                     <div class="col-lg-6 form-group">
-                        <input class="form-control" type="text" name="clusterName" placeholder="{{clusterName}}" required>
+                        <input class="form-control" type="text" name="clusterName" placeholder="集群名称" required>
                     </div>
                     <div class="col-lg-6 form-group">
                         <input class="form-control" type="text" name="deviceNumber" placeholder="设备数量">
@@ -218,7 +195,7 @@
                         <input class="form-control" type="text" name="contactQQ" placeholder="QQ">
                     </div>
                     <div class="col-lg-6 form-group">
-                        <input class="form-control" type="text" name="contactQQ" placeholder="微信">
+                        <input class="form-control" type="text" name="contactWeicat" placeholder="微信">
                     </div>
                 </div>
             </div>
@@ -236,7 +213,7 @@
 </form>
 
 
-<!--  删除设备的模态-->
+<!--  删除集群的模态-->
 <form method="post" role="form" id="delFormCluster">
 {% csrf_token %}
 <div id="delModalCluster" class="modal fade">
@@ -251,7 +228,7 @@
 
             <!-- 模态框主体 -->
             <div class="modal-body">
-                确定要删除吗?
+                确定要删除ID为[<span id="spanId"></span>]的集群吗?
             </div>
 
             <!-- 模态框底部 -->

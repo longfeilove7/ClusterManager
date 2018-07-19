@@ -13,7 +13,7 @@
             </div>
         </div>
         <div class="username">
-            当前用户: {{ obj.username }}
+            当前用户: {{ user_list.username }}
         </div>
 
         <!-- navbar-header-->
@@ -93,27 +93,27 @@
                                 </span>日常巡检</a>
                         </li>
                         <li>
-                            <a href="/crontab_info/" class="collapse collapse3" data-parent="#menu">
+                            <a href="/periodic_task/" class="collapse collapse3" data-parent="#menu">
                                 <span class="fa-stack fa-lg pull-left">
                                     <i class="fa fa-user-clock fa-stack-1x "></i>
-                                </span>定时任务</a>
+                                </span>计划任务</a>
                         </li>
                         <li>
-                                <a href="/crontab_info/" class="collapse collapse3" data-parent="#menu">
+                                <a href="/crontab_schedule/" class="collapse collapse3" data-parent="#menu">
                                     <span class="fa-stack fa-lg pull-left">
-                                        <i class="fa fa-user-clock fa-stack-1x "></i>
+                                        <i class="fa fa-cycle fa-stack-1x "></i>
                                     </span>周期配置</a>
                             </li>
                             <li>
-                                    <a href="/crontab_info/" class="collapse collapse3" data-parent="#menu">
+                                    <a href="/interval_schedule/" class="collapse collapse3" data-parent="#menu">
                                         <span class="fa-stack fa-lg pull-left">
                                             <i class="fa fa-user-clock fa-stack-1x "></i>
                                         </span>间隔配置</a>
                                 </li>
                                 <li>
-                                        <a href="/crontab_info/" class="collapse collapse3" data-parent="#menu">
+                                        <a href="/solar_schedule/" class="collapse collapse3" data-parent="#menu">
                                             <span class="fa-stack fa-lg pull-left">
-                                                <i class="fa fa-user-clock fa-stack-1x "></i>
+                                                <i class="fa fa-sun fa-stack-1x "></i>
                                             </span>太阳事件</a>
                                     </li>
                         <li>

@@ -124,7 +124,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = False
+USE_TZ = True
 
 #在Django的配置文件settings.py中，有两个配置参数是跟时间与时区有关的，分别是TIME_ZONE和USE_TZ
 #如果USE_TZ设置为True时，Django会使用系统默认设置的时区，即America/Chicago，此时的TIME_ZONE不管有没有设置都不起作用。
@@ -216,13 +216,13 @@ CELERY_RESULT_BACKEND = 'django-db'
 CELERY_ACCEPT_CONTENT = ['json']
 
 
-CELERY_BEAT_SCHEDULE = {
-    # 周期任务
-    'task-one': {
-        'task': 'HostManager.Tasks.fping',
-        'schedule': crontab(), #每5秒执行一次
-         'args':()#must be list or tuple.
-    },
+# CELERY_BEAT_SCHEDULE = {
+#     # 周期任务
+#     'task-one': {
+#         'task': 'HostManager.Tasks.fping',
+#         'schedule': crontab(), #每5秒执行一次
+#          'args':()#must be list or tuple.
+#     },
     # # 定时任务
     # 'task-two': {
     #     'task': 'HostManager.Tasks.printHello',
@@ -235,7 +235,7 @@ CELERY_BEAT_SCHEDULE = {
     #     'schedule': crontab(), #每5秒执行一次
     #      'args':(4, 4)
     # },
-}
+#}
 
 FILE_UPLOAD_HANDLERS = ("django_excel.ExcelMemoryFileUploadHandler",
                         "django_excel.TemporaryExcelFileUploadHandler")

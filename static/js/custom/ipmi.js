@@ -105,7 +105,7 @@ function toPowerOff(id, e) {
                 },
                 success: function (data) {
                     e.parentNode.parentNode.children[16].innerHTML = data[1]
-                    e.parentNode.parentNode.children[18].innerHTML = data[3]
+                    e.parentNode.parentNode.children[18].innerHTML = '<a href="/power_history-'+getID+'/">'+data[3]+'</a>'
                     if (data[2] == "fail") {
                         alert(data[0] + "poweroff" + data[2])
                     }
@@ -300,7 +300,7 @@ function toBatchPowerOff(id, e) {
                         console.log("rowID " + rowID)
                         //e.parentNode.parentNode.children[15].innerHTML=data[1]
                         mytable.rows[rowID].cells[16].innerHTML = newdata[2];
-                        mytable.rows[rowID].cells[18].innerHTML = newdata[4];
+                        mytable.rows[rowID].cells[18].innerHTML = '<a href="/power_history-'+getID+'/">'+newdata[4]+'</a>';
                         if (newdata[3] == "fail") {
                             alert(newdata[1] + "poweroff" + newdata[3]);
                         }

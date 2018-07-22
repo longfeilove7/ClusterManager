@@ -187,6 +187,21 @@ class ClassHost:
                   manageIP, storageIP, hostName, service, clusterName)
             return redirect('/add_host/')
 
+    def power_history(request, nid):
+        global GLOBAL_VAR_USER
+        user_list = models.Users.objects.filter(
+            username=GLOBAL_VAR_USER).first()
+        if request.method == 'GET':
+            host_obj = models.Host.objects.filter(id=nid)
+            history_list = models.HostPowerHistory.objects.filter(host_id=nid)
+            cluster_list = models.Clusters.objects.all()
+            return render(
+                request, 'power_history.html', {
+                    'history_list': history_list,
+                    'user_list': user_list,
+                    'cluster_list': cluster_list
+                })
+
 
 class ClassCluster:
     def add_cluster(request):
@@ -266,8 +281,9 @@ class ClassCeleryBeat():
                 'periodic_list': periodic_list,
                 'user_list': user_list
             })
+
     def add_periodic(request):
-        if request.method == 'POST':            
+        if request.method == 'POST':
             clusterName = request.POST.get('clusterName')
             deviceNumber = request.POST.get('deviceNumber')
             customerName = request.POST.get('customerName')
@@ -288,7 +304,6 @@ class ClassCeleryBeat():
             )
 
             return redirect('/periodic_task/')
-
 
     def interval_schedule(request):
         global GLOBAL_VAR_USER
@@ -644,7 +659,7 @@ class ClassCeleryWorker():
                 print("this is ip" + ipmiIP)
                 ipmiID = dictAllValue['ID']
                 print(ipmiID)
-                db_dict = models.Host.objects.filter(id=ipmiID).values()[0]
+                db_dict = models.Host.objects.filter(id=ipmiID).values()[0]                
                 ipmiUser = db_dict['ipmiUser']
                 print(ipmiUser)
                 ipmiPassword = db_dict['ipmiPassword']
@@ -690,6 +705,8 @@ class ClassCeleryWorker():
                 ipmiID = dictAllValue['ID']
                 print(ipmiID)
                 db_dict = models.Host.objects.filter(id=ipmiID).values()[0]
+                powerOnTime = db_dict['powerOnTime']
+                print("powerOnTime:",  powerOnTime)
                 ipmiUser = db_dict['ipmiUser']
                 print(ipmiUser)
                 ipmiPassword = db_dict['ipmiPassword']
@@ -708,7 +725,7 @@ class ClassCeleryWorker():
                 print(type(listResult))
 
                 runTime = ClassCeleryWorker.runTimeCalculate(
-                    ipmiID, powerOffTime)
+                    ipmiID, powerOnTime, powerOffTime)
                 result.append(str(runTime))
                 result.insert(0, ipmiID)
                 powerOffTime = result[1]

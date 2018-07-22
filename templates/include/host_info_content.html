@@ -107,7 +107,7 @@
                         <td>{{ row.powerOnTime|date:"Y-m-d H:i:s" }}</td>
                         <td>{{ row.powerOffTime|date:"Y-m-d H:i:s" }}</td>
                         <td>{{ row.checkOnline }}</td>
-                        <td>{{ row.runTime }}</td>
+                        <td><a href="/power_history-{{ row.id }}/">{{ row.runTime }}</a></td>
                         <td>
                             <form role="form" method="post">
                                 <select name="app"  class="form-control">

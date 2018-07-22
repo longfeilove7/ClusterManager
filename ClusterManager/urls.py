@@ -44,6 +44,7 @@ urlpatterns = [
     url(r'^add_cluster/', views.ClassCluster.add_cluster),
     url(r'^cluster_edit-(?P<nid>\d+)/', views.ClassCluster.cluster_edit),
     url(r'^cluster_del-(?P<nid>\d+)/', views.ClassCluster.cluster_del),
+    url(r'^power_history-(?P<nid>\d+)/', views.ClassHost.power_history),
 
     # for device function
     url(r'^power_on/', views.ClassCeleryWorker.powerOn),

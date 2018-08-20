@@ -1,8 +1,10 @@
+# -*- coding: utf-8 -*-
+#celery官方的例子，但是没有详细写如何调用，改用django-celery-beat
+#调用方法celery -A HostManager.periodic_tasks beat -l info
 from celery import Celery
 from celery.schedules import crontab
 
 app = Celery()
-
 
 @app.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
@@ -17,7 +19,6 @@ def setup_periodic_tasks(sender, **kwargs):
         crontab(hour=7, minute=30, day_of_week=1),
         test.s('Happy Mondays!'),
     )
-
 
 @app.task
 def test(arg):

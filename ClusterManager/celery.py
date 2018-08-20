@@ -1,6 +1,7 @@
 #from __future__ import absolute_import, unicode_literals 绝对导入，python3默认
 import os
 from celery import Celery
+import HostManager
 
 #overriding app.gen_task_name()
 #  class MyCelery(Celery):
@@ -13,7 +14,11 @@ from celery import Celery
 # set the default Django settings module for the 'celery' program.
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ClusterManager.settings')
 
-app = Celery('ClusterManager')
+#include增加tasks和periodic_task，tasks不加也可以自动检测到。
+app = Celery(
+    'ClusterManager',
+    include=['HostManager.tasks', 'HostManager.periodic_tasks'])
+#app = Celery('ClusterManager')
 
 # Using a string here means the worker doesn't have to serialize
 # the configuration object to child processes.

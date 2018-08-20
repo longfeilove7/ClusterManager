@@ -32,6 +32,7 @@
 
            arrayObj.push(val)
        });
+    //控制台打印选中信息
        console.log(arrayObj)
        return arrayObj;
 

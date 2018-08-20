@@ -34,8 +34,8 @@ $.ajaxSetup({
 * @return Array
 */
 function toPowerOn(id, e) {
-    var getID = e.parentNode.parentNode.children[0].innerHTML;
-    var getIP = e.parentNode.parentNode.children[7].innerHTML;
+    var getID = e.parentNode.parentNode.children[1].innerHTML;
+    var getIP = e.parentNode.parentNode.children[8].innerHTML;
 
     if (confirm("Power on " + getIP)) {
         $.ajax({
@@ -60,7 +60,7 @@ function toPowerOn(id, e) {
                 console.log(data)
                 //alert(data)
                 //以上是后端函数返回成功的信息
-                e.parentNode.parentNode.children[15].innerHTML = data[1]
+                e.parentNode.parentNode.children[13].innerHTML = data[1]
                 if (data[2] == "fail") {
                     alert(data[0] + "poweron" + data[2])
                 }
@@ -81,8 +81,8 @@ function toPowerOn(id, e) {
  * @return Array
  */
 function toPowerOff(id, e) {
-    var getID = e.parentNode.parentNode.children[0].innerHTML;
-        var getIP = e.parentNode.parentNode.children[7].innerHTML;
+    var getID = e.parentNode.parentNode.children[1].innerHTML;
+        var getIP = e.parentNode.parentNode.children[8].innerHTML;
     
     if (confirm("Power off " + getIP)) {
             $.ajax({
@@ -104,8 +104,8 @@ function toPowerOff(id, e) {
                     }
                 },
                 success: function (data) {
-                    e.parentNode.parentNode.children[16].innerHTML = data[1]
-                    e.parentNode.parentNode.children[18].innerHTML = '<a href="/power_history-'+getID+'/">'+data[3]+'</a>'
+                    e.parentNode.parentNode.children[14].innerHTML = data[1]
+                    e.parentNode.parentNode.children[16].innerHTML = '<a href="/power_history-'+getID+'/">'+data[3]+'</a>'
                     if (data[2] == "fail") {
                         alert(data[0] + "poweroff" + data[2])
                     }
@@ -131,8 +131,8 @@ function toPowerOff(id, e) {
  * @return Array
  */
 function toPowerCycle(id, e) {
-    var getID = e.parentNode.parentNode.children[0].innerHTML;
-        var getIP = e.parentNode.parentNode.children[7].innerHTML;
+    var getID = e.parentNode.parentNode.children[1].innerHTML;
+        var getIP = e.parentNode.parentNode.children[8].innerHTML;
     
     if (confirm("Power cycle " + getIP)) {
             $.ajax({
@@ -183,7 +183,7 @@ function toBatchPowerOn(id, e) {
             alert("null")
         }
         else {
-            //    var getIP = e.parentNode.parentNode.children[7].innerHTML;
+            //    var getIP = e.parentNode.parentNode.children[8].innerHTML;
             console.log(allValue)
         strAllValue = allValue.join("-");
         console.log(strAllValue)
@@ -217,15 +217,15 @@ function toBatchPowerOn(id, e) {
                         // from the ID to get the rowID
                         $("table tr").each(function (i) {
 
-                            if ($($(this).find("td").get(0)).text() == getID) {
-                                index = i;
+                            if ($($(this).find("td").get(1)).text() == getID) {
+                                index = i - 1;
                                 //console.log("index" + index)
                             }
                         })
                         rowID = index;
                         console.log("rowID " + rowID)
-                        //e.parentNode.parentNode.children[15].innerHTML=data[1]
-                        mytable.rows[rowID].cells[15].innerHTML = newdata[2];
+                        //e.parentNode.parentNode.children[13].innerHTML=data[1]
+                        mytable.rows[rowID].cells[13].innerHTML = newdata[2];
                         if (newdata[3] == "fail") {
                             alert(newdata[1] + "poweron" + newdata[3]);
                         }
@@ -257,7 +257,7 @@ function toBatchPowerOff(id, e) {
             alert("null")
         }
         else {
-            //    var getIP = e.parentNode.parentNode.children[7].innerHTML;
+            //    var getIP = e.parentNode.parentNode.children[8].innerHTML;
             console.log(allValue)
         strAllValue = allValue.join("-");
         console.log(strAllValue)
@@ -291,16 +291,16 @@ function toBatchPowerOff(id, e) {
                         // from the ID to get the rowID
                         $("table tr").each(function (i) {
 
-                            if ($($(this).find("td").get(0)).text() == getID) {
-                                index = i;
+                            if ($($(this).find("td").get(1)).text() == getID) {
+                                index = i - 1;
                                 //console.log("index" + index)
                             }
                         })
                         rowID = index;
                         console.log("rowID " + rowID)
-                        //e.parentNode.parentNode.children[15].innerHTML=data[1]
-                        mytable.rows[rowID].cells[16].innerHTML = newdata[2];
-                        mytable.rows[rowID].cells[18].innerHTML = '<a href="/power_history-'+getID+'/">'+newdata[4]+'</a>';
+                        //e.parentNode.parentNode.children[13].innerHTML=data[1]
+                        mytable.rows[rowID].cells[14].innerHTML = newdata[2];
+                        mytable.rows[rowID].cells[16].innerHTML = '<a href="/power_history-'+getID+'/">'+newdata[4]+'</a>';
                         if (newdata[3] == "fail") {
                             alert(newdata[1] + "poweroff" + newdata[3]);
                         }
@@ -330,7 +330,7 @@ function toBatchInspectSdr(id, e) {
             alert("null")
         }
         else {
-            //    var getIP = e.parentNode.parentNode.children[7].innerHTML;
+            //    var getIP = e.parentNode.parentNode.children[8].innerHTML;
             console.log(allValue)
         strAllValue = allValue.join("-");
         console.log(strAllValue)
@@ -363,17 +363,17 @@ function toBatchInspectSdr(id, e) {
                         var index = 0;
                         // from the ID to get the rowID
                         $("table tr").each(function (i) {
-
-                            if ($($(this).find("td").get(0)).text() == getID) {
-                                index = i;
+                            //list the row id ,index .get(1)
+                            if ($($(this).find("td").get(1)).text() == getID) {
+                                index = i - 1;
                                 //console.log("index" + index)
                             }
                         })
                         rowID = index;
                         console.log("rowID " + rowID)
-                        //e.parentNode.parentNode.children[15].innerHTML=data[1]
-                        mytable.rows[rowID].cells[16].innerHTML = newdata[2];
-                        mytable.rows[rowID].cells[18].innerHTML = newdata[4];
+                        //e.parentNode.parentNode.children[13].innerHTML=data[1]
+                        mytable.rows[rowID].cells[14].innerHTML = newdata[2];
+                        mytable.rows[rowID].cells[16].innerHTML = newdata[4];
                         if (newdata[3] == "fail") {
                             alert(newdata[1] + "inspectsdr" + newdata[3]);
                         }
@@ -396,8 +396,8 @@ function toBatchInspectSdr(id, e) {
  * @return Array
  */
 function toInspectSdr(id, e) {
-    var getID = e.parentNode.parentNode.children[0].innerHTML;
-        var getIP = e.parentNode.parentNode.children[7].innerHTML;
+    var getID = e.parentNode.parentNode.children[1].innerHTML;
+        var getIP = e.parentNode.parentNode.children[8].innerHTML;
     
     if (confirm("inspect sdr " + getIP)) {
             $.ajax({
@@ -419,8 +419,8 @@ function toInspectSdr(id, e) {
                     }
                 },
                 success: function (data) {
-                    e.parentNode.parentNode.children[16].innerHTML = data[1]
-                    e.parentNode.parentNode.children[18].innerHTML = data[3]
+                    e.parentNode.parentNode.children[14].innerHTML = data[1]
+                    e.parentNode.parentNode.children[16].innerHTML = data[3]
                     if (data[2] == "fail") {
                         alert(data[0] + "poweroff" + data[2])
                     }

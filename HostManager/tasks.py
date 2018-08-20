@@ -9,10 +9,15 @@ import os, sys, time
 import datetime
 from HostManager import models
 import pytz
+from django_celery_beat.models import PeriodicTask
+from django_celery_beat.models import PeriodicTasks
+from django_celery_beat.models import CrontabSchedule
+from django_celery_beat.models import IntervalSchedule
+from django_celery_beat.models import SolarSchedule
+from django_celery_results.models import TaskResult
 
 
-#ipmiUser = "admin"
-#ipmiPassword = "admin"
+#查询电源状态
 @shared_task(name='HostManager.Tasks.powerStatus')
 def powerStatus(ipmiHost, ipmiUser, ipmiPassword):
     powerStatus = "ipmitool -H " + ipmiHost + " -U " + ipmiUser + " -P " + ipmiPassword + " power status"
@@ -20,12 +25,15 @@ def powerStatus(ipmiHost, ipmiUser, ipmiPassword):
     returnRead = powerStatus.read()
     print(returnRead)
     nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    if "off" in returnRead:
-        return ipmiHost, nowTime, "success"
+    if "on" in returnRead:
+        return ipmiHost, nowTime, "on"
+    elif "off" in returnRead:
+        return ipmiHost, nowTime, "off"
     else:
         return ipmiHost, nowTime, "fail"
 
 
+#电源上电开机
 @shared_task(name='HostManager.Tasks.powerOn')
 def powerOn(ipmiHost, ipmiUser, ipmiPassword):
     powerOn = "ipmitool -H " + ipmiHost + " -U " + ipmiUser + " -P " + ipmiPassword + " power on"
@@ -39,6 +47,7 @@ def powerOn(ipmiHost, ipmiUser, ipmiPassword):
         return ipmiHost, nowTime, "fail"
 
 
+#电源下电硬关机
 @shared_task(name='HostManager.Tasks.powerOff')
 def powerOff(ipmiHost, ipmiUser, ipmiPassword):
     powerOff = "ipmitool -H " + ipmiHost + " -U " + ipmiUser + " -P " + ipmiPassword + " power off"
@@ -52,6 +61,7 @@ def powerOff(ipmiHost, ipmiUser, ipmiPassword):
         return ipmiHost, nowTime, "fail"
 
 
+#电源硬重起
 @shared_task(name='HostManager.Tasks.powerCycle')
 def powerCycle(ipmiHost, ipmiUser, ipmiPassword):
     powerCycle = "ipmitool -H " + ipmiHost + " -U " + ipmiUser + " -P " + ipmiPassword + " power cycle"
@@ -65,6 +75,7 @@ def powerCycle(ipmiHost, ipmiUser, ipmiPassword):
         return ipmiHost, nowTime, "fail"
 
 
+#电源软重起
 @shared_task(name='HostManager.Tasks.powerReset')
 def powerReset(ipmiHost, ipmiUser, ipmiPassword):
     powerReset = "ipmitool -H " + ipmiHost + " -U " + ipmiUser + " -P " + ipmiPassword + " power reset"
@@ -78,6 +89,7 @@ def powerReset(ipmiHost, ipmiUser, ipmiPassword):
         return ipmiHost, nowTime, "fail"
 
 
+#电源软关机
 @shared_task(name='HostManager.Tasks.powerSoft')
 def powerSoft(ipmiHost, ipmiUser, ipmiPassword):
     powerSoft = "ipmitool -H " + ipmiHost + " -U " + ipmiUser + " -P " + ipmiPassword + " power soft"
@@ -91,6 +103,7 @@ def powerSoft(ipmiHost, ipmiUser, ipmiPassword):
         return ipmiHost, nowTime, "fail"
 
 
+#设置PXE启动
 @shared_task(name='HostManager.Tasks.bootdevPxe')
 def bootdevPxe(ipmiHost, ipmiUser, ipmiPassword):
     bootdevPxe = "ipmitool -H " + ipmiHost + " -U " + ipmiUser + " -P " + ipmiPassword + " chassis bootdev pxe"
@@ -104,6 +117,7 @@ def bootdevPxe(ipmiHost, ipmiUser, ipmiPassword):
         return ipmiHost, nowTime, "fail"
 
 
+#设置磁盘启动
 @shared_task(name='HostManager.Tasks.bootdevDisk')
 def bootdevDisk(ipmiHost, ipmiUser, ipmiPassword):
     bootdevDisk = "ipmitool -H " + ipmiHost + " -U " + ipmiUser + " -P " + ipmiPassword + " chassis bootdev disk"
@@ -117,6 +131,7 @@ def bootdevDisk(ipmiHost, ipmiUser, ipmiPassword):
         return ipmiHost, nowTime, "fail"
 
 
+#设置安全模式启动
 @shared_task(name='HostManager.Tasks.bootdevSafe')
 def bootdevSafe(ipmiHost, ipmiUser, ipmiPassword):
     bootdevSafe = "ipmitool -H " + ipmiHost + " -U " + ipmiUser + " -P " + ipmiPassword + " chassis bootdev safe"
@@ -130,6 +145,7 @@ def bootdevSafe(ipmiHost, ipmiUser, ipmiPassword):
         return ipmiHost, nowTime, "fail"
 
 
+#设置诊断启动
 @shared_task(name='HostManager.Tasks.bootdevDiag')
 def bootdevDiag(ipmiHost, ipmiUser, ipmiPassword):
     bootdevDiag = "ipmitool -H " + ipmiHost + " -U " + ipmiUser + " -P " + ipmiPassword + " chassis bootdev diag"
@@ -143,6 +159,7 @@ def bootdevDiag(ipmiHost, ipmiUser, ipmiPassword):
         return ipmiHost, nowTime, "fail"
 
 
+#设置CD-ROM启动
 @shared_task(name='HostManager.Tasks.bootdevCdrom')
 def bootdevCdrom(ipmiHost, ipmiUser, ipmiPassword):
     bootdevCdrom = "ipmitool -H " + ipmiHost + " -U " + ipmiUser + " -P " + ipmiPassword + " chassis bootdev cdrom"
@@ -156,6 +173,7 @@ def bootdevCdrom(ipmiHost, ipmiUser, ipmiPassword):
         return ipmiHost, nowTime, "fail"
 
 
+#设置BIOS启动
 @shared_task(name='HostManager.Tasks.bootdevBios')
 def bootdevBios(ipmiHost, ipmiUser, ipmiPassword):
     bootdevBios = "ipmitool -H " + ipmiHost + " -U " + ipmiUser + " -P " + ipmiPassword + " chassis bootdev bios"
@@ -169,6 +187,7 @@ def bootdevBios(ipmiHost, ipmiUser, ipmiPassword):
         return ipmiHost, nowTime, "fail"
 
 
+#获取SDR信息
 @shared_task(name='HostManager.Tasks.inspectSdr')
 def inspectSdr(ipmiHost, ipmiUser, ipmiPassword):
     nowTime = datetime.datetime.now()
@@ -187,17 +206,46 @@ def inspectSdr(ipmiHost, ipmiUser, ipmiPassword):
         return ipmiHost, nowTime, "fail"
 
 
-@task(name='HostManager.Tasks.fping')
-def fping(ipHost, ipmiUser, ipmiPassword):
-    # db_dict = models.Host.objects.filter(id=ipmiID).values()[0]
-    # print(db_dict)
-    # return(db_dict)
-    fping = "fping " + ipHost
+@task(name='HostManager.Tasks.fping', bind=True)
+def fping(self):
+    #从数据库获得IP地址列表
+    db_list = models.Host.objects.values_list("serviceIP", flat=True)
+    #确认一下获取到的IP个数
+    print(len(db_list))
+    result_list = []
+    alive_list = []
+    dead_list = []
+    #使用str = ' '.join(list)快速将列表转成字符串（以空格分割）
+    serviceIP = ' '.join(db_list)
+    db_list = serviceIP.split(' ')
+    #确认一下转化成字符串的IP个数
+    print(len(db_list))
+    fping = "fping " + serviceIP
     fping = os.popen(fping)
     returnRead = fping.read()
-    print(returnRead)
+    # print("*********************************")
+    # print(returnRead)
+    # print(type(returnRead))
+    # print("*********************************")
     nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    if "alive" in returnRead:
-        return ipHost, nowTime, "alive"
-    else:
-        return ipHost, nowTime, "dead"
+    returnRead_list = returnRead.split('\n')
+    # print(returnRead_list)    
+    for key in returnRead_list:       
+        #正常return会终止循环，所以不能使用循环return返回结果。
+        if "alive" in key:
+            #self.request.id,获取任务ID，根据ID将结果写入数据库。
+            #遍历key，将含有alive的重建一个列表
+            alive_list.append(key)            
+        elif "unreachable" in key:
+            #遍历key，将含有unreachable的重建一个列表
+            dead_list.append(key)
+        else:
+            #self.request.id,获取任务ID，根据ID将结果写入数据库。
+            print("***************************************")
+    result_list.append(alive_list)
+    result_list.append(dead_list)    
+    return result_list
+
+@shared_task
+def test(arg):
+    print('world')

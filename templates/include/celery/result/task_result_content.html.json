@@ -77,13 +77,14 @@
                     data-page-list="[10, 25, 50, 100, ALL]" 
                     data-show-footer="false" 
                     data-side-pagination="server"
-                    data-url="http://issues.wenzhixin.net.cn/examples/bootstrap_table/data" 
+                    data-url="{% url 'task_result_json' %}" 
                     data-response-handler="responseHandler" 
                     data-striped="true"
                     data-search-time-out="500"
-                    data-sortable="true">
+                    data-sortable="true"
+                    data-row-style="rowStyle">
             </table>
-<!--data-url="{% url 'task_result' %}"         也可以直接写URL路径 /task_result/ -->
+<!--data-url="{% url 'task_result_json' %}"         也可以直接写URL路径 /task_result/ -->
 
         </div>
 

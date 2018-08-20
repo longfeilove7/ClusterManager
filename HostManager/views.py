@@ -14,6 +14,9 @@ from django_celery_results.models import TaskResult
 from celery import shared_task
 from celery import task
 from HostManager import tasks
+from HostManager import periodic_tasks
+from celery import Celery
+from celery.schedules import crontab
 from celery import app
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.csrf import csrf_exempt
@@ -29,6 +32,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 #import os, sys, commands
 # Create your views here.
 
+#定义全局变量用于存储页面当前用户信息
 GLOBAL_VAR_USER = "0"
 
 
@@ -42,34 +46,59 @@ class ClassLazyEncoder(DjangoJSONEncoder):
         return super().default(obj)
 
 
+#系统登录类ClassSign
+#系统登录函数signin
 class ClassSign():
     def signin(request):
+        #如果是POST请求
         if request.method == "POST":
+            #声明调用全局变量
             global GLOBAL_VAR_USER
+            #通过django的request.POST.get()方法获取user值，并赋值给全局变量
             GLOBAL_VAR_USER = request.POST.get('user')
-            p = request.POST.get('pwd')
+            #通过django的request.POST.get()方法获取pwd值，并赋值给局部变量
+            local_var_password = request.POST.get('pwd')
+            #查询数据库用户名和密码是否匹配
             user_list = models.Users.objects.filter(
-                username=GLOBAL_VAR_USER, password=p).first()
+                username=GLOBAL_VAR_USER, password=local_var_password).first()
+            #如果user_list为非空
             if user_list:
+                #渲染主页，并返回用户名
                 return render(request, 'index.html', {'user_list': user_list})
             else:
+                #返回登录页面
                 return render(request, 'sign-in.html')
         else:
+            #如果是GET请求，返回登录页面
             return render(request, 'sign-in.html')
 
+
+#系统注册函数
+
     def signup(request):
+        #如果是POST请求
         if request.method == "POST":
+            #通过django的request.POST.get()获取用户名
             GLOBAL_VAR_USER = request.POST.get('user')
-            p = request.POST.get('pwd')
-            models.Users.objects.create(username=GLOBAL_VAR_USER, password=p)
+            #通过django的request.POST.get()获取密码
+            local_var_password = request.POST.get('pwd')
+            #根据用户名和密码创建用户信息
+            models.Users.objects.create(
+                username=GLOBAL_VAR_USER, password=local_var_password)
+            #返回注册成功页面
             return render(request, 'sucess.html')
         else:
+            #返回用户注册页面
             return render(request, 'sign-up.html')
 
     def index(request):
+        #声明使用全局变量
         global GLOBAL_VAR_USER
+        #查询数据库用户名
         user_list = models.Users.objects.filter(
             username=GLOBAL_VAR_USER).first()
+        #返回index页面
+        ClassCeleryBeat.getPowerStatus()
         return render(request, 'index.html', {'user_list': user_list})
 
 
@@ -382,6 +411,60 @@ class ClassCeleryBeat():
             CrontabSchedule.objects.filter(id=nid).delete()
             return redirect('/crontab_schedule/')
 
+    def getPowerStatus():
+        #从数据库获得IP地址列表
+        db_list = models.Host.objects.values("id", "manageIP", "ipmiUser","ipmiPassword")        
+        #遍历列表获得内部字典
+        for key_dict in db_list:
+            #获取单条字典的对应值
+            idName = key_dict['id']
+            ipmiHost = key_dict['manageIP']            
+            ipmiUser = key_dict['ipmiUser']            
+            ipmiPassword = key_dict['ipmiPassword']
+            #调用创建任务函数，并传参数
+            ClassCeleryBeat.create_PowerStatus(idName, ipmiHost, ipmiUser,
+                                        ipmiPassword)
+
+    #创建定时任务
+    def create_PowerStatus(idName, ipmiHost, ipmiUser, ipmiPassword):
+        #定义一个时间间隔
+        schedule, created = IntervalSchedule.objects.get_or_create(
+            every=180,
+            period=IntervalSchedule.SECONDS,
+        )
+        #定义一个时间周期
+        # schedule, _ = CrontabSchedule.objects.get_or_create(
+        #     minute='30',
+        #     hour='*',
+        #     day_of_week='*',
+        #     day_of_month='*',
+        #     month_of_year='*',
+        # )
+        #创建一个周期性任务,如果查询到就返回，如果没查询到就向数据库加入新的对象
+        PeriodicTask.objects.get_or_create(
+            #crontab=schedule,
+            name=idName,
+            task='HostManager.Tasks.powerStatus',
+            interval=schedule,  # we created this above.
+            args=json.dumps([ipmiHost, ipmiUser, ipmiPassword]),
+            # kwargs=json.dumps({
+            #     'be_careful': True,
+            # }),
+            #expires=datetime.datetime.utcnow() + datetime.timedelta(seconds=30)
+        )
+        #开启任务
+        PeriodicTask.enabled = True
+
+    #关闭任务
+    def disable_task(name):
+        try:
+            PeriodicTask = celery_models.PeriodicTask.objects.get(name=name)
+            PeriodicTask.enabled = False  # 设置关闭
+            PeriodicTask.save()
+            return True
+        except celery_models.PeriodicTask.DoesNotExist:
+            return True
+
 
 class ClassCeleryResult:
     def task_result(request):
@@ -509,7 +592,6 @@ class ClassCeleryWorker():
                   manageIP, storageIP, hostName, service, clusterName)
             return redirect('/inspect_info/')
 
-
 #@csrf_protect #为当前函数强制设置防跨站请求伪造功能，即便settings中没有设置全局中间件。
 #@csrf_exempt #取消当前函数防跨站请求伪造功能，即便settings中设置了全局中间件。
 
@@ -520,6 +602,7 @@ class ClassCeleryWorker():
             ipmiIP = request.POST.get('IP')
             ipmiID = request.POST.get('ID')
             ipmiHost = ipmiIP
+            print(ipmiIP)
             db_dict = models.Host.objects.filter(id=ipmiID).values()[0]
             ipmiUser = db_dict['ipmiUser']
             print(ipmiUser)
@@ -642,15 +725,24 @@ class ClassCeleryWorker():
                 runTimeHistory=str(runTime), )
         return (runTime)
 
+
+#批量开机函数
+
     def batchPowerOn(request):
         """"""
+        #定义一个字典context
         context = {}
+        #如果是POST请求
         if request.method == 'POST':
+            #获取Jquery发送的allValue，并赋值
             allValue = request.POST.get('allValue')
             print(allValue)
+            #切割字符串
             listAllValue = allValue.split("-")
             print(listAllValue)
+            #定义一个列表listResult
             listResult = []
+            #遍历列表
             for dictAllValue in listAllValue:
                 print(type(dictAllValue))
 
@@ -659,7 +751,7 @@ class ClassCeleryWorker():
                 print("this is ip" + ipmiIP)
                 ipmiID = dictAllValue['ID']
                 print(ipmiID)
-                db_dict = models.Host.objects.filter(id=ipmiID).values()[0]                
+                db_dict = models.Host.objects.filter(id=ipmiID).values()[0]
                 ipmiUser = db_dict['ipmiUser']
                 print(ipmiUser)
                 ipmiPassword = db_dict['ipmiPassword']
@@ -679,6 +771,10 @@ class ClassCeleryWorker():
                 powerOnTime = result[1]
                 models.Host.objects.filter(id=ipmiID).update(
                     powerOnTime=result[2], )
+                models.HostPowerHistory.objects.create(
+                    powerOnTimeHistory=result[2],
+                    host_id=ipmiID,
+                )
             data = json.dumps(listResult).encode()
             return HttpResponse(data)
         elif request.method == 'GET':
@@ -706,7 +802,7 @@ class ClassCeleryWorker():
                 print(ipmiID)
                 db_dict = models.Host.objects.filter(id=ipmiID).values()[0]
                 powerOnTime = db_dict['powerOnTime']
-                print("powerOnTime:",  powerOnTime)
+                print("powerOnTime:", powerOnTime)
                 ipmiUser = db_dict['ipmiUser']
                 print(ipmiUser)
                 ipmiPassword = db_dict['ipmiPassword']
@@ -731,6 +827,9 @@ class ClassCeleryWorker():
                 powerOffTime = result[1]
                 models.Host.objects.filter(id=ipmiID).update(
                     powerOffTime=result[2], )
+                models.HostPowerHistory.objects.filter(
+                    powerOnTimeHistory=powerOnTime, host_id=ipmiID).update(
+                        powerOffTimeHistory=result[2], )
             data = json.dumps(listResult).encode()
             return HttpResponse(data)
         elif request.method == 'GET':

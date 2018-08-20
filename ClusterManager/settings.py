@@ -1,5 +1,7 @@
 #from __future__ import absolute_import, unicode_literals 绝对导入，python3默认
 from celery.schedules import crontab
+from datetime import timedelta
+
 # -*- coding: utf-8 -*-
 """
 Django settings for ClusterManager project.
@@ -18,7 +20,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
@@ -29,7 +30,6 @@ SECRET_KEY = '!oki@#(pwr6w7&1m-ypyukd+d(0kut_hi@8fd4k&o2m5ev*i-z'
 DEBUG = True
 
 ALLOWED_HOSTS = ['10.17.248.81']
-
 
 # Application definition
 
@@ -43,8 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'HostManager',
-    'django_celery_beat', 
-    'django_celery_results',    
+    'django_celery_beat',
+    'django_celery_results',
 ]
 
 MIDDLEWARE = [
@@ -78,7 +78,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ClusterManager.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
@@ -93,30 +92,32 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME':
+        'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME':
+        'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME':
+        'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME':
+        'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
-LANGUAGE_CODE = 'zh-Hans' #default language
+LANGUAGE_CODE = 'zh-Hans'  #default language
 
 TIME_ZONE = 'Asia/Shanghai'
 
@@ -139,31 +140,24 @@ LANGUAGES = (
 )
 
 #翻译文件所在目录，需要手工创建
-LOCALE_PATHS = (
-    os.path.join(BASE_DIR, 'locale'),
-)
+LOCALE_PATHS = (os.path.join(BASE_DIR, 'locale'), )
 
-TEMPLATE_CONTEXT_PROCESSORS = (
-    "django.core.context_processors.i18n",
-)
-
+TEMPLATE_CONTEXT_PROCESSORS = ("django.core.context_processors.i18n", )
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
-)
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'), )
 
 # TEMPLATE_DIRS = (os.path.join(BASE_DIR,  'templates'),)
 
 #django-jet themes
 JET_THEMES = [
     {
-        'theme': 'default', # theme folder name
-        'color': '#47bac1', # color of the theme's button in user menu
-        'title': 'Default' # theme title
+        'theme': 'default',  # theme folder name
+        'color': '#47bac1',  # color of the theme's button in user menu
+        'title': 'Default'  # theme title
     },
     {
         'theme': 'green',
@@ -193,36 +187,58 @@ JET_THEMES = [
 ]
 
 JET_SIDE_MENU_ITEMS = [
-    {'label':'ssss' ,'app_label': 'auth', 'items': [
-        {'name': 'group'},
-        {'name': 'user'},
-    ]},
-    {'app_label': 'django_celery_results', 'items': [
-        {'name': 'taskresult'},
-    ]},
-    {'app_label': 'django_celery_beat', 'items': [
-        {'name': 'crontabschedule'},
-        {'name': 'intervalschedule'},
-        {'name': 'periodictask'},
-        {'name': 'solarschedule'},
-    ]},
+    {
+        'label': 'ssss',
+        'app_label': 'auth',
+        'items': [
+            {
+                'name': 'group'
+            },
+            {
+                'name': 'user'
+            },
+        ]
+    },
+    {
+        'app_label': 'django_celery_results',
+        'items': [
+            {
+                'name': 'taskresult'
+            },
+        ]
+    },
+    {
+        'app_label':
+        'django_celery_beat',
+        'items': [
+            {
+                'name': 'crontabschedule'
+            },
+            {
+                'name': 'intervalschedule'
+            },
+            {
+                'name': 'periodictask'
+            },
+            {
+                'name': 'solarschedule'
+            },
+        ]
+    },
 ]
-
-
 
 CELERY_BROKER_URL = 'pyamqp://guest@localhost//'
 #CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672'
 CELERY_RESULT_BACKEND = 'django-db'
 CELERY_ACCEPT_CONTENT = ['json']
 
-
-# CELERY_BEAT_SCHEDULE = {
-#     # 周期任务
-#     'task-one': {
-#         'task': 'HostManager.Tasks.fping',
-#         'schedule': crontab(), #每5秒执行一次
-#          'args':()#must be list or tuple.
-#     },
+CELERY_BEAT_SCHEDULE = {
+    #周期任务
+    'task-ping': {
+        'task': 'HostManager.Tasks.fping',
+        'schedule': timedelta(seconds=300),  #每30秒执行一次
+        'args': ()  #must be list or tuple.
+    },
     # # 定时任务
     # 'task-two': {
     #     'task': 'HostManager.Tasks.printHello',
@@ -232,10 +248,11 @@ CELERY_ACCEPT_CONTENT = ['json']
     # #共享任务
     # 'task-one': {
     #     'task': 'HostManager.Tasks.add',
-    #     'schedule': crontab(), #每5秒执行一次
+    #     'schedule': crontab(), #每1分钟执行一次
     #      'args':(4, 4)
     # },
-#}
+    #增加任务
+}
 
 FILE_UPLOAD_HANDLERS = ("django_excel.ExcelMemoryFileUploadHandler",
                         "django_excel.TemporaryExcelFileUploadHandler")

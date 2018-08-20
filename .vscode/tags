@@ -1,0 +1,489 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+0001_initial.py	../HostManager/migrations/0001_initial.py	1;"	kind:file	line:1
+0002_auto_20180625_1404.py	../HostManager/migrations/0002_auto_20180625_1404.py	1;"	kind:file	line:1
+0003_auto_20180625_1407.py	../HostManager/migrations/0003_auto_20180625_1407.py	1;"	kind:file	line:1
+0004_auto_20180702_2222.py	../HostManager/migrations/0004_auto_20180702_2222.py	1;"	kind:file	line:1
+0005_auto_20180703_1533.py	../HostManager/migrations/0005_auto_20180703_1533.py	1;"	kind:file	line:1
+0006_auto_20180706_1309.py	../HostManager/migrations/0006_auto_20180706_1309.py	1;"	kind:file	line:1
+0007_automate.py	../HostManager/migrations/0007_automate.py	1;"	kind:file	line:1
+0008_auto_20180712_2201.py	../HostManager/migrations/0008_auto_20180712_2201.py	1;"	kind:file	line:1
+0009_auto_20180712_2231.py	../HostManager/migrations/0009_auto_20180712_2231.py	1;"	kind:file	line:1
+0010_auto_20180712_2327.py	../HostManager/migrations/0010_auto_20180712_2327.py	1;"	kind:file	line:1
+0011_auto_20180716_1616.py	../HostManager/migrations/0011_auto_20180716_1616.py	1;"	kind:file	line:1
+0012_auto_20180716_1617.py	../HostManager/migrations/0012_auto_20180716_1617.py	1;"	kind:file	line:1
+0013_auto_20180716_1639.py	../HostManager/migrations/0013_auto_20180716_1639.py	1;"	kind:file	line:1
+0014_auto_20180716_1658.py	../HostManager/migrations/0014_auto_20180716_1658.py	1;"	kind:file	line:1
+0015_auto_20180716_1748.py	../HostManager/migrations/0015_auto_20180716_1748.py	1;"	kind:file	line:1
+0016_auto_20180716_2120.py	../HostManager/migrations/0016_auto_20180716_2120.py	1;"	kind:file	line:1
+ALLOWED_HOSTS	../ClusterManager/settings.py	/^ALLOWED_HOSTS = ['10.17.248.81']$/;"	kind:variable	line:32
+AUTH_PASSWORD_VALIDATORS	../ClusterManager/settings.py	/^AUTH_PASSWORD_VALIDATORS = [$/;"	kind:variable	line:101
+AppConfig	../HostManager/apps.py	/^from django.apps import AppConfig$/;"	kind:namespace	line:1
+Automate	../HostManager/models.py	/^class Automate(models.Model):$/;"	kind:class	line:55
+BASE_DIR	../ClusterManager/settings.py	/^BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))$/;"	kind:variable	line:20
+CELERY_ACCEPT_CONTENT	../ClusterManager/settings.py	/^CELERY_ACCEPT_CONTENT = ['json']$/;"	kind:variable	line:217
+CELERY_BEAT_SCHEDULE	../ClusterManager/settings.py	/^CELERY_BEAT_SCHEDULE = {$/;"	kind:variable	line:220
+CELERY_BROKER_URL	../ClusterManager/settings.py	/^CELERY_BROKER_URL = 'pyamqp:\/\/guest@localhost\/\/'$/;"	kind:variable	line:214
+CELERY_RESULT_BACKEND	../ClusterManager/settings.py	/^CELERY_RESULT_BACKEND = 'django-db'$/;"	kind:variable	line:216
+Celery	../ClusterManager/celery.py	/^from celery import Celery$/;"	kind:namespace	line:3
+Celery	../ClusterManager/periodic_task.py	/^from celery import Celery$/;"	kind:namespace	line:1
+Choice	../HostManager/models.py	/^class Choice(models.Model):$/;"	kind:class	line:75
+Choice	../HostManager/views.py	/^from HostManager.models import Question, Choice, Host, Clusters$/;"	kind:namespace	line:24
+ClassCeleryBeat	../HostManager/views.py	/^class ClassCeleryBeat():$/;"	kind:class	line:298
+ClassCeleryResult	../HostManager/views.py	/^class ClassCeleryResult:$/;"	kind:class	line:454
+ClassCeleryWorker	../HostManager/views.py	/^class ClassCeleryWorker():$/;"	kind:class	line:522
+ClassCluster	../HostManager/views.py	/^class ClassCluster:$/;"	kind:class	line:231
+ClassHost	../HostManager/views.py	/^class ClassHost:$/;"	kind:class	line:101
+ClassLazyEncoder	../HostManager/views.py	/^class ClassLazyEncoder(DjangoJSONEncoder):$/;"	kind:class	line:37
+ClassSign	../HostManager/views.py	/^class ClassSign():$/;"	kind:class	line:48
+Clusters	../HostManager/models.py	/^class Clusters(models.Model):$/;"	kind:class	line:10
+Clusters	../HostManager/views.py	/^from HostManager.models import Question, Choice, Host, Clusters$/;"	kind:namespace	line:24
+CrontabSchedule	../HostManager/tasks.py	/^from django_celery_beat.models import CrontabSchedule$/;"	kind:namespace	line:14
+CrontabSchedule	../HostManager/views.py	/^from django_celery_beat.models import CrontabSchedule$/;"	kind:namespace	line:10
+DATABASES	../ClusterManager/settings.py	/^DATABASES = {$/;"	kind:variable	line:86
+DEBUG	../ClusterManager/settings.py	/^DEBUG = True$/;"	kind:variable	line:30
+DjangoJSONEncoder	../HostManager/views.py	/^from django.core.serializers.json import DjangoJSONEncoder$/;"	kind:namespace	line:28
+FILE_UPLOAD_HANDLERS	../ClusterManager/settings.py	/^FILE_UPLOAD_HANDLERS = ("django_excel.ExcelMemoryFileUploadHandler",$/;"	kind:variable	line:247
+GLOBAL_VAR_USER	../HostManager/views.py	/^GLOBAL_VAR_USER = "0"$/;"	kind:variable	line:33
+Host	../HostManager/models.py	/^class Host(models.Model):$/;"	kind:class	line:26
+Host	../HostManager/views.py	/^from HostManager.models import Question, Choice, Host, Clusters$/;"	kind:namespace	line:24
+HostManagerConfig	../HostManager/apps.py	/^class HostManagerConfig(AppConfig):$/;"	kind:class	line:4
+HostPowerHistory	../HostManager/models.py	/^class HostPowerHistory(models.Model):$/;"	kind:class	line:47
+HttpRequest	../HostManager/views.py	/^from django.http import HttpRequest, HttpResponseBadRequest$/;"	kind:namespace	line:6
+HttpResponse	../HostManager/views.py	/^from django.shortcuts import HttpResponse$/;"	kind:namespace	line:5
+HttpResponseBadRequest	../HostManager/views.py	/^from django.http import HttpRequest, HttpResponseBadRequest$/;"	kind:namespace	line:6
+INSTALLED_APPS	../ClusterManager/settings.py	/^INSTALLED_APPS = [$/;"	kind:variable	line:37
+IntervalSchedule	../HostManager/tasks.py	/^from django_celery_beat.models import IntervalSchedule$/;"	kind:namespace	line:15
+IntervalSchedule	../HostManager/views.py	/^from django_celery_beat.models import IntervalSchedule$/;"	kind:namespace	line:11
+JET_SIDE_MENU_ITEMS	../ClusterManager/settings.py	/^JET_SIDE_MENU_ITEMS = [$/;"	kind:variable	line:196
+JET_THEMES	../ClusterManager/settings.py	/^JET_THEMES = [$/;"	kind:variable	line:163
+LANGUAGES	../ClusterManager/settings.py	/^LANGUAGES = ($/;"	kind:variable	line:136
+LANGUAGE_CODE	../ClusterManager/settings.py	/^LANGUAGE_CODE = 'zh-Hans' #default language$/;"	kind:variable	line:120
+LOCALE_PATHS	../ClusterManager/settings.py	/^LOCALE_PATHS = ($/;"	kind:variable	line:143
+MIDDLEWARE	../ClusterManager/settings.py	/^MIDDLEWARE = [$/;"	kind:variable	line:51
+Migration	../HostManager/migrations/0001_initial.py	/^class Migration(migrations.Migration):$/;"	kind:class	line:7
+Migration	../HostManager/migrations/0002_auto_20180625_1404.py	/^class Migration(migrations.Migration):$/;"	kind:class	line:6
+Migration	../HostManager/migrations/0003_auto_20180625_1407.py	/^class Migration(migrations.Migration):$/;"	kind:class	line:6
+Migration	../HostManager/migrations/0004_auto_20180702_2222.py	/^class Migration(migrations.Migration):$/;"	kind:class	line:6
+Migration	../HostManager/migrations/0005_auto_20180703_1533.py	/^class Migration(migrations.Migration):$/;"	kind:class	line:6
+Migration	../HostManager/migrations/0006_auto_20180706_1309.py	/^class Migration(migrations.Migration):$/;"	kind:class	line:7
+Migration	../HostManager/migrations/0007_automate.py	/^class Migration(migrations.Migration):$/;"	kind:class	line:6
+Migration	../HostManager/migrations/0008_auto_20180712_2201.py	/^class Migration(migrations.Migration):$/;"	kind:class	line:6
+Migration	../HostManager/migrations/0009_auto_20180712_2231.py	/^class Migration(migrations.Migration):$/;"	kind:class	line:6
+Migration	../HostManager/migrations/0010_auto_20180712_2327.py	/^class Migration(migrations.Migration):$/;"	kind:class	line:6
+Migration	../HostManager/migrations/0011_auto_20180716_1616.py	/^class Migration(migrations.Migration):$/;"	kind:class	line:7
+Migration	../HostManager/migrations/0012_auto_20180716_1617.py	/^class Migration(migrations.Migration):$/;"	kind:class	line:6
+Migration	../HostManager/migrations/0013_auto_20180716_1639.py	/^class Migration(migrations.Migration):$/;"	kind:class	line:6
+Migration	../HostManager/migrations/0014_auto_20180716_1658.py	/^class Migration(migrations.Migration):$/;"	kind:class	line:6
+Migration	../HostManager/migrations/0015_auto_20180716_1748.py	/^class Migration(migrations.Migration):$/;"	kind:class	line:6
+Migration	../HostManager/migrations/0016_auto_20180716_2120.py	/^class Migration(migrations.Migration):$/;"	kind:class	line:6
+PeriodicTask	../HostManager/tasks.py	/^from django_celery_beat.models import PeriodicTask$/;"	kind:namespace	line:12
+PeriodicTask	../HostManager/views.py	/^from django_celery_beat.models import PeriodicTask$/;"	kind:namespace	line:8
+PeriodicTasks	../HostManager/tasks.py	/^from django_celery_beat.models import PeriodicTasks$/;"	kind:namespace	line:13
+PeriodicTasks	../HostManager/views.py	/^from django_celery_beat.models import PeriodicTasks$/;"	kind:namespace	line:9
+Question	../HostManager/models.py	/^class Question(models.Model):$/;"	kind:class	line:65
+Question	../HostManager/views.py	/^from HostManager.models import Question, Choice, Host, Clusters$/;"	kind:namespace	line:24
+ROOT_URLCONF	../ClusterManager/settings.py	/^ROOT_URLCONF = 'ClusterManager.urls'$/;"	kind:variable	line:62
+SECRET_KEY	../ClusterManager/settings.py	/^SECRET_KEY = '!oki@#(pwr6w7&1m-ypyukd+d(0kut_hi@8fd4k&o2m5ev*i-z'$/;"	kind:variable	line:27
+STATICFILES_DIRS	../ClusterManager/settings.py	/^STATICFILES_DIRS = ($/;"	kind:variable	line:156
+STATIC_URL	../ClusterManager/settings.py	/^STATIC_URL = '\/static\/'$/;"	kind:variable	line:155
+SolarSchedule	../HostManager/tasks.py	/^from django_celery_beat.models import SolarSchedule$/;"	kind:namespace	line:16
+SolarSchedule	../HostManager/views.py	/^from django_celery_beat.models import SolarSchedule$/;"	kind:namespace	line:12
+TEMPLATES	../ClusterManager/settings.py	/^TEMPLATES = [$/;"	kind:variable	line:64
+TEMPLATE_CONTEXT_PROCESSORS	../ClusterManager/settings.py	/^TEMPLATE_CONTEXT_PROCESSORS = ($/;"	kind:variable	line:147
+TIME_ZONE	../ClusterManager/settings.py	/^TIME_ZONE = 'Asia\/Shanghai'$/;"	kind:variable	line:122
+TaskResult	../HostManager/tasks.py	/^from django_celery_results.models import TaskResult$/;"	kind:namespace	line:17
+TaskResult	../HostManager/views.py	/^from django_celery_results.models import TaskResult$/;"	kind:namespace	line:13
+USE_I18N	../ClusterManager/settings.py	/^USE_I18N = True$/;"	kind:variable	line:124
+USE_L10N	../ClusterManager/settings.py	/^USE_L10N = True$/;"	kind:variable	line:126
+USE_TZ	../ClusterManager/settings.py	/^USE_TZ = True$/;"	kind:variable	line:128
+UploadFileForm	../HostManager/views.py	/^class UploadFileForm(forms.Form):$/;"	kind:class	line:902
+Users	../HostManager/models.py	/^class Users(models.Model):$/;"	kind:class	line:61
+WSGI_APPLICATION	../ClusterManager/settings.py	/^WSGI_APPLICATION = 'ClusterManager.wsgi.application'$/;"	kind:variable	line:80
+__all__	../ClusterManager/__init__.py	/^__all__ = ['celery_app']/;"	kind:variable	line:7
+__init__	../HostManager/views.py	/^    def __init__(self):$/;"	kind:member	line:523
+__init__.py	../ClusterManager/__init__.py	1;"	kind:file	line:1
+__init__.py	../HostManager/__init__.py	1;"	kind:file	line:1
+__init__.py	../HostManager/migrations/__init__.py	1;"	kind:file	line:1
+__str__	../HostManager/models.py	/^    def __str__(self):$/;"	kind:member	line:71
+__str__	../HostManager/models.py	/^    def __str__(self):$/;"	kind:member	line:80
+absolute_import	../ClusterManager/__init__.py	/^from __future__ import absolute_import, unicode_literals$/;"	kind:namespace	line:1
+add_cluster	../HostManager/views.py	/^    def add_cluster(request):$/;"	kind:member	line:232
+add_host	../HostManager/views.py	/^    def add_host(request):$/;"	kind:member	line:115
+add_periodic	../HostManager/views.py	/^    def add_periodic(request):$/;"	kind:member	line:310
+admin	../ClusterManager/urls.py	/^from django.contrib import admin$/;"	kind:namespace	line:23
+admin	../HostManager/admin.py	/^from django.contrib import admin$/;"	kind:namespace	line:1
+admin.py	../HostManager/admin.py	1;"	kind:file	line:1
+app	../ClusterManager/celery.py	/^app = Celery('ClusterManager')$/;"	kind:variable	line:16
+app	../ClusterManager/periodic_task.py	/^app = Celery()$/;"	kind:variable	line:4
+app	../HostManager/views.py	/^from celery import app$/;"	kind:namespace	line:17
+application	../ClusterManager/wsgi.py	/^application = get_wsgi_application()$/;"	kind:variable	line:16
+apps.py	../HostManager/apps.py	1;"	kind:file	line:1
+batchInspectSdr	../HostManager/views.py	/^    def batchInspectSdr(request):$/;"	kind:member	line:825
+batchPowerOff	../HostManager/views.py	/^    def batchPowerOff(request):$/;"	kind:member	line:770
+batchPowerOn	../HostManager/views.py	/^    def batchPowerOn(request):$/;"	kind:member	line:715
+bladeBoxNO	../HostManager/models.py	/^    bladeBoxNO = models.CharField(max_length=32,null=True)$/;"	kind:variable	line:29
+bladeNO	../HostManager/models.py	/^    bladeNO = models.CharField(max_length=32,null=True)$/;"	kind:variable	line:30
+bootdevBios	../HostManager/tasks.py	/^def bootdevBios(ipmiHost, ipmiUser, ipmiPassword):$/;"	kind:function	line:176
+bootdevCdrom	../HostManager/tasks.py	/^def bootdevCdrom(ipmiHost, ipmiUser, ipmiPassword):$/;"	kind:function	line:162
+bootdevDiag	../HostManager/tasks.py	/^def bootdevDiag(ipmiHost, ipmiUser, ipmiPassword):$/;"	kind:function	line:148
+bootdevDisk	../HostManager/tasks.py	/^def bootdevDisk(ipmiHost, ipmiUser, ipmiPassword):$/;"	kind:function	line:120
+bootdevPxe	../HostManager/tasks.py	/^def bootdevPxe(ipmiHost, ipmiUser, ipmiPassword):$/;"	kind:function	line:106
+bootdevSafe	../HostManager/tasks.py	/^def bootdevSafe(ipmiHost, ipmiUser, ipmiPassword):$/;"	kind:function	line:134
+cabinetNO	../HostManager/models.py	/^    cabinetNO = models.CharField(max_length=32,null=True)$/;"	kind:variable	line:28
+celery.py	../ClusterManager/celery.py	1;"	kind:file	line:1
+celery_app	../ClusterManager/__init__.py	/^from .celery import app as celery_app$/;"	kind:namespace	line:5
+checkOnline	../HostManager/models.py	/^    checkOnline = models.CharField(max_length=32,null=True)$/;"	kind:variable	line:40
+choice_func	../HostManager/views.py	/^        def choice_func(row):$/;"	kind:function	line:1098
+choice_func	../HostManager/views.py	/^        def choice_func(row):$/;"	kind:function	line:1126
+choice_func	../HostManager/views.py	/^        def choice_func(row):$/;"	kind:function	line:959
+choice_text	../HostManager/models.py	/^    choice_text = models.CharField(max_length=200)$/;"	kind:variable	line:77
+clusterName	../HostManager/models.py	/^    clusterName = models.CharField(max_length=32,null=True)$/;"	kind:variable	line:11
+clusterName	../HostManager/models.py	/^    clusterName = models.ForeignKey(Clusters,on_delete=models.CASCADE)$/;"	kind:variable	line:44
+cluster_del	../HostManager/views.py	/^    def cluster_del(request, nid):$/;"	kind:member	line:287
+cluster_edit	../HostManager/views.py	/^    def cluster_edit(request, nid):$/;"	kind:member	line:264
+contactEmail	../HostManager/models.py	/^    contactEmail = models.EmailField(max_length=32,null=True)$/;"	kind:variable	line:16
+contactPerson	../HostManager/models.py	/^    contactPerson = models.CharField(max_length=32,null=True)$/;"	kind:variable	line:14
+contactPhone	../HostManager/models.py	/^    contactPhone = models.CharField(max_length=32,null=True)$/;"	kind:variable	line:15
+contactQQ	../HostManager/models.py	/^    contactQQ = models.CharField(max_length=32,null=True)$/;"	kind:variable	line:17
+contactWeicat	../HostManager/models.py	/^    contactWeicat = models.CharField(max_length=32,null=True)$/;"	kind:variable	line:18
+create_task	../HostManager/views.py	/^    def create_task(name, task, task_args, crontab_time):$/;"	kind:member	line:411
+crontab	../ClusterManager/periodic_task.py	/^from celery.schedules import crontab$/;"	kind:namespace	line:2
+crontab	../ClusterManager/settings.py	/^from celery.schedules import crontab$/;"	kind:namespace	line:2
+crontab_del	../HostManager/views.py	/^    def crontab_del(request, nid):$/;"	kind:member	line:404
+crontab_edit	../HostManager/views.py	/^    def crontab_edit(request, nid):$/;"	kind:member	line:388
+crontab_schedule	../HostManager/views.py	/^    def crontab_schedule(request):$/;"	kind:member	line:363
+csrf_exempt	../HostManager/views.py	/^from django.views.decorators.csrf import csrf_exempt$/;"	kind:namespace	line:19
+csrf_protect	../HostManager/views.py	/^from django.views.decorators.csrf import csrf_protect$/;"	kind:namespace	line:18
+customerName	../HostManager/models.py	/^    customerName = models.CharField(max_length=32,null=True)$/;"	kind:variable	line:13
+data	../HostManager/views.py	/^data = [[1, 2, 3], [4, 5, 6]]$/;"	kind:variable	line:899
+datetime	../HostManager/tasks.py	/^import datetime$/;"	kind:namespace	line:9
+datetime	../HostManager/views.py	/^import datetime$/;"	kind:namespace	line:21
+db	../HostManager/migrations/0001_initial.py	/^import django.db.models.deletion$/;"	kind:namespace	line:4
+db	../HostManager/migrations/0006_auto_20180706_1309.py	/^import django.db.models.deletion$/;"	kind:namespace	line:4
+db	../HostManager/migrations/0011_auto_20180716_1616.py	/^import django.db.models.deletion$/;"	kind:namespace	line:4
+debug_task	../ClusterManager/celery.py	/^def debug_task(self):$/;"	kind:function	line:29
+default	../HostManager/models.py	/^                            default="question")$/;"	kind:variable	line:69
+default	../HostManager/views.py	/^    def default(self, obj):$/;"	kind:member	line:38
+deletion	../HostManager/migrations/0001_initial.py	/^import django.db.models.deletion$/;"	kind:namespace	line:4
+deletion	../HostManager/migrations/0006_auto_20180706_1309.py	/^import django.db.models.deletion$/;"	kind:namespace	line:4
+deletion	../HostManager/migrations/0011_auto_20180716_1616.py	/^import django.db.models.deletion$/;"	kind:namespace	line:4
+dependencies	../HostManager/migrations/0001_initial.py	/^    dependencies = [$/;"	kind:variable	line:11
+dependencies	../HostManager/migrations/0002_auto_20180625_1404.py	/^    dependencies = [$/;"	kind:variable	line:8
+dependencies	../HostManager/migrations/0003_auto_20180625_1407.py	/^    dependencies = [$/;"	kind:variable	line:8
+dependencies	../HostManager/migrations/0004_auto_20180702_2222.py	/^    dependencies = [$/;"	kind:variable	line:8
+dependencies	../HostManager/migrations/0005_auto_20180703_1533.py	/^    dependencies = [$/;"	kind:variable	line:8
+dependencies	../HostManager/migrations/0006_auto_20180706_1309.py	/^    dependencies = [$/;"	kind:variable	line:9
+dependencies	../HostManager/migrations/0007_automate.py	/^    dependencies = [$/;"	kind:variable	line:8
+dependencies	../HostManager/migrations/0008_auto_20180712_2201.py	/^    dependencies = [$/;"	kind:variable	line:8
+dependencies	../HostManager/migrations/0009_auto_20180712_2231.py	/^    dependencies = [$/;"	kind:variable	line:8
+dependencies	../HostManager/migrations/0010_auto_20180712_2327.py	/^    dependencies = [$/;"	kind:variable	line:8
+dependencies	../HostManager/migrations/0011_auto_20180716_1616.py	/^    dependencies = [$/;"	kind:variable	line:9
+dependencies	../HostManager/migrations/0012_auto_20180716_1617.py	/^    dependencies = [$/;"	kind:variable	line:8
+dependencies	../HostManager/migrations/0013_auto_20180716_1639.py	/^    dependencies = [$/;"	kind:variable	line:8
+dependencies	../HostManager/migrations/0014_auto_20180716_1658.py	/^    dependencies = [$/;"	kind:variable	line:8
+dependencies	../HostManager/migrations/0015_auto_20180716_1748.py	/^    dependencies = [$/;"	kind:variable	line:8
+dependencies	../HostManager/migrations/0016_auto_20180716_2120.py	/^    dependencies = [$/;"	kind:variable	line:8
+deviceNumber	../HostManager/models.py	/^    deviceNumber = models.CharField(max_length=32,null=True)  $/;"	kind:variable	line:12
+disable_task	../HostManager/views.py	/^    def disable_task(name):$/;"	kind:member	line:444
+django	../HostManager/migrations/0001_initial.py	/^import django.db.models.deletion$/;"	kind:namespace	line:4
+django	../HostManager/migrations/0006_auto_20180706_1309.py	/^import django.db.models.deletion$/;"	kind:namespace	line:4
+django	../HostManager/migrations/0011_auto_20180716_1616.py	/^import django.db.models.deletion$/;"	kind:namespace	line:4
+django	../manage.py	/^            import django$/;"	kind:namespace	line:14
+download	../HostManager/views.py	/^def download(request, file_type):$/;"	kind:function	line:927
+download_as_attachment	../HostManager/views.py	/^def download_as_attachment(request, file_type, file_name):$/;"	kind:function	line:932
+embed_handson_table	../HostManager/views.py	/^def embed_handson_table(request):$/;"	kind:function	line:1033
+embed_handson_table_from_a_single_table	../HostManager/views.py	/^def embed_handson_table_from_a_single_table(request):$/;"	kind:function	line:1046
+exchange	../HostManager/views.py	/^def exchange(request, file_type):$/;"	kind:function	line:999
+execute_from_command_line	../manage.py	/^        from django.core.management import execute_from_command_line$/;"	kind:namespace	line:8
+export_data	../HostManager/views.py	/^def export_data(request, atype):$/;"	kind:function	line:936
+field	../HostManager/migrations/0002_auto_20180625_1404.py	/^            field=models.CharField(max_length=64, null=True),$/;"	kind:variable	line:16
+field	../HostManager/migrations/0002_auto_20180625_1404.py	/^            field=models.CharField(max_length=64, null=True),$/;"	kind:variable	line:21
+field	../HostManager/migrations/0003_auto_20180625_1407.py	/^            field=models.CharField(max_length=32, null=True),$/;"	kind:variable	line:16
+field	../HostManager/migrations/0003_auto_20180625_1407.py	/^            field=models.CharField(max_length=32, null=True),$/;"	kind:variable	line:21
+field	../HostManager/migrations/0003_auto_20180625_1407.py	/^            field=models.CharField(max_length=32, null=True),$/;"	kind:variable	line:26
+field	../HostManager/migrations/0003_auto_20180625_1407.py	/^            field=models.CharField(max_length=32, null=True),$/;"	kind:variable	line:31
+field	../HostManager/migrations/0003_auto_20180625_1407.py	/^            field=models.CharField(max_length=32, null=True),$/;"	kind:variable	line:41
+field	../HostManager/migrations/0003_auto_20180625_1407.py	/^            field=models.CharField(max_length=32, null=True),$/;"	kind:variable	line:51
+field	../HostManager/migrations/0003_auto_20180625_1407.py	/^            field=models.CharField(max_length=32, null=True),$/;"	kind:variable	line:56
+field	../HostManager/migrations/0003_auto_20180625_1407.py	/^            field=models.CharField(max_length=32, null=True),$/;"	kind:variable	line:61
+field	../HostManager/migrations/0003_auto_20180625_1407.py	/^            field=models.CharField(max_length=32, null=True),$/;"	kind:variable	line:66
+field	../HostManager/migrations/0003_auto_20180625_1407.py	/^            field=models.CharField(max_length=32, null=True),$/;"	kind:variable	line:71
+field	../HostManager/migrations/0003_auto_20180625_1407.py	/^            field=models.CharField(max_length=64, null=True),$/;"	kind:variable	line:36
+field	../HostManager/migrations/0003_auto_20180625_1407.py	/^            field=models.GenericIPAddressField(null=True),$/;"	kind:variable	line:46
+field	../HostManager/migrations/0003_auto_20180625_1407.py	/^            field=models.GenericIPAddressField(null=True),$/;"	kind:variable	line:76
+field	../HostManager/migrations/0003_auto_20180625_1407.py	/^            field=models.GenericIPAddressField(null=True),$/;"	kind:variable	line:81
+field	../HostManager/migrations/0004_auto_20180702_2222.py	/^            field=models.DateTimeField(null=True),$/;"	kind:variable	line:16
+field	../HostManager/migrations/0004_auto_20180702_2222.py	/^            field=models.DateTimeField(null=True),$/;"	kind:variable	line:21
+field	../HostManager/migrations/0004_auto_20180702_2222.py	/^            field=models.DateTimeField(null=True),$/;"	kind:variable	line:26
+field	../HostManager/migrations/0005_auto_20180703_1533.py	/^            field=models.CharField(max_length=32, null=True),$/;"	kind:variable	line:16
+field	../HostManager/migrations/0006_auto_20180706_1309.py	/^            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='HostManager.Question'),$/;"	kind:variable	line:34
+field	../HostManager/migrations/0008_auto_20180712_2201.py	/^            field=models.CharField(max_length=32, null=True),$/;"	kind:variable	line:16
+field	../HostManager/migrations/0008_auto_20180712_2201.py	/^            field=models.CharField(max_length=32, null=True),$/;"	kind:variable	line:21
+field	../HostManager/migrations/0008_auto_20180712_2201.py	/^            field=models.CharField(max_length=32, null=True),$/;"	kind:variable	line:26
+field	../HostManager/migrations/0008_auto_20180712_2201.py	/^            field=models.CharField(max_length=32, null=True),$/;"	kind:variable	line:31
+field	../HostManager/migrations/0008_auto_20180712_2201.py	/^            field=models.CharField(max_length=32, null=True),$/;"	kind:variable	line:36
+field	../HostManager/migrations/0008_auto_20180712_2201.py	/^            field=models.CharField(max_length=32, null=True),$/;"	kind:variable	line:41
+field	../HostManager/migrations/0008_auto_20180712_2201.py	/^            field=models.CharField(max_length=32, null=True),$/;"	kind:variable	line:46
+field	../HostManager/migrations/0008_auto_20180712_2201.py	/^            field=models.CharField(max_length=32, null=True),$/;"	kind:variable	line:51
+field	../HostManager/migrations/0011_auto_20180716_1616.py	/^            field=models.EmailField(max_length=32, null=True),$/;"	kind:variable	line:26
+field	../HostManager/migrations/0014_auto_20180716_1658.py	/^            field=models.CharField(max_length=32, null=True),$/;"	kind:variable	line:26
+field	../HostManager/migrations/0014_auto_20180716_1658.py	/^            field=models.DateTimeField(null=True),$/;"	kind:variable	line:16
+field	../HostManager/migrations/0014_auto_20180716_1658.py	/^            field=models.DateTimeField(null=True),$/;"	kind:variable	line:21
+field	../HostManager/migrations/0016_auto_20180716_2120.py	/^            field=models.CharField(max_length=32, null=True),$/;"	kind:variable	line:16
+fields	../HostManager/migrations/0001_initial.py	/^            fields=[$/;"	kind:variable	line:17
+fields	../HostManager/migrations/0001_initial.py	/^            fields=[$/;"	kind:variable	line:24
+fields	../HostManager/migrations/0001_initial.py	/^            fields=[$/;"	kind:variable	line:45
+fields	../HostManager/migrations/0006_auto_20180706_1309.py	/^            fields=[$/;"	kind:variable	line:16
+fields	../HostManager/migrations/0006_auto_20180706_1309.py	/^            fields=[$/;"	kind:variable	line:24
+fields	../HostManager/migrations/0007_automate.py	/^            fields=[$/;"	kind:variable	line:15
+fields	../HostManager/migrations/0011_auto_20180716_1616.py	/^            fields=[$/;"	kind:variable	line:16
+file	../HostManager/views.py	/^    file = forms.FileField()$/;"	kind:variable	line:903
+forms	../HostManager/views.py	/^from django import forms$/;"	kind:namespace	line:25
+fping	../HostManager/tasks.py	/^def fping(self):$/;"	kind:function	line:208
+get_wsgi_application	../ClusterManager/wsgi.py	/^from django.core.wsgi import get_wsgi_application$/;"	kind:namespace	line:12
+handson_table	../HostManager/views.py	/^def handson_table(request):$/;"	kind:function	line:1028
+hardware	../HostManager/models.py	/^    hardware = models.CharField(max_length=64,null=True)$/;"	kind:variable	line:35
+host	../HostManager/models.py	/^    host = models.ForeignKey(Host,on_delete=models.CASCADE) $/;"	kind:variable	line:48
+hostName	../HostManager/models.py	/^    hostName = models.CharField(max_length=32,null=True)$/;"	kind:variable	line:31
+host_del	../HostManager/views.py	/^    def host_del(request, nid):$/;"	kind:member	line:168
+host_edit	../HostManager/views.py	/^    def host_edit(request, nid):$/;"	kind:member	line:173
+host_info	../HostManager/views.py	/^    def host_info(request):$/;"	kind:member	line:102
+import_data	../HostManager/views.py	/^def import_data(request):$/;"	kind:function	line:955
+import_data_using_isave_book_as	../HostManager/views.py	/^def import_data_using_isave_book_as(request):$/;"	kind:function	line:1094
+import_sheet	../HostManager/views.py	/^def import_sheet(request):$/;"	kind:function	line:983
+import_sheet_using_isave_to_database	../HostManager/views.py	/^def import_sheet_using_isave_to_database(request):$/;"	kind:function	line:1080
+import_without_bulk_save	../HostManager/views.py	/^def import_without_bulk_save(request):$/;"	kind:function	line:1122
+include	../ClusterManager/urls.py	/^from django.conf.urls import include$/;"	kind:namespace	line:25
+index	../HostManager/views.py	/^    def index(request):$/;"	kind:member	line:91
+initial	../HostManager/migrations/0001_initial.py	/^    initial = True$/;"	kind:variable	line:9
+inspectSdr	../HostManager/tasks.py	/^def inspectSdr(ipmiHost, ipmiUser, ipmiPassword):$/;"	kind:function	line:190
+inspectSdr	../HostManager/views.py	/^    def inspectSdr(request):$/;"	kind:member	line:872
+inspectTime	../HostManager/models.py	/^    inspectTime =models.CharField(max_length=32,null=True)$/;"	kind:variable	line:56
+inspect_info	../HostManager/views.py	/^    def inspect_info(request):$/;"	kind:member	line:527
+interval_schedule	../HostManager/views.py	/^    def interval_schedule(request):$/;"	kind:member	line:333
+ipmiPassword	../HostManager/models.py	/^    ipmiPassword = models.CharField(max_length=64,null=True)$/;"	kind:variable	line:43
+ipmiUser	../HostManager/models.py	/^    ipmiUser = models.CharField(max_length=64,null=True)$/;"	kind:variable	line:42
+json	../HostManager/views.py	/^import json$/;"	kind:namespace	line:20
+manage.py	../manage.py	1;"	kind:file	line:1
+manageIP	../HostManager/models.py	/^    manageIP = models.GenericIPAddressField(null=True)$/;"	kind:variable	line:33
+migrations	../HostManager/migrations/0001_initial.py	/^from django.db import migrations, models$/;"	kind:namespace	line:3
+migrations	../HostManager/migrations/0002_auto_20180625_1404.py	/^from django.db import migrations, models$/;"	kind:namespace	line:3
+migrations	../HostManager/migrations/0003_auto_20180625_1407.py	/^from django.db import migrations, models$/;"	kind:namespace	line:3
+migrations	../HostManager/migrations/0004_auto_20180702_2222.py	/^from django.db import migrations, models$/;"	kind:namespace	line:3
+migrations	../HostManager/migrations/0005_auto_20180703_1533.py	/^from django.db import migrations, models$/;"	kind:namespace	line:3
+migrations	../HostManager/migrations/0006_auto_20180706_1309.py	/^from django.db import migrations, models$/;"	kind:namespace	line:3
+migrations	../HostManager/migrations/0007_automate.py	/^from django.db import migrations, models$/;"	kind:namespace	line:3
+migrations	../HostManager/migrations/0008_auto_20180712_2201.py	/^from django.db import migrations, models$/;"	kind:namespace	line:3
+migrations	../HostManager/migrations/0009_auto_20180712_2231.py	/^from django.db import migrations$/;"	kind:namespace	line:3
+migrations	../HostManager/migrations/0010_auto_20180712_2327.py	/^from django.db import migrations$/;"	kind:namespace	line:3
+migrations	../HostManager/migrations/0011_auto_20180716_1616.py	/^from django.db import migrations, models$/;"	kind:namespace	line:3
+migrations	../HostManager/migrations/0012_auto_20180716_1617.py	/^from django.db import migrations$/;"	kind:namespace	line:3
+migrations	../HostManager/migrations/0013_auto_20180716_1639.py	/^from django.db import migrations$/;"	kind:namespace	line:3
+migrations	../HostManager/migrations/0014_auto_20180716_1658.py	/^from django.db import migrations, models$/;"	kind:namespace	line:3
+migrations	../HostManager/migrations/0015_auto_20180716_1748.py	/^from django.db import migrations$/;"	kind:namespace	line:3
+migrations	../HostManager/migrations/0016_auto_20180716_2120.py	/^from django.db import migrations, models$/;"	kind:namespace	line:3
+model_name	../HostManager/migrations/0002_auto_20180625_1404.py	/^            model_name='host',$/;"	kind:variable	line:14
+model_name	../HostManager/migrations/0002_auto_20180625_1404.py	/^            model_name='host',$/;"	kind:variable	line:19
+model_name	../HostManager/migrations/0003_auto_20180625_1407.py	/^            model_name='host',$/;"	kind:variable	line:14
+model_name	../HostManager/migrations/0003_auto_20180625_1407.py	/^            model_name='host',$/;"	kind:variable	line:19
+model_name	../HostManager/migrations/0003_auto_20180625_1407.py	/^            model_name='host',$/;"	kind:variable	line:24
+model_name	../HostManager/migrations/0003_auto_20180625_1407.py	/^            model_name='host',$/;"	kind:variable	line:29
+model_name	../HostManager/migrations/0003_auto_20180625_1407.py	/^            model_name='host',$/;"	kind:variable	line:34
+model_name	../HostManager/migrations/0003_auto_20180625_1407.py	/^            model_name='host',$/;"	kind:variable	line:39
+model_name	../HostManager/migrations/0003_auto_20180625_1407.py	/^            model_name='host',$/;"	kind:variable	line:44
+model_name	../HostManager/migrations/0003_auto_20180625_1407.py	/^            model_name='host',$/;"	kind:variable	line:49
+model_name	../HostManager/migrations/0003_auto_20180625_1407.py	/^            model_name='host',$/;"	kind:variable	line:54
+model_name	../HostManager/migrations/0003_auto_20180625_1407.py	/^            model_name='host',$/;"	kind:variable	line:59
+model_name	../HostManager/migrations/0003_auto_20180625_1407.py	/^            model_name='host',$/;"	kind:variable	line:64
+model_name	../HostManager/migrations/0003_auto_20180625_1407.py	/^            model_name='host',$/;"	kind:variable	line:69
+model_name	../HostManager/migrations/0003_auto_20180625_1407.py	/^            model_name='host',$/;"	kind:variable	line:74
+model_name	../HostManager/migrations/0003_auto_20180625_1407.py	/^            model_name='host',$/;"	kind:variable	line:79
+model_name	../HostManager/migrations/0004_auto_20180702_2222.py	/^            model_name='host',$/;"	kind:variable	line:14
+model_name	../HostManager/migrations/0004_auto_20180702_2222.py	/^            model_name='host',$/;"	kind:variable	line:19
+model_name	../HostManager/migrations/0004_auto_20180702_2222.py	/^            model_name='host',$/;"	kind:variable	line:24
+model_name	../HostManager/migrations/0005_auto_20180703_1533.py	/^            model_name='host',$/;"	kind:variable	line:14
+model_name	../HostManager/migrations/0006_auto_20180706_1309.py	/^            model_name='choice',$/;"	kind:variable	line:32
+model_name	../HostManager/migrations/0008_auto_20180712_2201.py	/^            model_name='clusters',$/;"	kind:variable	line:14
+model_name	../HostManager/migrations/0008_auto_20180712_2201.py	/^            model_name='clusters',$/;"	kind:variable	line:19
+model_name	../HostManager/migrations/0008_auto_20180712_2201.py	/^            model_name='clusters',$/;"	kind:variable	line:24
+model_name	../HostManager/migrations/0008_auto_20180712_2201.py	/^            model_name='clusters',$/;"	kind:variable	line:29
+model_name	../HostManager/migrations/0008_auto_20180712_2201.py	/^            model_name='clusters',$/;"	kind:variable	line:34
+model_name	../HostManager/migrations/0008_auto_20180712_2201.py	/^            model_name='clusters',$/;"	kind:variable	line:39
+model_name	../HostManager/migrations/0008_auto_20180712_2201.py	/^            model_name='clusters',$/;"	kind:variable	line:44
+model_name	../HostManager/migrations/0008_auto_20180712_2201.py	/^            model_name='clusters',$/;"	kind:variable	line:49
+model_name	../HostManager/migrations/0009_auto_20180712_2231.py	/^            model_name='clusters',$/;"	kind:variable	line:14
+model_name	../HostManager/migrations/0010_auto_20180712_2327.py	/^            model_name='host',$/;"	kind:variable	line:14
+model_name	../HostManager/migrations/0011_auto_20180716_1616.py	/^            model_name='clusters',$/;"	kind:variable	line:24
+model_name	../HostManager/migrations/0013_auto_20180716_1639.py	/^            model_name='hostpowerhistory',$/;"	kind:variable	line:14
+model_name	../HostManager/migrations/0014_auto_20180716_1658.py	/^            model_name='host',$/;"	kind:variable	line:14
+model_name	../HostManager/migrations/0014_auto_20180716_1658.py	/^            model_name='hostpowerhistory',$/;"	kind:variable	line:19
+model_name	../HostManager/migrations/0014_auto_20180716_1658.py	/^            model_name='hostpowerhistory',$/;"	kind:variable	line:24
+model_name	../HostManager/migrations/0015_auto_20180716_1748.py	/^            model_name='hostpowerhistory',$/;"	kind:variable	line:14
+model_name	../HostManager/migrations/0016_auto_20180716_2120.py	/^            model_name='hostpowerhistory',$/;"	kind:variable	line:14
+models	../HostManager/migrations/0001_initial.py	/^from django.db import migrations, models$/;"	kind:namespace	line:3
+models	../HostManager/migrations/0001_initial.py	/^import django.db.models.deletion$/;"	kind:namespace	line:4
+models	../HostManager/migrations/0002_auto_20180625_1404.py	/^from django.db import migrations, models$/;"	kind:namespace	line:3
+models	../HostManager/migrations/0003_auto_20180625_1407.py	/^from django.db import migrations, models$/;"	kind:namespace	line:3
+models	../HostManager/migrations/0004_auto_20180702_2222.py	/^from django.db import migrations, models$/;"	kind:namespace	line:3
+models	../HostManager/migrations/0005_auto_20180703_1533.py	/^from django.db import migrations, models$/;"	kind:namespace	line:3
+models	../HostManager/migrations/0006_auto_20180706_1309.py	/^from django.db import migrations, models$/;"	kind:namespace	line:3
+models	../HostManager/migrations/0006_auto_20180706_1309.py	/^import django.db.models.deletion$/;"	kind:namespace	line:4
+models	../HostManager/migrations/0007_automate.py	/^from django.db import migrations, models$/;"	kind:namespace	line:3
+models	../HostManager/migrations/0008_auto_20180712_2201.py	/^from django.db import migrations, models$/;"	kind:namespace	line:3
+models	../HostManager/migrations/0011_auto_20180716_1616.py	/^from django.db import migrations, models$/;"	kind:namespace	line:3
+models	../HostManager/migrations/0011_auto_20180716_1616.py	/^import django.db.models.deletion$/;"	kind:namespace	line:4
+models	../HostManager/migrations/0014_auto_20180716_1658.py	/^from django.db import migrations, models$/;"	kind:namespace	line:3
+models	../HostManager/migrations/0016_auto_20180716_2120.py	/^from django.db import migrations, models$/;"	kind:namespace	line:3
+models	../HostManager/models.py	/^from django.db import models$/;"	kind:namespace	line:1
+models	../HostManager/tasks.py	/^from HostManager import models$/;"	kind:namespace	line:10
+models	../HostManager/views.py	/^from HostManager import models$/;"	kind:namespace	line:7
+models.py	../HostManager/models.py	1;"	kind:file	line:1
+name	../ClusterManager/urls.py	/^        name="download_attachment"),$/;"	kind:variable	line:81
+name	../ClusterManager/urls.py	/^        name="embed_handson_view"),$/;"	kind:variable	line:92
+name	../ClusterManager/urls.py	/^        name="embed_handson_view"),$/;"	kind:variable	line:95
+name	../ClusterManager/urls.py	/^        name="import_no_bulk_save")$/;"	kind:variable	line:105
+name	../ClusterManager/urls.py	/^        name='task_result'),$/;"	kind:variable	line:60
+name	../ClusterManager/urls.py	/^        name='task_result_json'),$/;"	kind:variable	line:63
+name	../HostManager/apps.py	/^    name = 'HostManager'$/;"	kind:variable	line:5
+name	../HostManager/migrations/0001_initial.py	/^            name='Clusters',$/;"	kind:variable	line:16
+name	../HostManager/migrations/0001_initial.py	/^            name='Host',$/;"	kind:variable	line:23
+name	../HostManager/migrations/0001_initial.py	/^            name='Users',$/;"	kind:variable	line:44
+name	../HostManager/migrations/0002_auto_20180625_1404.py	/^            name='ipmiPassword',$/;"	kind:variable	line:15
+name	../HostManager/migrations/0002_auto_20180625_1404.py	/^            name='ipmiUser',$/;"	kind:variable	line:20
+name	../HostManager/migrations/0003_auto_20180625_1407.py	/^            name='bladeBoxNO',$/;"	kind:variable	line:15
+name	../HostManager/migrations/0003_auto_20180625_1407.py	/^            name='bladeNO',$/;"	kind:variable	line:20
+name	../HostManager/migrations/0003_auto_20180625_1407.py	/^            name='cabinetNO',$/;"	kind:variable	line:25
+name	../HostManager/migrations/0003_auto_20180625_1407.py	/^            name='checkOnline',$/;"	kind:variable	line:30
+name	../HostManager/migrations/0003_auto_20180625_1407.py	/^            name='hardware',$/;"	kind:variable	line:35
+name	../HostManager/migrations/0003_auto_20180625_1407.py	/^            name='hostName',$/;"	kind:variable	line:40
+name	../HostManager/migrations/0003_auto_20180625_1407.py	/^            name='manageIP',$/;"	kind:variable	line:45
+name	../HostManager/migrations/0003_auto_20180625_1407.py	/^            name='powerOffTime',$/;"	kind:variable	line:50
+name	../HostManager/migrations/0003_auto_20180625_1407.py	/^            name='powerOnTime',$/;"	kind:variable	line:55
+name	../HostManager/migrations/0003_auto_20180625_1407.py	/^            name='roomNO',$/;"	kind:variable	line:60
+name	../HostManager/migrations/0003_auto_20180625_1407.py	/^            name='runTime',$/;"	kind:variable	line:65
+name	../HostManager/migrations/0003_auto_20180625_1407.py	/^            name='service',$/;"	kind:variable	line:70
+name	../HostManager/migrations/0003_auto_20180625_1407.py	/^            name='serviceIP',$/;"	kind:variable	line:75
+name	../HostManager/migrations/0003_auto_20180625_1407.py	/^            name='storageIP',$/;"	kind:variable	line:80
+name	../HostManager/migrations/0004_auto_20180702_2222.py	/^            name='powerOffTime',$/;"	kind:variable	line:15
+name	../HostManager/migrations/0004_auto_20180702_2222.py	/^            name='powerOnTime',$/;"	kind:variable	line:20
+name	../HostManager/migrations/0004_auto_20180702_2222.py	/^            name='runTime',$/;"	kind:variable	line:25
+name	../HostManager/migrations/0005_auto_20180703_1533.py	/^            name='runTime',$/;"	kind:variable	line:15
+name	../HostManager/migrations/0006_auto_20180706_1309.py	/^            name='Choice',$/;"	kind:variable	line:15
+name	../HostManager/migrations/0006_auto_20180706_1309.py	/^            name='Question',$/;"	kind:variable	line:23
+name	../HostManager/migrations/0006_auto_20180706_1309.py	/^            name='question',$/;"	kind:variable	line:33
+name	../HostManager/migrations/0007_automate.py	/^            name='Automate',$/;"	kind:variable	line:14
+name	../HostManager/migrations/0008_auto_20180712_2201.py	/^            name='contactEmail',$/;"	kind:variable	line:15
+name	../HostManager/migrations/0008_auto_20180712_2201.py	/^            name='contactPerson',$/;"	kind:variable	line:20
+name	../HostManager/migrations/0008_auto_20180712_2201.py	/^            name='contactPhone',$/;"	kind:variable	line:25
+name	../HostManager/migrations/0008_auto_20180712_2201.py	/^            name='contactQQ',$/;"	kind:variable	line:30
+name	../HostManager/migrations/0008_auto_20180712_2201.py	/^            name='contactWeicat',$/;"	kind:variable	line:35
+name	../HostManager/migrations/0008_auto_20180712_2201.py	/^            name='customerName',$/;"	kind:variable	line:40
+name	../HostManager/migrations/0008_auto_20180712_2201.py	/^            name='deviceNumber',$/;"	kind:variable	line:45
+name	../HostManager/migrations/0008_auto_20180712_2201.py	/^            name='hostCluster',$/;"	kind:variable	line:50
+name	../HostManager/migrations/0011_auto_20180716_1616.py	/^            name='HostHistory',$/;"	kind:variable	line:15
+name	../HostManager/migrations/0011_auto_20180716_1616.py	/^            name='contactEmail',$/;"	kind:variable	line:25
+name	../HostManager/migrations/0014_auto_20180716_1658.py	/^            name='powerCycleTime',$/;"	kind:variable	line:15
+name	../HostManager/migrations/0014_auto_20180716_1658.py	/^            name='powerCycleTimeHistory',$/;"	kind:variable	line:20
+name	../HostManager/migrations/0014_auto_20180716_1658.py	/^            name='runTimeHistory',$/;"	kind:variable	line:25
+name	../HostManager/migrations/0016_auto_20180716_2120.py	/^            name='powerCycleTimes',$/;"	kind:variable	line:15
+new_name	../HostManager/migrations/0009_auto_20180712_2231.py	/^            new_name='clusterName',$/;"	kind:variable	line:16
+new_name	../HostManager/migrations/0010_auto_20180712_2327.py	/^            new_name='clusterName',$/;"	kind:variable	line:16
+new_name	../HostManager/migrations/0012_auto_20180716_1617.py	/^            new_name='HostPowerHistory',$/;"	kind:variable	line:15
+new_name	../HostManager/migrations/0013_auto_20180716_1639.py	/^            new_name='host',$/;"	kind:variable	line:16
+new_name	../HostManager/migrations/0015_auto_20180716_1748.py	/^            new_name='powerCycleTimes',$/;"	kind:variable	line:16
+old_name	../HostManager/migrations/0009_auto_20180712_2231.py	/^            old_name='hostCluster',$/;"	kind:variable	line:15
+old_name	../HostManager/migrations/0010_auto_20180712_2327.py	/^            old_name='hostCluster',$/;"	kind:variable	line:15
+old_name	../HostManager/migrations/0012_auto_20180716_1617.py	/^            old_name='HostHistory',$/;"	kind:variable	line:14
+old_name	../HostManager/migrations/0013_auto_20180716_1639.py	/^            old_name='hostId',$/;"	kind:variable	line:15
+old_name	../HostManager/migrations/0015_auto_20180716_1748.py	/^            old_name='powerCycleTimeHistory',$/;"	kind:variable	line:15
+operations	../HostManager/migrations/0001_initial.py	/^    operations = [$/;"	kind:variable	line:14
+operations	../HostManager/migrations/0002_auto_20180625_1404.py	/^    operations = [$/;"	kind:variable	line:12
+operations	../HostManager/migrations/0003_auto_20180625_1407.py	/^    operations = [$/;"	kind:variable	line:12
+operations	../HostManager/migrations/0004_auto_20180702_2222.py	/^    operations = [$/;"	kind:variable	line:12
+operations	../HostManager/migrations/0005_auto_20180703_1533.py	/^    operations = [$/;"	kind:variable	line:12
+operations	../HostManager/migrations/0006_auto_20180706_1309.py	/^    operations = [$/;"	kind:variable	line:13
+operations	../HostManager/migrations/0007_automate.py	/^    operations = [$/;"	kind:variable	line:12
+operations	../HostManager/migrations/0008_auto_20180712_2201.py	/^    operations = [$/;"	kind:variable	line:12
+operations	../HostManager/migrations/0009_auto_20180712_2231.py	/^    operations = [$/;"	kind:variable	line:12
+operations	../HostManager/migrations/0010_auto_20180712_2327.py	/^    operations = [$/;"	kind:variable	line:12
+operations	../HostManager/migrations/0011_auto_20180716_1616.py	/^    operations = [$/;"	kind:variable	line:13
+operations	../HostManager/migrations/0012_auto_20180716_1617.py	/^    operations = [$/;"	kind:variable	line:12
+operations	../HostManager/migrations/0013_auto_20180716_1639.py	/^    operations = [$/;"	kind:variable	line:12
+operations	../HostManager/migrations/0014_auto_20180716_1658.py	/^    operations = [$/;"	kind:variable	line:12
+operations	../HostManager/migrations/0015_auto_20180716_1748.py	/^    operations = [$/;"	kind:variable	line:12
+operations	../HostManager/migrations/0016_auto_20180716_2120.py	/^    operations = [$/;"	kind:variable	line:12
+os	../ClusterManager/celery.py	/^import os$/;"	kind:namespace	line:2
+os	../ClusterManager/settings.py	/^import os$/;"	kind:namespace	line:17
+os	../ClusterManager/wsgi.py	/^import os$/;"	kind:namespace	line:10
+os	../HostManager/tasks.py	/^import os, sys, time$/;"	kind:namespace	line:8
+os	../manage.py	/^import os$/;"	kind:namespace	line:2
+parse	../HostManager/views.py	/^def parse(request, data_struct_type):$/;"	kind:function	line:1008
+password	../HostManager/models.py	/^    password = models.CharField(max_length=64)$/;"	kind:variable	line:63
+periodic_task	../HostManager/views.py	/^    def periodic_task(request):$/;"	kind:member	line:299
+periodic_task.py	../ClusterManager/periodic_task.py	1;"	kind:file	line:1
+powerCycle	../HostManager/tasks.py	/^def powerCycle(ipmiHost, ipmiUser, ipmiPassword):$/;"	kind:function	line:64
+powerCycle	../HostManager/views.py	/^    def powerCycle(request):$/;"	kind:member	line:652
+powerCycleTime	../HostManager/models.py	/^    powerCycleTime = models.DateTimeField(null=True)$/;"	kind:variable	line:38
+powerCycleTimes	../HostManager/models.py	/^    powerCycleTimes = models.CharField(max_length = 32,default="0")$/;"	kind:variable	line:50
+powerOff	../HostManager/tasks.py	/^def powerOff(ipmiHost, ipmiUser, ipmiPassword):$/;"	kind:function	line:50
+powerOff	../HostManager/views.py	/^    def powerOff(request):$/;"	kind:member	line:615
+powerOffTime	../HostManager/models.py	/^    powerOffTime = models.DateTimeField(null=True)$/;"	kind:variable	line:39
+powerOffTimeHistory	../HostManager/models.py	/^    powerOffTimeHistory = models.DateTimeField(null=True)$/;"	kind:variable	line:51
+powerOn	../HostManager/tasks.py	/^def powerOn(ipmiHost, ipmiUser, ipmiPassword):$/;"	kind:function	line:36
+powerOn	../HostManager/views.py	/^    def powerOn(request):$/;"	kind:member	line:583
+powerOnTime	../HostManager/models.py	/^    powerOnTime = models.DateTimeField(null=True)$/;"	kind:variable	line:37
+powerOnTimeHistory	../HostManager/models.py	/^    powerOnTimeHistory = models.DateTimeField(null=True)$/;"	kind:variable	line:49
+powerReset	../HostManager/tasks.py	/^def powerReset(ipmiHost, ipmiUser, ipmiPassword):$/;"	kind:function	line:78
+powerSoft	../HostManager/tasks.py	/^def powerSoft(ipmiHost, ipmiUser, ipmiPassword):$/;"	kind:function	line:92
+powerStatus	../HostManager/tasks.py	/^def powerStatus(ipmiHost, ipmiUser, ipmiPassword):$/;"	kind:function	line:22
+power_history	../HostManager/views.py	/^    def power_history(request, nid):$/;"	kind:member	line:215
+pub_date	../HostManager/models.py	/^    pub_date = models.DateTimeField('date published')$/;"	kind:variable	line:67
+pytz	../HostManager/tasks.py	/^import pytz$/;"	kind:namespace	line:11
+pytz	../HostManager/views.py	/^import pytz$/;"	kind:namespace	line:22
+question	../HostManager/models.py	/^    question = models.ForeignKey(Question, on_delete=models.CASCADE)$/;"	kind:variable	line:76
+question_text	../HostManager/models.py	/^    question_text = models.CharField(max_length=200)$/;"	kind:variable	line:66
+redirect	../HostManager/views.py	/^from django.shortcuts import render, redirect$/;"	kind:namespace	line:4
+render	../HostManager/views.py	/^from django.shortcuts import render, redirect$/;"	kind:namespace	line:4
+roomNO	../HostManager/models.py	/^    roomNO = models.CharField(max_length=32,null=True)$/;"	kind:variable	line:27
+runTime	../HostManager/models.py	/^    runTime = models.CharField(max_length=32,null=True)$/;"	kind:variable	line:41
+runTimeCalculate	../HostManager/views.py	/^    def runTimeCalculate(ipmiID, powerOnTime, powerOffTime):$/;"	kind:member	line:685
+runTimeHistory	../HostManager/models.py	/^    runTimeHistory = models.CharField(max_length=32,null=True)$/;"	kind:variable	line:52
+serialize	../HostManager/views.py	/^from django.core.serializers import serialize$/;"	kind:namespace	line:27
+service	../HostManager/models.py	/^    service = models.CharField(max_length=32,null=True)$/;"	kind:variable	line:36
+serviceIP	../HostManager/models.py	/^    serviceIP = models.GenericIPAddressField(null=True)$/;"	kind:variable	line:32
+settings.py	../ClusterManager/settings.py	1;"	kind:file	line:1
+setup_periodic_tasks	../ClusterManager/periodic_task.py	/^def setup_periodic_tasks(sender, **kwargs):$/;"	kind:function	line:8
+shared_task	../HostManager/tasks.py	/^from celery import shared_task$/;"	kind:namespace	line:6
+shared_task	../HostManager/views.py	/^from celery import shared_task$/;"	kind:namespace	line:14
+signin	../HostManager/views.py	/^    def signin(request):$/;"	kind:member	line:49
+signup	../HostManager/views.py	/^    def signup(request):$/;"	kind:member	line:75
+slug	../HostManager/models.py	/^    slug = models.CharField(max_length=10, unique=True,$/;"	kind:variable	line:68
+solar_schedule	../HostManager/views.py	/^    def solar_schedule(request):$/;"	kind:member	line:352
+storageIP	../HostManager/models.py	/^    storageIP = models.GenericIPAddressField(null=True)$/;"	kind:variable	line:34
+survey_result	../HostManager/views.py	/^def survey_result(request):$/;"	kind:function	line:1057
+sys	../HostManager/tasks.py	/^import os, sys, time$/;"	kind:namespace	line:8
+sys	../manage.py	/^import sys$/;"	kind:namespace	line:3
+task	../HostManager/tasks.py	/^from celery import task$/;"	kind:namespace	line:7
+task	../HostManager/views.py	/^from celery import task$/;"	kind:namespace	line:15
+task_result	../HostManager/views.py	/^    def task_result(request):$/;"	kind:member	line:455
+task_result_json	../HostManager/views.py	/^    def task_result_json(request):$/;"	kind:member	line:473
+tasks	../HostManager/views.py	/^from HostManager import tasks$/;"	kind:namespace	line:16
+tasks.py	../HostManager/tasks.py	1;"	kind:file	line:1
+test	../ClusterManager/periodic_task.py	/^def test(arg):$/;"	kind:function	line:23
+time	../HostManager/tasks.py	/^import os, sys, time$/;"	kind:namespace	line:8
+timedelta	../ClusterManager/settings.py	/^from datetime import timedelta$/;"	kind:namespace	line:3
+unicode_literals	../ClusterManager/__init__.py	/^from __future__ import absolute_import, unicode_literals$/;"	kind:namespace	line:1
+upload	../HostManager/views.py	/^def upload(request):$/;"	kind:function	line:907
+url	../ClusterManager/urls.py	/^from django.conf.urls import url$/;"	kind:namespace	line:22
+urlpatterns	../ClusterManager/urls.py	/^urlpatterns = [$/;"	kind:variable	line:28
+urls.py	../ClusterManager/urls.py	1;"	kind:file	line:1
+username	../HostManager/models.py	/^    username = models.CharField(max_length=64)$/;"	kind:variable	line:62
+views	../ClusterManager/urls.py	/^from HostManager import views$/;"	kind:namespace	line:24
+views.py	../HostManager/views.py	1;"	kind:file	line:1
+votes	../HostManager/models.py	/^    votes = models.IntegerField(default=0)$/;"	kind:variable	line:78
+wsgi.py	../ClusterManager/wsgi.py	1;"	kind:file	line:1

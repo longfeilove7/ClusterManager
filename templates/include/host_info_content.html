@@ -16,6 +16,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="#" id="batchBtn2" onclick="toBatchPowerOff('mytable',this)">批量关机</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="batchBtn2" onclick="toBatchPowerCycle('mytable',this)">批量重启</a>
+                </li>
                 <!-- Dropdown -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
@@ -53,7 +56,7 @@
 
         <thead class="thead-light">
             <tr>
-                 <th>
+                <th>
                     <input type="checkbox" id="select-all" onclick="selectAll()">
                 </th>
                 <th>ID</th>
@@ -67,14 +70,14 @@
                 <th>存储IP</th>
                 <th>集群</th>
                 <th>型号</th>
-                <th>操作系统</th>                
+                <th>操作系统</th>
                 <th>开机时间</th>
                 <th>关机时间</th>
                 <th>状态</th>
                 <th>运行时长</th>
                 <th>启动顺序</th>
                 <th>电源操作</th>
-                <th>远程管理</th>                  
+                <th>远程管理</th>
             </tr>
         </thead>
         <tbody>
@@ -94,51 +97,59 @@
                 <td>{{ row.storageIP }}</td>
                 <td>{{ row.clusterName.clusterName }}</td>
                 <td>{{ row.hardware }}</td>
-                <td>{{ row.service }}</td>                
+                <td>{{ row.service }}</td>
                 <td>{{ row.powerOnTime|date:"Y-m-d H:i:s" }}</td>
                 <td>{{ row.powerOffTime|date:"Y-m-d H:i:s" }}</td>
                 <td>{{ row.checkOnline }}</td>
                 <td>
                     <a href="/power_history-{{ row.id }}/">{{ row.runTime }}</a>
-                </td>                
+                </td>
                 <td>
-                    <button type="button" id="btn1" class="singleButton" data-toggle="tooltip" data-placement="left" title="DISK启动" name="btn" onclick="toPowerOnDisk('mytable',this)">
-                        <i class="fas fa-database"></i>
-
-                    </button>                
-                    <button type="button" id="btn2" class="singleButton" data-toggle="tooltip" data-placement="left" title="PXE启动" name="btn" onclick="toPowerOnPxe('mytable',this)">
-                        <i class="fab fa-internet-explorer"></i>
-                    </button>               
-                    <button type="button" id="btn3" class="singleButton" data-toggle="tooltip" data-placement="left" title="CD-ROM启动" name="btn" onclick="toPowerOnCdrom('mytable',this)">
-                        <i class="fas fa-compact-disc"></i>
-                    </button>
-                    <button type="button" id="btn3" class="singleButton" data-toggle="tooltip" data-placement="left" title="BIOS启动" name="btn" onclick="toPowerOnBios('mytable',this)">
-                        <i class="fab fa-bitcoin"></i>
-                    </button>
-                </td>          
+                    <div class="btn-group" data-toggle="buttons">
+                        <button type="button" id="btn1" class="singleButton" data-toggle="tooltip" data-placement="left" title="DISK启动" name="btn"
+                            onclick="toPowerOnDisk('mytable',this)">
+                            <i class="fas fa-database"></i>
+                        </button>
+                        <button type="button" id="btn2" class="singleButton" data-toggle="tooltip" data-placement="left" title="PXE启动" name="btn"
+                            onclick="toPowerOnPxe('mytable',this)">
+                            <i class="fab fa-internet-explorer"></i>
+                        </button>
+                        <button type="button" id="btn3" class="singleButton" data-toggle="tooltip" data-placement="left" title="CD-ROM启动" name="btn"
+                            onclick="toPowerOnCdrom('mytable',this)">
+                            <i class="fas fa-compact-disc"></i>
+                        </button>
+                        <button type="button" id="btn3" class="singleButton" data-toggle="tooltip" data-placement="left" title="BIOS启动" name="btn"
+                            onclick="toPowerOnBios('mytable',this)">
+                            <i class="fab fa-bitcoin"></i>
+                        </button>
+                    </div>
+                </td>
                 <td>
-                    <button type="button" id="btn1" class="singleButton" data-toggle="tooltip" title="开机" name="btn" onclick="toPowerOn('mytable',this)">
-                        <i class="fa fa-plug"></i>
-
-                    </button>                
-                    <button type="button" id="btn2" class="singleButton" data-toggle="tooltip" title="关机" name="btn" onclick="toPowerOff('mytable',this)">
-                        <i class="fa fa-power-off"></i>
-                    </button>               
-                    <button type="button" id="btn3" class="singleButton" data-toggle="tooltip" title="重启" name="btn" onclick="toPowerCycle('mytable',this)">
-                        <i class="fa fa-recycle"></i>
-                    </button>
-                </td>    
+                    <div class="btn-group" data-toggle="buttons">
+                        <button type="button" id="btn1" class="singleButton" data-toggle="tooltip" title="开机" name="btn" onclick="toPowerOn('mytable',this)">
+                            <i class="fa fa-plug"></i>
+                        </button>
+                        <button type="button" id="btn2" class="singleButton" data-toggle="tooltip" title="关机" name="btn" onclick="toPowerOff('mytable',this)">
+                            <i class="fa fa-power-off"></i>
+                        </button>
+                        <button type="button" id="btn3" class="singleButton" data-toggle="tooltip" title="重启" name="btn" onclick="toPowerCycle('mytable',this)">
+                            <i class="fa fa-recycle"></i>
+                        </button>
+                    </div>
+                </td>
                 <td>
-                    <button type="button" id="btn1" class="singleButton" data-toggle="tooltip" title="SSH连接" name="btn" onclick="toHttp('mytable',this)">
-                        <i class="fas fa-globe"></i>
-                    </button>                
-                    <button type="button" id="btn2" class="singleButton" data-toggle="tooltip" title="RDP连接" name="btn" onclick="toRdp('mytable',this)">
-                        <i class="fab fa-windows"></i>
-                    </button>               
-                    <button type="button" id="btn3" class="singleButton" data-toggle="tooltip" title="IPMI连接" name="btn" onclick="toSsh('mytable',this)">
-                        <i class="fab fa-linux"></i>
-                    </button>
-                </td>    
+                    <div class="btn-group" data-toggle="buttons">
+                        <button type="button" id="btn1" class="singleButton" data-toggle="tooltip" title="SSH连接" name="btn" onclick="toHttp('mytable',this)">
+                            <i class="fas fa-globe"></i>
+                        </button>
+                        <button type="button" id="btn2" class="singleButton" data-toggle="tooltip" title="RDP连接" name="btn" onclick="toRdp('mytable',this)">
+                            <i class="fab fa-windows"></i>
+                        </button>
+                        <button type="button" id="btn3" class="singleButton" data-toggle="tooltip" title="IPMI连接" name="btn" onclick="toSsh('mytable',this)">
+                            <i class="fab fa-linux"></i>
+                        </button>
+                    </div>
+                </td>
             </tr>
             {% endfor %}
         </tbody>

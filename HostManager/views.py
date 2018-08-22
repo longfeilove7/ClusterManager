@@ -413,17 +413,18 @@ class ClassCeleryBeat():
 
     def getPowerStatus():
         #从数据库获得IP地址列表
-        db_list = models.Host.objects.values("id", "manageIP", "ipmiUser","ipmiPassword")        
+        db_list = models.Host.objects.values("id", "manageIP", "ipmiUser",
+                                             "ipmiPassword")
         #遍历列表获得内部字典
         for key_dict in db_list:
             #获取单条字典的对应值
             idName = key_dict['id']
-            ipmiHost = key_dict['manageIP']            
-            ipmiUser = key_dict['ipmiUser']            
+            ipmiHost = key_dict['manageIP']
+            ipmiUser = key_dict['ipmiUser']
             ipmiPassword = key_dict['ipmiPassword']
             #调用创建任务函数，并传参数
             ClassCeleryBeat.create_PowerStatus(idName, ipmiHost, ipmiUser,
-                                        ipmiPassword)
+                                               ipmiPassword)
 
     #创建定时任务
     def create_PowerStatus(idName, ipmiHost, ipmiUser, ipmiPassword):
@@ -745,7 +746,6 @@ class ClassCeleryWorker():
             #遍历列表
             for dictAllValue in listAllValue:
                 print(type(dictAllValue))
-
                 dictAllValue = eval(dictAllValue)
                 ipmiIP = dictAllValue['manageIP']
                 print("this is ip" + ipmiIP)
@@ -761,16 +761,15 @@ class ClassCeleryWorker():
                                              ipmiPassword).get()
                 print(request)
                 print(type(result))
-
                 listResult.append(result)
-
                 print(listResult)
                 print(type(listResult))
-
                 result.insert(0, ipmiID)
                 powerOnTime = result[1]
+                #更新开机时间到主机信息表
                 models.Host.objects.filter(id=ipmiID).update(
                     powerOnTime=result[2], )
+                #更新开机时间到历史记录表
                 models.HostPowerHistory.objects.create(
                     powerOnTimeHistory=result[2],
                     host_id=ipmiID,
@@ -838,6 +837,50 @@ class ClassCeleryWorker():
         else:
             return render(request, 'host_info.html', context)
 
+    def batchPowerCycle(request):
+        """"""
+        #定义一个字典context
+        context = {}
+        #如果是POST请求
+        if request.method == 'POST':
+            #获取Jquery发送的allValue，并赋值
+            allValue = request.POST.get('allValue')
+            print(allValue)
+            #切割字符串
+            listAllValue = allValue.split("-")
+            print(listAllValue)
+            #定义一个列表listResult
+            listResult = []
+            #遍历列表
+            for dictAllValue in listAllValue:
+                print(type(dictAllValue))
+
+                dictAllValue = eval(dictAllValue)
+                ipmiIP = dictAllValue['manageIP']
+                print("this is ip" + ipmiIP)
+                ipmiID = dictAllValue['ID']
+                print(ipmiID)
+                db_dict = models.Host.objects.filter(id=ipmiID).values()[0]
+                ipmiUser = db_dict['ipmiUser']
+                print(ipmiUser)
+                ipmiPassword = db_dict['ipmiPassword']
+                print(ipmiPassword)
+                ipmiHost = ipmiIP
+                result = tasks.powerCycle.delay(ipmiHost, ipmiUser,
+                                                ipmiPassword).get()
+                print(request)
+                print(type(result))
+                listResult.append(result)
+                print(listResult)
+                print(type(listResult))
+            data = json.dumps(listResult).encode()
+            return HttpResponse(data)
+        elif request.method == 'GET':
+            print(request.GET)
+            return ()
+        else:
+            return render(request, 'host_info.html', context)
+
     def batchInspectSdr(request):
         """"""
         context = {}
@@ -864,15 +907,11 @@ class ClassCeleryWorker():
                 result = tasks.inspectSdr.delay(ipmiHost, ipmiUser,
                                                 ipmiPassword).get()
                 inspectTime = result[1]
-
                 print(request)
                 print(type(result))
-
                 listResult.append(result)
-
                 print(listResult)
                 print(type(listResult))
-
                 result.insert(0, ipmiID)
                 powerOnTime = result[1]
                 models.Automate.objects.filter(id=ipmiID).update(
@@ -902,7 +941,6 @@ class ClassCeleryWorker():
                                             ipmiPassword).get()
             data = json.dumps(result).encode()
             print(result)
-
             models.Automate.objects.filter(id=ipmiID).update(
                 inspectTime=result[1], )
             return HttpResponse(data)
@@ -911,6 +949,51 @@ class ClassCeleryWorker():
             return ()
         else:
             return render(request, 'inspect_info.html', context)
+
+
+class ClassBillingSystem():
+    def billingInfo(request):
+        """"""
+        global GLOBAL_VAR_USER
+        user_list = models.Users.objects.filter(
+            username=GLOBAL_VAR_USER).first()
+        if request.method == 'GET':
+            obj = models.Host.objects.all()
+            cluster_list = models.Clusters.objects.all()
+            return render(request, 'billing_info.html', {
+                'obj': obj,
+                'cluster_list': cluster_list,
+                'user_list': user_list
+            })
+
+    def billingDevice(request):
+        """"""
+        global GLOBAL_VAR_USER
+        user_list = models.Users.objects.filter(
+            username=GLOBAL_VAR_USER).first()
+        if request.method == 'GET':
+            obj = models.Host.objects.all()
+            cluster_list = models.Clusters.objects.all()
+            return render(request, 'billing_device.html', {
+                'obj': obj,
+                'cluster_list': cluster_list,
+                'user_list': user_list
+            })
+
+    def billingPrice(request):
+        """"""
+        global GLOBAL_VAR_USER
+        user_list = models.Users.objects.filter(
+            username=GLOBAL_VAR_USER).first()
+        if request.method == 'GET':
+            obj = models.Host.objects.all()
+            cluster_list = models.Clusters.objects.all()
+            return render(request, 'billing_price.html', {
+                'obj': obj,
+                'cluster_list': cluster_list,
+                'user_list': user_list
+            })
+
 
 data = [[1, 2, 3], [4, 5, 6]]
 

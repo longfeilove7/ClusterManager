@@ -52,6 +52,7 @@ urlpatterns = [
     url(r'^power_cycle/', views.ClassCeleryWorker.powerCycle),
     url(r'^batch_power_on/', views.ClassCeleryWorker.batchPowerOn),
     url(r'^batch_power_off/', views.ClassCeleryWorker.batchPowerOff),
+    url(r'^batch_power_cycle/', views.ClassCeleryWorker.batchPowerCycle),
 
     # for task url
     url(r'^inspect_info/', views.ClassCeleryWorker.inspect_info),
@@ -72,6 +73,11 @@ urlpatterns = [
     # for task function
     url(r'^batch_inspect_sdr/', views.ClassCeleryWorker.batchInspectSdr),
     url(r'^inspect_sdr/', views.ClassCeleryWorker.inspectSdr),
+
+        # for device billing
+    url(r'^billing_info/', views.ClassBillingSystem.billingInfo),
+    url(r'^billing_device/', views.ClassBillingSystem.billingDevice),
+    url(r'^billing_price/', views.ClassBillingSystem.billingPrice),   
 
     #for django-excel
     url(r'^django_excel', views.upload, name='uplink'),

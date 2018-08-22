@@ -1,18 +1,18 @@
-    // using jQuery
-    function getCookie(name) {
+// using jQuery
+function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie !== '') {
         var cookies = document.cookie.split(';');
         for (var i = 0; i < cookies.length; i++) {
             var cookie = jQuery.trim(cookies[i]);
-    // Does this cookie string begin with the name we want?
+            // Does this cookie string begin with the name we want?
             if (cookie.substring(0, name.length + 1) === (name + '=')) {
-        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-    break;
-}
-}
-}
-return cookieValue;
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
 }
 var csrftoken = getCookie('csrftoken');
 
@@ -21,11 +21,11 @@ function csrfSafeMethod(method) {
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
 }
 $.ajaxSetup({
-        beforeSend: function (xhr, settings) {
+    beforeSend: function (xhr, settings) {
         if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
     }
-}
 });
 
 /**
@@ -34,46 +34,78 @@ $.ajaxSetup({
 * @return Array
 */
 function toPowerOn(id, e) {
-    var getID = e.parentNode.parentNode.children[1].innerHTML;
-    var getIP = e.parentNode.parentNode.children[8].innerHTML;
+    var getID = e.parentNode.parentNode.parentNode.children[1].innerHTML;
+    var getIP = e.parentNode.parentNode.parentNode.children[8].innerHTML;
 
-    if (confirm("Power on " + getIP)) {
-        $.ajax({
-            contentType: "application/x-www-form-urlencoded; charset=utf-8",
-            //contentType: "application/json; charset=utf-8", //django not support json,don't use this
-            dataType: "json", //for to get json
-            url: "/power_on/",
-            type: "POST",
-            cache: false,
-            data: {
-                'ID': getID,
-                'IP': getIP
-            },
-            beforeSend: function (xhr, settings) {
-                //此处调用刚刚加入的js方法
-                var csrftoken = getCookie('csrftoken');
-                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+    $.confirm({
+        title: '对如下设备开机?',
+        content: '设备IP：' + getIP,
+        type: 'green',
+        buttons: {
+            ok: {
+                text: "提交",
+                btnClass: 'btn-primary',
+                keys: ['enter'],
+                action: function () {
+                    console.log('the user clicked confirm');
+                    $.ajax({
+                        contentType: "application/x-www-form-urlencoded; charset=utf-8",
+                        //contentType: "application/json; charset=utf-8", //django not support json,don't use this
+                        dataType: "json", //for to get json
+                        url: "/power_on/",
+                        type: "POST",
+                        cache: false,
+                        data: {
+                            'ID': getID,
+                            'IP': getIP
+                        },
+                        beforeSend: function (xhr, settings) {
+                            //此处调用刚刚加入的js方法
+                            var csrftoken = getCookie('csrftoken');
+                            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                            }
+                        },
+                        success: function (data) {
+                            console.log(data)
+                            //alert(data)
+                            //以上是后端函数返回成功的信息
+                            e.parentNode.parentNode.parentNode.children[13].innerHTML = data[1]
+                            if (data[2] == "fail") {
+                                $.alert({
+                                    title: '提示：',
+                                    content: "设备IP：" + data[0] + " 开机失败！",
+                                    type: 'red',
+                                    buttons: {
+                                        ok: {
+                                            text: "关闭",
+                                            btnClass: 'btn-secondary',
+                                            keys: ['enter']
+                                        }
+                                    }
+                                })
+                            }
+                        },
+                        error: function (request, info, e) {
+                            alert("false");
+                        }
+                    })
                 }
             },
-            success: function (data) {
-                console.log(data)
-                //alert(data)
-                //以上是后端函数返回成功的信息
-                e.parentNode.parentNode.children[13].innerHTML = data[1]
-                if (data[2] == "fail") {
-                    alert(data[0] + "poweron" + data[2])
+            cancel: {
+                text: "关闭",
+                btnClass: 'btn-secondary',
+                keys: ['enter'],
+                action: function () {
+                    console.log('the user clicked cancel');
                 }
-            },
-            error: function (request, info, e) {
-                alert("false");                
             }
-        })
-    }
-    }
-    
+        }
+    })
+}
 
- 
+
+
 
 /**
  * 遍历表格内容返回数组
@@ -81,46 +113,78 @@ function toPowerOn(id, e) {
  * @return Array
  */
 function toPowerOff(id, e) {
-    var getID = e.parentNode.parentNode.children[1].innerHTML;
-        var getIP = e.parentNode.parentNode.children[8].innerHTML;
-    
-    if (confirm("Power off " + getIP)) {
-            $.ajax({
-                contentType: "application/x-www-form-urlencoded; charset=utf-8",
-                //contentType: "application/json; charset=utf-8", //django not support json,don't use this
-                dataType: "json", //for to get json
-                url: "/power_off/",
-                type: "POST",
-                cache: false,
-                data: {
-                    'ID': getID,
-                    'IP': getIP
-                },
-                beforeSend: function (xhr, settings) {
-                    //此处调用刚刚加入的js方法
-                    var csrftoken = getCookie('csrftoken');
-                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                    }
-                },
-                success: function (data) {
-                    e.parentNode.parentNode.children[14].innerHTML = data[1]
-                    e.parentNode.parentNode.children[16].innerHTML = '<a href="/power_history-'+getID+'/">'+data[3]+'</a>'
-                    if (data[2] == "fail") {
-                        alert(data[0] + "poweroff" + data[2])
-                    }
-                    console.log(data)
-                    //alert(data[1])
-                    //以上是后端函数返回成功的信息
-                },
-                error: function (request, info, e) {
-                    alert("false");
-                    console.log(e)
+    var getID = e.parentNode.parentNode.parentNode.children[1].innerHTML;
+    var getIP = e.parentNode.parentNode.parentNode.children[8].innerHTML;
+
+    $.confirm({
+        title: '对如下设备关机?',
+        content: '设备IP：' + getIP,
+        type: 'green',
+        buttons: {
+            ok: {
+                text: "提交",
+                btnClass: 'btn-primary',
+                keys: ['enter'],
+                action: function () {
+                    console.log('the user clicked confirm');
+                    $.ajax({
+                        contentType: "application/x-www-form-urlencoded; charset=utf-8",
+                        //contentType: "application/json; charset=utf-8", //django not support json,don't use this
+                        dataType: "json", //for to get json
+                        url: "/power_off/",
+                        type: "POST",
+                        cache: false,
+                        data: {
+                            'ID': getID,
+                            'IP': getIP
+                        },
+                        beforeSend: function (xhr, settings) {
+                            //此处调用刚刚加入的js方法
+                            var csrftoken = getCookie('csrftoken');
+                            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                            }
+                        },
+                        success: function (data) {
+                            e.parentNode.parentNode.parentNode.children[14].innerHTML = data[1]
+                            e.parentNode.parentNode.parentNode.children[16].innerHTML = '<a href="/power_history-' + getID + '/">' + data[3] + '</a>'
+                            if (data[2] == "fail") {
+                                $.alert({
+                                    title: '提示：',
+                                    content: "设备IP：" + data[0] + " 关机失败！",
+                                    type: 'red',
+                                    buttons: {
+                                        ok: {
+                                            text: "关闭",
+                                            btnClass: 'btn-secondary',
+                                            keys: ['enter']
+                                        }
+                                    }
+                                })
+                            }
+                            console.log(data)
+                            //alert(data[1])
+                            //以上是后端函数返回成功的信息
+                        },
+                        error: function (request, info, e) {
+                            alert("false");
+                            console.log(e)
+                        }
+                    })
                 }
-            })
+            },
+            cancel: {
+                text: "关闭",
+                btnClass: 'btn-secondary',
+                keys: ['enter'],
+                action: function () {
+                    console.log('the user clicked cancel');
+                }
+            }
         }
-        }
-        
+    })
+}
+
 
 
 
@@ -131,46 +195,77 @@ function toPowerOff(id, e) {
  * @return Array
  */
 function toPowerCycle(id, e) {
-    var getID = e.parentNode.parentNode.children[1].innerHTML;
-        var getIP = e.parentNode.parentNode.children[8].innerHTML;
-    
-    if (confirm("Power cycle " + getIP)) {
-            $.ajax({
-                contentType: "application/x-www-form-urlencoded; charset=utf-8",
-                //contentType: "application/json; charset=utf-8", //django not support json,don't use this
-                dataType: "json", //for to get json
-                url: "/power_cycle/",
-                type: "POST",
-                cache: false,
-                data: {
-                    'ID': getID,
-                    'IP': getIP
-                },
-                beforeSend: function (xhr, settings) {
-                    //此处调用刚刚加入的js方法
-                    var csrftoken = getCookie('csrftoken');
-                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                    }
-                },
-                success: function (data) {                    
-                    if (data[2] == "fail") {
-                        alert(data[0] + "poweron" + data[2])
-                    }
-                    console.log(data)
-                    //alert(data[1])
-                    //以上是后端函数返回成功的信息
-                },
-                error: function (request, info, e) {
-                    alert("false");
-                    console.log(e)
+    var getID = e.parentNode.parentNode.parentNode.children[1].innerHTML;
+    var getIP = e.parentNode.parentNode.parentNode.children[8].innerHTML;
+    $.confirm({
+        title: '对如下设备重启?',
+        content: '设备IP：' + getIP,
+        type: 'green',
+        buttons: {
+            ok: {
+                text: "提交",
+                btnClass: 'btn-primary',
+                keys: ['enter'],
+                action: function () {
+                    console.log('the user clicked confirm');
+                    $.ajax({
+                        contentType: "application/x-www-form-urlencoded; charset=utf-8",
+                        //contentType: "application/json; charset=utf-8", //django not support json,don't use this
+                        dataType: "json", //for to get json
+                        url: "/power_cycle/",
+                        type: "POST",
+                        cache: false,
+                        data: {
+                            'ID': getID,
+                            'IP': getIP
+                        },
+                        beforeSend: function (xhr, settings) {
+                            //此处调用刚刚加入的js方法
+                            var csrftoken = getCookie('csrftoken');
+                            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                            }
+                        },
+                        success: function (data) {
+                            if (data[2] == "fail") {
+                                $.alert({
+                                    title: '提示：',
+                                    content: "设备IP：" + data[0] + " 重启失败！",
+                                    type: 'red',
+                                    buttons: {
+                                        ok: {
+                                            text: "关闭",
+                                            btnClass: 'btn-secondary',
+                                            keys: ['enter']
+                                        }
+                                    }
+                                })
+                            }
+                            console.log(data)
+                            //alert(data[1])
+                            //以上是后端函数返回成功的信息
+                        },
+                        error: function (request, info, e) {
+                            alert("false");
+                            console.log(e)
+                        }
+                    })
                 }
-            })
+            },
+            cancel: {
+                text: "关闭",
+                btnClass: 'btn-secondary',
+                keys: ['enter'],
+                action: function () {
+                    console.log('the user clicked cancel');
+                }
+            }
         }
-        }
-        
+    })
+}
 
- 
+
+
 
 /**
  * 遍历表格内容返回数组
@@ -180,68 +275,111 @@ function toPowerCycle(id, e) {
 function toBatchPowerOn(id, e) {
     var allValue = queryCheckedValue()
     if (allValue.length == 0) {
-            alert("null")
-        }
-        else {
-            //    var getIP = e.parentNode.parentNode.children[8].innerHTML;
-            console.log(allValue)
+        $.alert({
+            title: '提示：',
+            content: '请先选择设备！',
+            type: 'red',
+            buttons: {
+                ok: {
+                    text: "关闭",
+                    btnClass: 'btn-secondary',
+                    keys: ['enter']
+                }
+            }
+        })
+    }
+    else {
+        //    var getIP = e.parentNode.parentNode.children[8].innerHTML;
+        console.log(allValue)
         strAllValue = allValue.join("-");
         console.log(strAllValue)
-        if (confirm("batch Power On [ " + allValue.length + " ] server")) {
-            $.ajax({
-                contentType: "application/x-www-form-urlencoded; charset=utf-8",
-                //contentType: "application/json; charset=utf-8", //django not support json,don't use this
-                dataType: "json", //for to get json
-                url: "/batch_power_on/",
-                type: "POST",
-                cache: false,
-                data: {
-                    'allValue': strAllValue
-                },
-                beforeSend: function (xhr, settings) {
-                    //此处调用刚刚加入的js方法
-                    var csrftoken = getCookie('csrftoken');
-                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                    }
-                },
-                success: function (data) {
-                    console.log(data)
-                    for (var i = 0; i < data.length; i++) {
-                        //console.log("shis" + data[i]);
-                        var newdata = new Array();
-                        newdata = data[i];
-                        console.log(newdata);
-                        getID = newdata[0];
-                        var index = 0;
-                        // from the ID to get the rowID
-                        $("table tr").each(function (i) {
+        $.confirm({
+            title: '对如下设备开机?',
+            content: '设备数量：' + allValue.length,
+            type: 'green',
+            buttons: {
+                ok: {
+                    text: "提交",
+                    btnClass: 'btn-primary',
+                    keys: ['enter'],
+                    action: function () {
+                        console.log('the user clicked confirm');
+                        $.ajax({
+                            contentType: "application/x-www-form-urlencoded; charset=utf-8",
+                            //contentType: "application/json; charset=utf-8", //django not support json,don't use this
+                            dataType: "json", //for to get json
+                            url: "/batch_power_on/",
+                            type: "POST",
+                            cache: false,
+                            data: {
+                                'allValue': strAllValue
+                            },
+                            beforeSend: function (xhr, settings) {
+                                //此处调用刚刚加入的js方法
+                                var csrftoken = getCookie('csrftoken');
+                                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                                }
+                            },
+                            success: function (data) {
+                                console.log(data)
+                                for (var i = 0; i < data.length; i++) {
+                                    //console.log("shis" + data[i]);
+                                    var newdata = new Array();
+                                    newdata = data[i];
+                                    console.log(newdata);
+                                    getID = newdata[0];
+                                    var index = 0;
+                                    // from the ID to get the rowID
+                                    $("table tr").each(function (i) {
 
-                            if ($($(this).find("td").get(1)).text() == getID) {
-                                index = i - 1;
-                                //console.log("index" + index)
+                                        if ($($(this).find("td").get(1)).text() == getID) {
+                                            index = i - 1;
+                                            //console.log("index" + index)
+                                        }
+                                    })
+                                    rowID = index;
+                                    console.log("rowID " + rowID)
+                                    //e.parentNode.parentNode.children[13].innerHTML=data[1]
+                                    mytable.rows[rowID].cells[13].innerHTML = newdata[2];
+                                    if (newdata[3] == "fail") {
+                                        $.alert({
+                                            title: '提示：',
+                                            content: "设备IP：" + newdata[1] + " 开机失败！",
+                                            type: 'red',
+                                            buttons: {
+                                                ok: {
+                                                    text: "关闭",
+                                                    btnClass: 'btn-secondary',
+                                                    keys: ['enter']
+                                                }
+                                            }
+                                        })
+                                    }
+                                }
+                                //alert(data[1])
+                                //以上是后端函数返回成功的信息
+                            },
+                            error: function (request, info, e) {
+                                alert("false");
+                                console.log(e)
                             }
                         })
-                        rowID = index;
-                        console.log("rowID " + rowID)
-                        //e.parentNode.parentNode.children[13].innerHTML=data[1]
-                        mytable.rows[rowID].cells[13].innerHTML = newdata[2];
-                        if (newdata[3] == "fail") {
-                            alert(newdata[1] + "poweron" + newdata[3]);
-                        }
                     }
-                    //alert(data[1])
-                    //以上是后端函数返回成功的信息
                 },
-                error: function (request, info, e) {
-                    alert("false");
-                    console.log(e)
+                cancel: {
+                    text: "关闭",
+                    btnClass: 'btn-secondary',
+                    keys: ['enter'],
+                    action: function () {
+                        console.log('the user clicked cancel');
+                    }
                 }
-            })
-        }
-        }
+            }
+        })
     }
-    
+}
+
 
 
 
@@ -254,141 +392,341 @@ function toBatchPowerOn(id, e) {
 function toBatchPowerOff(id, e) {
     var allValue = queryCheckedValue()
     if (allValue.length == 0) {
-            alert("null")
-        }
-        else {
-            //    var getIP = e.parentNode.parentNode.children[8].innerHTML;
-            console.log(allValue)
+        $.alert({
+            title: '提示：',
+            content: '请先选择设备！',
+            type: 'red',
+            buttons: {
+                ok: {
+                    text: "关闭",
+                    btnClass: 'btn-secondary',
+                    keys: ['enter']
+                }
+            }
+        })
+    }
+    else {
+        //    var getIP = e.parentNode.parentNode.children[8].innerHTML;
+        console.log(allValue)
         strAllValue = allValue.join("-");
         console.log(strAllValue)
-        if (confirm("batch Power Off [ " + allValue.length + " ] server")) {
-            $.ajax({
-                contentType: "application/x-www-form-urlencoded; charset=utf-8",
-                //contentType: "application/json; charset=utf-8", //django not support json,don't use this
-                dataType: "json", //for to get json
-                url: "/batch_power_off/",
-                type: "POST",
-                cache: false,
-                data: {
-                    'allValue': strAllValue
-                },
-                beforeSend: function (xhr, settings) {
-                    //此处调用刚刚加入的js方法
-                    var csrftoken = getCookie('csrftoken');
-                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                    }
-                },
-                success: function (data) {
-                    console.log(data)
-                    for (var i = 0; i < data.length; i++) {
-                        //console.log("shis" + data[i]);
-                        var newdata = new Array();
-                        newdata = data[i];
-                        console.log(newdata);
-                        getID = newdata[0];
-                        var index = 0;
-                        // from the ID to get the rowID
-                        $("table tr").each(function (i) {
+        $.confirm({
+            title: '对如下设备开机?',
+            content: '设备数量：' + allValue.length,
+            type: 'green',
+            buttons: {
+                ok: {
+                    text: "提交",
+                    btnClass: 'btn-primary',
+                    keys: ['enter'],
+                    action: function () {
+                        console.log('the user clicked confirm');
+                        $.ajax({
+                            contentType: "application/x-www-form-urlencoded; charset=utf-8",
+                            //contentType: "application/json; charset=utf-8", //django not support json,don't use this
+                            dataType: "json", //for to get json
+                            url: "/batch_power_off/",
+                            type: "POST",
+                            cache: false,
+                            data: {
+                                'allValue': strAllValue
+                            },
+                            beforeSend: function (xhr, settings) {
+                                //此处调用刚刚加入的js方法
+                                var csrftoken = getCookie('csrftoken');
+                                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                                }
+                            },
+                            success: function (data) {
+                                console.log(data)
+                                for (var i = 0; i < data.length; i++) {
+                                    //console.log("shis" + data[i]);
+                                    var newdata = new Array();
+                                    newdata = data[i];
+                                    console.log(newdata);
+                                    getID = newdata[0];
+                                    var index = 0;
+                                    // from the ID to get the rowID
+                                    $("table tr").each(function (i) {
 
-                            if ($($(this).find("td").get(1)).text() == getID) {
-                                index = i - 1;
-                                //console.log("index" + index)
+                                        if ($($(this).find("td").get(1)).text() == getID) {
+                                            index = i - 1;
+                                            //console.log("index" + index)
+                                        }
+                                    })
+                                    rowID = index;
+                                    console.log("rowID " + rowID)
+                                    //e.parentNode.parentNode.children[13].innerHTML=data[1]
+                                    mytable.rows[rowID].cells[14].innerHTML = newdata[2];
+                                    mytable.rows[rowID].cells[16].innerHTML = '<a href="/power_history-' + getID + '/">' + newdata[4] + '</a>';
+                                    if (newdata[3] == "fail") {
+                                        $.alert({
+                                            title: '提示：',
+                                            content: "设备IP：" + newdata[1] + " 关机失败！",
+                                            type: 'red',
+                                            buttons: {
+                                                ok: {
+                                                    text: "关闭",
+                                                    btnClass: 'btn-secondary',
+                                                    keys: ['enter']
+                                                }
+                                            }
+                                        })
+
+                                    }
+                                }
+                                //alert(data[1])
+                                //以上是后端函数返回成功的信息
+                            },
+                            error: function (request, info, e) {
+                                alert("false");
+                                console.log(e)
                             }
                         })
-                        rowID = index;
-                        console.log("rowID " + rowID)
-                        //e.parentNode.parentNode.children[13].innerHTML=data[1]
-                        mytable.rows[rowID].cells[14].innerHTML = newdata[2];
-                        mytable.rows[rowID].cells[16].innerHTML = '<a href="/power_history-'+getID+'/">'+newdata[4]+'</a>';
-                        if (newdata[3] == "fail") {
-                            alert(newdata[1] + "poweroff" + newdata[3]);
-                        }
                     }
-                    //alert(data[1])
-                    //以上是后端函数返回成功的信息
                 },
-                error: function (request, info, e) {
-                    alert("false");
-                    console.log(e)
+                cancel: {
+                    text: "关闭",
+                    btnClass: 'btn-secondary',
+                    keys: ['enter'],
+                    action: function () {
+                        console.log('the user clicked cancel');
+                    }
                 }
-            })
-        }
-        }
+            }
+        })
     }
+}
 
 
-
-    /**
+/**
  * 遍历表格内容返回数组
  * @param Int  id 表格id
  * @return Array
  */
+function toBatchPowerCycle(id, e) {
+    var allValue = queryCheckedValue()
+    if (allValue.length == 0) {
+        $.alert({
+            title: '提示：',
+            content: '请先选择设备！',
+            type: 'red',
+            buttons: {
+                ok: {
+                    text: "关闭",
+                    btnClass: 'btn-secondary',
+                    keys: ['enter']
+                }
+            }
+        })
+    }
+    else {
+        //    var getIP = e.parentNode.parentNode.children[8].innerHTML;
+        console.log(allValue)
+        strAllValue = allValue.join("-");
+        console.log(strAllValue)
+        $.confirm({
+            title: '对如下设备重启?',
+            content: '设备数量：' + allValue.length,
+            type: 'green',
+            buttons: {
+                ok: {
+                    text: "提交",
+                    btnClass: 'btn-primary',
+                    keys: ['enter'],
+                    action: function () {
+                        console.log('the user clicked confirm');
+                        $.ajax({
+                            contentType: "application/x-www-form-urlencoded; charset=utf-8",
+                            //contentType: "application/json; charset=utf-8", //django not support json,don't use this
+                            dataType: "json", //for to get json
+                            url: "/batch_power_cycle/",
+                            type: "POST",
+                            cache: false,
+                            data: {
+                                'allValue': strAllValue
+                            },
+                            beforeSend: function (xhr, settings) {
+                                //此处调用刚刚加入的js方法
+                                var csrftoken = getCookie('csrftoken');
+                                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                                }
+                            },
+                            success: function (data) {
+                                console.log(data)
+                                for (var i = 0; i < data.length; i++) {
+                                    //console.log("shis" + data[i]);
+                                    var newdata = new Array();
+                                    newdata = data[i];
+                                    console.log(newdata);
+                                    getID = newdata[0];
+                                    var index = 0;
+                                    // from the ID to get the rowID
+                                    $("table tr").each(function (i) {
+
+                                        if ($($(this).find("td").get(1)).text() == getID) {
+                                            index = i - 1;
+                                            //console.log("index" + index)
+                                        }
+                                    })
+                                    rowID = index;
+                                    console.log("rowID " + rowID)
+                                    //e.parentNode.parentNode.children[13].innerHTML=data[1]
+                                    mytable.rows[rowID].cells[13].innerHTML = newdata[2];
+                                    if (newdata[3] == "fail") {
+                                        $.alert({
+                                            title: '提示：',
+                                            content: "设备IP：" + newdata[1] + " 重启失败！",
+                                            type: 'red',
+                                            buttons: {
+                                                ok: {
+                                                    text: "关闭",
+                                                    btnClass: 'btn-secondary',
+                                                    keys: ['enter']
+                                                }
+                                            }
+                                        })
+                                    }
+                                }
+                                //alert(data[1])
+                                //以上是后端函数返回成功的信息
+                            },
+                            error: function (request, info, e) {
+                                alert("false");
+                                console.log(e)
+                            }
+                        })
+                    }
+                },
+                cancel: {
+                    text: "关闭",
+                    btnClass: 'btn-secondary',
+                    keys: ['enter'],
+                    action: function () {
+                        console.log('the user clicked cancel');
+                    }
+                }
+            }
+        })
+    }
+}
+
+
+/**
+* 遍历表格内容返回数组
+* @param Int  id 表格id
+* @return Array
+*/
 function toBatchInspectSdr(id, e) {
     var allValue = queryCheckedValue()
     if (allValue.length == 0) {
-            alert("null")
-        }
-        else {
-            //    var getIP = e.parentNode.parentNode.children[8].innerHTML;
-            console.log(allValue)
+        $.alert({
+            title: '提示：',
+            content: '请先选择设备！',
+            type: 'red',
+            buttons: {
+                ok: {
+                    text: "关闭",
+                    btnClass: 'btn-secondary',
+                    keys: ['enter']
+                }
+            }
+        })
+    }
+    else {
+        //    var getIP = e.parentNode.parentNode.children[8].innerHTML;
+        console.log(allValue)
         strAllValue = allValue.join("-");
         console.log(strAllValue)
-        if (confirm("batch Inspect sdr [ " + allValue.length + " ] server")) {
-            $.ajax({
-                contentType: "application/x-www-form-urlencoded; charset=utf-8",
-                //contentType: "application/json; charset=utf-8", //django not support json,don't use this
-                dataType: "json", //for to get json
-                url: "/batch_inspect_sdr/",
-                type: "POST",
-                cache: false,
-                data: {
-                    'allValue': strAllValue
-                },
-                beforeSend: function (xhr, settings) {
-                    //此处调用刚刚加入的js方法
-                    var csrftoken = getCookie('csrftoken');
-                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                    }
-                },
-                success: function (data) {
-                    console.log(data)
-                    for (var i = 0; i < data.length; i++) {
-                        //console.log("shis" + data[i]);
-                        var newdata = new Array();
-                        newdata = data[i];
-                        console.log(newdata);
-                        getID = newdata[0];
-                        var index = 0;
-                        // from the ID to get the rowID
-                        $("table tr").each(function (i) {
-                            //list the row id ,index .get(1)
-                            if ($($(this).find("td").get(1)).text() == getID) {
-                                index = i - 1;
-                                //console.log("index" + index)
+        $.confirm({
+            title: '对如下设备巡检?',
+            content: '设备数量：' + allValue.length,
+            type: 'green',
+            buttons: {
+                ok: {
+                    text: "提交",
+                    btnClass: 'btn-primary',
+                    keys: ['enter'],
+                    action: function () {
+                        console.log('the user clicked confirm');
+                        $.ajax({
+                            contentType: "application/x-www-form-urlencoded; charset=utf-8",
+                            //contentType: "application/json; charset=utf-8", //django not support json,don't use this
+                            dataType: "json", //for to get json
+                            url: "/batch_inspect_sdr/",
+                            type: "POST",
+                            cache: false,
+                            data: {
+                                'allValue': strAllValue
+                            },
+                            beforeSend: function (xhr, settings) {
+                                //此处调用刚刚加入的js方法
+                                var csrftoken = getCookie('csrftoken');
+                                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                                }
+                            },
+                            success: function (data) {
+                                console.log(data)
+                                for (var i = 0; i < data.length; i++) {
+                                    //console.log("shis" + data[i]);
+                                    var newdata = new Array();
+                                    newdata = data[i];
+                                    console.log(newdata);
+                                    getID = newdata[0];
+                                    var index = 0;
+                                    // from the ID to get the rowID
+                                    $("table tr").each(function (i) {
+                                        //list the row id ,index .get(1)
+                                        if ($($(this).find("td").get(1)).text() == getID) {
+                                            index = i - 1;
+                                            //console.log("index" + index)
+                                        }
+                                    })
+                                    rowID = index;
+                                    console.log("rowID " + rowID)
+                                    //e.parentNode.parentNode.children[13].innerHTML=data[1]
+                                    mytable.rows[rowID].cells[14].innerHTML = newdata[2];
+                                    mytable.rows[rowID].cells[16].innerHTML = newdata[4];
+                                    if (newdata[3] == "fail") {
+                                        $.alert({
+                                            title: '提示：',
+                                            content: "设备IP：" + newdata[1] + " 巡检失败！",
+                                            type: 'red',
+                                            buttons: {
+                                                ok: {
+                                                    text: "关闭",
+                                                    btnClass: 'btn-secondary',
+                                                    keys: ['enter']
+                                                }
+                                            }
+                                        })
+                                    }
+                                }
+                                //alert(data[1])
+                                //以上是后端函数返回成功的信息
+                            },
+                            error: function (request, info, e) {
+                                alert("false");
+                                console.log(e)
                             }
                         })
-                        rowID = index;
-                        console.log("rowID " + rowID)
-                        //e.parentNode.parentNode.children[13].innerHTML=data[1]
-                        mytable.rows[rowID].cells[14].innerHTML = newdata[2];
-                        mytable.rows[rowID].cells[16].innerHTML = newdata[4];
-                        if (newdata[3] == "fail") {
-                            alert(newdata[1] + "inspectsdr" + newdata[3]);
-                        }
                     }
-                    //alert(data[1])
-                    //以上是后端函数返回成功的信息
                 },
-                error: function (request, info, e) {
-                    alert("false");
-                    console.log(e)
+                cancel: {
+                    text: "关闭",
+                    btnClass: 'btn-secondary',
+                    keys: ['enter'],
+                    action: function () {
+                        console.log('the user clicked cancel');
+                    }
                 }
-            })
-        }
-        }
+            }
+        })
     }
+}
 
 /**
  * 遍历表格内容返回数组
@@ -397,41 +735,74 @@ function toBatchInspectSdr(id, e) {
  */
 function toInspectSdr(id, e) {
     var getID = e.parentNode.parentNode.children[1].innerHTML;
-        var getIP = e.parentNode.parentNode.children[8].innerHTML;
-    
-    if (confirm("inspect sdr " + getIP)) {
-            $.ajax({
-                contentType: "application/x-www-form-urlencoded; charset=utf-8",
-                //contentType: "application/json; charset=utf-8", //django not support json,don't use this
-                dataType: "json", //for to get json
-                url: "/inspect_sdr/",
-                type: "POST",
-                cache: false,
-                data: {
-                    'ID': getID,
-                    'IP': getIP
-                },
-                beforeSend: function (xhr, settings) {
-                    //此处调用刚刚加入的js方法
-                    var csrftoken = getCookie('csrftoken');
-                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                    }
-                },
-                success: function (data) {
-                    e.parentNode.parentNode.children[14].innerHTML = data[1]
-                    e.parentNode.parentNode.children[16].innerHTML = data[3]
-                    if (data[2] == "fail") {
-                        alert(data[0] + "poweroff" + data[2])
-                    }
-                    console.log(data)
-                    //alert(data[1])
-                    //以上是后端函数返回成功的信息
-                },
-                error: function (request, info, e) {
-                    alert("false");
-                    console.log(e)
+    var getIP = e.parentNode.parentNode.children[8].innerHTML;
+
+    $.confirm({
+        title: '对如下设备巡检?',
+        content: '设备IP：' + getIP,
+        type: 'green',
+        buttons: {
+            ok: {
+                text: "提交",
+                btnClass: 'btn-primary',
+                keys: ['enter'],
+                action: function () {
+                    console.log('the user clicked confirm');
+                    $.ajax({
+                        contentType: "application/x-www-form-urlencoded; charset=utf-8",
+                        //contentType: "application/json; charset=utf-8", //django not support json,don't use this
+                        dataType: "json", //for to get json
+                        url: "/inspect_sdr/",
+                        type: "POST",
+                        cache: false,
+                        data: {
+                            'ID': getID,
+                            'IP': getIP
+                        },
+                        beforeSend: function (xhr, settings) {
+                            //此处调用刚刚加入的js方法
+                            var csrftoken = getCookie('csrftoken');
+                            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                            }
+                        },
+                        success: function (data) {
+                            e.parentNode.parentNode.children[14].innerHTML = data[1]
+                            e.parentNode.parentNode.children[16].innerHTML = data[3]
+                            if (data[2] == "fail") {
+
+                                $.alert({
+                                    title: '提示：',
+                                    content: "设备IP：" + data[0] + " 关机失败！",
+                                    type: 'red',
+                                    buttons: {
+                                        ok: {
+                                            text: "关闭",
+                                            btnClass: 'btn-secondary',
+                                            keys: ['enter']
+                                        }
+                                    }
+                                })
+                            }
+                            console.log(data)
+                            //alert(data[1])
+                            //以上是后端函数返回成功的信息
+                        },
+                        error: function (request, info, e) {
+                            alert("false");
+                            console.log(e)
+                        }
+                    })
                 }
-            })
+            },
+            cancel: {
+                text: "关闭",
+                btnClass: 'btn-secondary',
+                keys: ['enter'],
+                action: function () {
+                    console.log('the user clicked cancel');
+                }
+            }
         }
-        }
+    })
+}

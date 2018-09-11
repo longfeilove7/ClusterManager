@@ -1,0 +1,24 @@
+{% extends 'extends/base.html' %} 
+{% block baseCss %} 
+{% include 'include/css.html' %} 
+{% endblock %} 
+{% block baseBody %}
+{% include "include/sidebar.html"%}
+<!-- Add your site or application content here -->
+
+
+<!-- /#sidebar-wrapper -->
+<!-- Page Content -->
+{% include 'include/monitor_device_content.html' %}
+
+
+
+<!-- /#page-content-wrapper -->
+</div>
+<!-- /#wrapper -->
+
+{% endblock %} 
+{% block baseScript %} 
+{% include 'include/js.html' %} 
+<script src="/static/js/custom/monitorbuttonswitch.js"></script>
+{% endblock %}

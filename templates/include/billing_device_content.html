@@ -11,30 +11,10 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="#" id="batchBtn1" onclick="toBatchPowerOn('mytable',this)">批量开机</a>
+                    <a class="nav-link" href="#" id="batchBtn1" onclick="toBatchButtonYes('mytable',this)">设置计费</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" id="batchBtn2" onclick="toBatchPowerOff('mytable',this)">批量关机</a>
-                </li>
-                <!-- Dropdown -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-                        启动顺序
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a class="dropdown-item" herf="#">DISK</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" herf="#">PXE</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" herf="#">CDROM</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" herf="#">BIOS</a>
-                        </li>
-                    </ul>
+                    <a class="nav-link" href="#" id="batchBtn2" onclick="toBatchButtonNo('mytable',this)">取消计费</a>
                 </li>
             </ul>
             <form class="form-inline mt-2 mt-md-0">
@@ -49,33 +29,33 @@
     <table id="mytable" data-toggle="table" data-side-pagination="client" data-pagination="true" data-search="false" data-show-refresh="false"
         data-height="653" data-show-toggle="false" data-show-columns="false" data-detail-view="false" data-detail-formatter="detailFormatter"
         data-minimum-count-columns="2" data-show-pagination-switch="false" data-pagination="true" data-page-size="10" data-page-list="[10, 25, 50, 100, ALL]"
-        data-show-footer="false" data-sort-name="id" data-sort-order="desc" data-row-style="rowStyle" data-striped="true">
+        data-show-footer="false" data-sort-name="id" data-sort-order="aesc" data-row-style="rowStyle" data-striped="true" data-ajax="ajaxRequest">
 
         <thead class="thead-light">
             <tr>
                 <th>
                     <input type="checkbox" id="select-all" onclick="selectAll()">
                 </th>
-                <th>ID</th>
-                <th>机房</th>
-                <th>机柜</th>
-                <th>刀箱</th>
-                <th>刀片</th>
-                <th>主机名</th>
-                <th>业务IP</th>
-                <th>管理IP</th>
-                <th>存储IP</th>
-                <th>集群</th>
-                <th>型号</th>
-                <th>操作系统</th>
-                <th>是否计费</th>
+                <th data-field="id">ID</th>
+                <th data-field="roomNO">机房</th>
+                <th data-field="cabinetNO">机柜</th>
+                <th data-field="bladeBoxNO">刀箱</th>
+                <th data-field="hostName">刀片</th>
+                <th data-field="hostName">主机名</th>
+                <th data-field="serviceIP">业务IP</th>
+                <th data-field="manageIP">管理IP</th>
+                <th data-field="storageIP">存储IP</th>
+                <th data-field="clusterName.clusterName">集群</th>
+                <th data-field="hardware">型号</th>
+                <th data-field="service">操作系统</th>
+                <th data-field="button">是否计费</th>
             </tr>
         </thead>
         <tbody>
             {% for row in obj %}
             <tr>
                 <td>
-                    <input type="checkbox" name="selected" value="{'ID':{{ row.id }},'manageIP':'{{ row.manageIP}}'}" onclick="oneToAll()" />
+                    <input type="checkbox" name="selected" value="{'ID':{{ row.id }}}" onclick="oneToAll()" />
                 </td>
                 <td>{{ row.id }}</td>
                 <td>{{ row.roomNO }}</td>
@@ -90,14 +70,26 @@
                 <td>{{ row.hardware }}</td>
                 <td>{{ row.service }}</td>
                 <td>
-                    <div class="btn-group" data-toggle="buttons">
-                        <label class="btn btn-primary" onclick="toButtonYes('mytable',this)">
-                            <input type="radio" name="options" id="option1" autocomplete="off">是
-                        </label>
-                        <label class="btn btn-secondary" onclick="toButtonNo('mytable',this)">
-                            <input type="radio" name="options" id="option2" autocomplete="off" >否
-                        </label>
+                    <!--正常控件input和label的ID必须一致(此处为了添加确定提醒，故意设置成不一致，而采用js去操作空间的checked属性)，但为了区分不同行的ID，所以采用设备ID-->
+                    <div class="custom-switch custom-switch-label-yesno">
+                        <input class="custom-switch-input" value="{{row.billingStatus}}" id="{{row.id}}" type="checkbox">
+                        <label class="custom-switch-btn" for="ADD_ID_HERE" onclick="toButtonYesNo('mytable',this)"></label>
+                        <!-- <div class="custom-switch-content-checked">
+                            I'm checked
+                        </div>
+                        <div class="custom-switch-content-unchecked">
+                            I'm unchecked
+                        </div> -->
                     </div>
+                    <!--下面是自定义按钮-->
+                    <!-- <div class="btn-group" data-toggle="buttons">                           
+                        <button class="btn btn-primary buttonYes" onclick="toButtonYes('mytable',this)">
+                            <input type="radio" name="{{row.id}}" id="{{row.billing}}" autocomplete="off">是
+                        </button>
+                        <button class="btn btn-secondary buttonNo" onclick="toButtonNo('mytable',this)">
+                            <input type="radio" name="{{row.id}}" id="{{row.billing}}" autocomplete="off" >否
+                        </button>
+                    </div> -->
                 </td>
             </tr>
             {% endfor %}

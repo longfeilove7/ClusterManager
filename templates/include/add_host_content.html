@@ -36,6 +36,9 @@
 
         <thead class="thead-light">
             <tr>
+                <th>
+                    <input type="checkbox" id="select-all" onclick="selectAll()">
+                </th>
                 <th>ID</th>
                 <th class="hidden-xs">机房</th>
                 <th class="visible-xs-block">机柜</th>
@@ -50,14 +53,14 @@
                 <th>操作系统</th>
                 <th>修改</th>
                 <th>删除</th>
-                <th>
-                    <input type="checkbox" id="select-all" onclick="selectAll()">
-                </th>
             </tr>
         </thead>
         <tbody>
             {% for row in obj %}
             <tr>
+                <td>
+                    <input type="checkbox" name="selected" value="{'ID':{{ row.id }}}" onclick="oneToAll()" />
+                </td>
                 <td>{{ row.id }}</td>
                 <td class="hidden-xs">{{ row.roomNO }}</td>
                 <td class="visible-xs-block">{{ row.cabinetNO }}</td>
@@ -81,9 +84,6 @@
                         data-target="#delModalHost">
                         <i class="fas fa-trash-alt fa-4"></i>
                     </button>
-                </td>
-                <td>
-                    <input type="checkbox" name="selected" value="{'ID':{{ row.id }},'manageIP':'{{ row.manageIP}}'}" onclick="oneToAll()" />
                 </td>
             </tr>
             {% endfor %}
@@ -264,7 +264,6 @@
                         <div class="col-lg-3 form-group">
                             <input class="form-control" type="text" name="storageIP" placeholder="存储IP" required>
                         </div>
-
                     </div>
 
                     <div class="row">
@@ -280,7 +279,6 @@
                         <div class="col-lg-3 form-group">
                             <input class="form-control" type="password" name="ipmiPassword" placeholder="IPMI密码" required>
                         </div>
-
                     </div>
 
                     <div class="row">
@@ -293,7 +291,6 @@
                             </select>
                         </div>
                     </div>
-
 
                 </div>
 

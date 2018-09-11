@@ -1,190 +1,261 @@
-
-    <nav class="navbar navbar-default no-margin">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div>
-            <div class="navbar-header fixed-brand" style="float: left;">
-                <a class="navbar-brand" href="/index/">
-                    <i class="fab fa-earlybirds fab-9"></i> IT集群自动化管理系统</a>
-            </div>
-            <div style="float: left;">
-                <a href="#menu-toggle" class="btn btn-secondary" id="menu-toggle">
-                    <i class="fa fa-align-justify fa-4"></i>
-                </a>
-            </div>
+<nav class="navbar navbar-default no-margin">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div>
+        <div class="navbar-header fixed-brand" style="float: left;">
+            <a class="navbar-brand" href="/index/">
+                <i class="fab fa-earlybirds fab-9"></i> IT集群自动化管理系统</a>
         </div>
-        <div class="username">
-            当前用户: {{ user_list.username }}
+        <div style="float: left;">
+            <a href="#menu-toggle" class="btn btn-secondary" id="menu-toggle">
+                <i class="fa fa-align-justify fa-4"></i>
+            </a>
         </div>
+    </div>
+    <div class="username">
+        当前用户: {{ user_list.username }}
+    </div>
 
-        <!-- navbar-header-->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                <li class="active">
-                    <button class="navbar-toggle collapse in" data-toggle="collapse" id="menu-toggle-2">
-                        <span class="glyphicon glyphicon-th-large" aria-hidden="true"></span>
-                    </button>
-                </li>
-            </ul>
-        </div>
-        <!-- bs-example-navbar-collapse-1 -->
-    </nav>
+    <!-- navbar-header-->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+            <li class="active">
+                <button class="navbar-toggle collapse in" data-toggle="collapse" id="menu-toggle-2">
+                    <span class="glyphicon glyphicon-th-large" aria-hidden="true"></span>
+                </button>
+            </li>
+        </ul>
+    </div>
+    <!-- bs-example-navbar-collapse-1 -->
+</nav>
 
 
-    <div id="wrapper">
-        <!-- Sidebar -->
-        <div id="sidebar-wrapper">
-            <ul class="sidebar-nav nav-pills nav-stacked" id="menu">
-                <li class="active">
-                    <a href="#" data-toggle="collapse" data-target=".collapse1">
-                        <span class="fa-stack fa-lg pull-left">
-                            <i class="fa fa-tachometer-alt  fa-stack-1x "> </i>
-                        </span>仪表板</a>
-                    <ul class="nav-pills nav-stacked" style="list-style-type:none;">
-                        <li>
-                            <a href="#" class="collapse collapse1 show" data-parent="#menu">
-                                    <span class="fa-stack fa-lg pull-left">
-                                            <i class="fa fa-chart-line fa-stack-1x "></i>
-                                        </span>资产统计</a>
-                        </li>
-                        <li>
-                            <a href="#" class="collapse collapse1 show" data-parent="#menu">
-                                    <span class="fa-stack fa-lg pull-left">
-                                            <i class="fa fa-chart-bar fa-stack-1x "></i>
-                                        </span>任务统计</a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#" data-toggle="collapse" data-target=".collapse2">
-                        <span class="fa-stack fa-lg pull-left">
-                            <i class="fa fa-rocket fa-stack-1x "></i>
-                        </span>设备管理</a>
-                    <ul class="nav-pills nav-stacked" style="list-style-type:none;">
-                        <li>
-                            <a href="/host_info/" class="collapse collapse2" data-parent="#menu">
-                                <span class="fa-stack fa-lg pull-left">
-                                    <i class="fa fa-server fa-stack-1x "></i>
-                                </span>主机管理</a>
-                        </li>
-                        <li>
-                            <a href="/add_cluster/" class="collapse collapse2" data-parent="#menu">
-                                <span class="fa-stack fa-lg pull-left">
-                                    <i class="fas fa-layer-group fa-stack-1x "></i>
-                                </span>集群维护</a>
-                        </li>
-                        <li>
-                                <a href="/add_host/" class="collapse collapse2" data-parent="#menu">
-                                    <span class="fa-stack fa-lg pull-left">
-                                        <i class="fas fa-info-circle fa-stack-1x "></i>
-                                    </span>主机登记</a>
-                            </li>
-                    </ul>
-                </li>                
-                <li>
-                    <a href="#" data-toggle="collapse" data-target=".collapse3">
-                        <span class="fa-stack fa-lg pull-left">
-                            <i class="fa fa-robot fa-stack-1x "></i>
-                        </span>自动化</a>
-                    <ul class="nav-pills nav-stacked" style="list-style-type:none;">
-                        <li>
-                            <a href="/inspect_info/" class="collapse collapse3" data-parent="#menu">
-                                <span class="fa-stack fa-lg pull-left">
-                                    <i class="fab fa-tripadvisor fa-stack-1x "></i>
-                                </span>日常巡检</a>
-                        </li>
-                        <li>
-                            <a href="/periodic_task/" class="collapse collapse3" data-parent="#menu">
-                                <span class="fa-stack fa-lg pull-left">
-                                    <i class="fas fa-calendar-alt fa-stack-1x"></i>
-                                </span>计划任务</a>
-                        </li>
-                        <li>
-                                <a href="/crontab_schedule/" class="collapse collapse3" data-parent="#menu">
-                                    <span class="fa-stack fa-lg pull-left">
-                                        <i class="fas fa-clock fa-stack-1x "></i>
-                                    </span>周期配置</a>
-                            </li>
-                            <li>
-                                    <a href="/interval_schedule/" class="collapse collapse3" data-parent="#menu">
-                                        <span class="fa-stack fa-lg pull-left">
-                                            <i class="fas fa-list-alt fa-stack-1x "></i>
-                                        </span>间隔配置</a>
-                                </li>
-                                <li>
-                                        <a href="/solar_schedule/" class="collapse collapse3" data-parent="#menu">
-                                            <span class="fa-stack fa-lg pull-left">
-                                                <i class="fa fa-sun fa-stack-1x "></i>
-                                            </span>太阳事件</a>
-                                    </li>
-                        <li>
-                                <a href="/task_result/" class="collapse collapse3" data-parent="#menu">
-                                    <span class="fa-stack fa-lg pull-left">
-                                        <i class="fa fa-binoculars fa-stack-1x "></i>
-                                    </span>任务结果</a>
-                            </li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#" data-toggle="collapse" data-target=".collapse4">
-                        <span class="fa-stack fa-lg pull-left">
-                            <i class="fas fa-file-invoice-dollar fa-stack-1x "></i>
-                        </span>计费管理</a>
-                    <ul class="nav-pills nav-stacked" style="list-style-type:none;">
-                        <li>
-                            <a href="/billing_info/" class="collapse collapse4" data-parent="#menu">
-                                <span class="fa-stack fa-lg pull-left">
-                                    <i class="fas fa-money-check-alt fa-stack-1x "></i>
-                                </span>账单信息</a>
-                        </li>
-                        <li>
-                            <a href="/billing_device/" class="collapse collapse4" data-parent="#menu">
-                                <span class="fa-stack fa-lg pull-left">
-                                    <i class="fas fa-money-check fa-stack-1x "></i>
-                                </span>计费设备</a>
-                        </li>            
-                        <li>
-                            <a href="/billing_price/" class="collapse collapse4" data-parent="#menu">
-                                <span class="fa-stack fa-lg pull-left">
-                                    <i class="fas fa-dollar-sign fa-stack-1x "></i>
-                                </span>单价设置</a>
-                        </li>                        
-                    </ul>
-                </li>
-                <li>
-                    <a href="/import/">
-                        <span class="fa-stack fa-lg pull-left">
-                            <i class="fa fa-file-import fa-stack-1x "></i>
-                        </span>导入数据</a>
-                </li>
-                <li>
-                    <a href="/export/">
-                        <span class="fa-stack fa-lg pull-left">
-                            <i class="fa fa-file-export fa-stack-1x "></i>
-                        </span>导出数据</a>
-                </li>
-                <li>
-                    <a href="#">
-                        <span class="fa-stack fa-lg pull-left">
-                            <i class="fa fa-cart-plus fa-stack-1x "></i>
-                        </span>事件</a>
-                </li>
-                <li>
-                    <a href="#">
-                        <span class="fa-stack fa-lg pull-left">
-                            <i class="fa fa-address-card  fa-stack-1x "></i>
-                        </span>关于</a>
-                </li>
-                <li>
-                    <a href="#">
-                        <span class="fa-stack fa-lg pull-left">
-                            <i class="fa fa-wrench fa-stack-1x "></i>
-                        </span>服务</a>
-                </li>
-                <li>
-                    <a href="#">
-                        <span class="fa-stack fa-lg pull-left">
-                            <i class="fa fa-phone fa-stack-1x "></i>
-                        </span>联系</a>
-                </li>
-            </ul>
-        </div>
+<div id="wrapper">
+    <!-- Sidebar -->
+    <div id="sidebar-wrapper">
+        <ul class="sidebar-nav nav-pills nav-stacked" id="menu">
+            <li class="active">
+                <a href="#" data-toggle="collapse" data-target=".collapse1">
+                    <span class="fa-stack fa-lg pull-left">
+                        <i class="fa fa-tachometer-alt  fa-stack-1x "> </i>
+                    </span>仪表板</a>
+                <ul class="nav-pills nav-stacked" style="list-style-type:none;">
+                    <li>
+                        <a href="#" class="collapse collapse1 show" data-parent="#menu">
+                            <span class="fa-stack fa-lg pull-left">
+                                <i class="fa fa-chart-line fa-stack-1x "></i>
+                            </span>资产统计</a>
+                    </li>
+                    <li>
+                        <a href="#" class="collapse collapse1 show" data-parent="#menu">
+                            <span class="fa-stack fa-lg pull-left">
+                                <i class="fa fa-chart-bar fa-stack-1x "></i>
+                            </span>任务统计</a>
+                    </li>
+                </ul>
+            </li>
+
+            <li>
+                <a href="#" data-toggle="collapse" data-target=".collapse2">
+                    <span class="fa-stack fa-lg pull-left">
+                        <i class="fa fa-rocket fa-stack-1x "></i>
+                    </span>设备管理</a>
+                <ul class="nav-pills nav-stacked" style="list-style-type:none;">
+                    <li>
+                        <a href="/host_info/" class="collapse collapse2" data-parent="#menu">
+                            <span class="fa-stack fa-lg pull-left">
+                                <i class="fa fa-server fa-stack-1x "></i>
+                            </span>主机管理</a>
+                    </li>
+                    <li>
+                        <a href="/host_info/" class="collapse collapse2" data-parent="#menu">
+                            <span class="fa-stack fa-lg pull-left">
+                                <i class="fa fa-server fa-stack-1x "></i>
+                            </span>系统安装</a>
+                    </li>
+                </ul>
+            </li>
+
+            <li>
+                <a href="#" data-toggle="collapse" data-target=".collapse3">
+                    <span class="fa-stack fa-lg pull-left">
+                        <i class="fa fa-rocket fa-stack-1x "></i>
+                    </span>综合监控</a>
+                <ul class="nav-pills nav-stacked" style="list-style-type:none;">
+                    <li>
+                        <a href="/monitor_info/" class="collapse collapse3" data-parent="#menu">
+                            <span class="fa-stack fa-lg pull-left">
+                                <i class="fas fa-layer-group fa-stack-1x "></i>
+                            </span>监控信息</a>
+                    </li>
+                    <li>
+                        <a href="/monitor_device/" class="collapse collapse3" data-parent="#menu">
+                            <span class="fa-stack fa-lg pull-left">
+                                <i class="fas fa-layer-group fa-stack-1x "></i>
+                            </span>监控管理</a>
+                    </li>
+                </ul>
+            </li>
+
+            <li>
+                <a href="#" data-toggle="collapse" data-target=".collapse4">
+                    <span class="fa-stack fa-lg pull-left">
+                        <i class="fa fa-rocket fa-stack-1x "></i>
+                    </span>资产管理</a>
+                <ul class="nav-pills nav-stacked" style="list-style-type:none;">
+                    <li>
+                        <a href="/add_cluster/" class="collapse collapse4" data-parent="#menu">
+                            <span class="fa-stack fa-lg pull-left">
+                                <i class="fas fa-layer-group fa-stack-1x "></i>
+                            </span>集群维护</a>
+                    </li>
+                    <li>
+                        <a href="/add_host/" class="collapse collapse4" data-parent="#menu">
+                            <span class="fa-stack fa-lg pull-left">
+                                <i class="fas fa-info-circle fa-stack-1x "></i>
+                            </span>主机登记</a>
+                    </li>
+                </ul>
+            </li>
+
+            <li>
+                <a href="#" data-toggle="collapse" data-target=".collapse5">
+                    <span class="fa-stack fa-lg pull-left">
+                        <i class="fa fa-robot fa-stack-1x "></i>
+                    </span>自动化</a>
+                <ul class="nav-pills nav-stacked" style="list-style-type:none;">
+                    <li>
+                        <a href="/inspect_info/" class="collapse collapse5" data-parent="#menu">
+                            <span class="fa-stack fa-lg pull-left">
+                                <i class="fab fa-tripadvisor fa-stack-1x "></i>
+                            </span>日常巡检</a>
+                    </li>
+                    <li>
+                        <a href="/periodic_task/" class="collapse collapse5" data-parent="#menu">
+                            <span class="fa-stack fa-lg pull-left">
+                                <i class="fas fa-calendar-alt fa-stack-1x"></i>
+                            </span>计划任务</a>
+                    </li>
+                    <li>
+                        <a href="/crontab_schedule/" class="collapse collapse5" data-parent="#menu">
+                            <span class="fa-stack fa-lg pull-left">
+                                <i class="fas fa-clock fa-stack-1x "></i>
+                            </span>周期配置</a>
+                    </li>
+                    <li>
+                        <a href="/interval_schedule/" class="collapse collapse5" data-parent="#menu">
+                            <span class="fa-stack fa-lg pull-left">
+                                <i class="fas fa-list-alt fa-stack-1x "></i>
+                            </span>间隔配置</a>
+                    </li>
+                    <li>
+                        <a href="/solar_schedule/" class="collapse collapse5" data-parent="#menu">
+                            <span class="fa-stack fa-lg pull-left">
+                                <i class="fa fa-sun fa-stack-1x "></i>
+                            </span>太阳事件</a>
+                    </li>
+                    <li>
+                        <a href="/task_result/" class="collapse collapse5" data-parent="#menu">
+                            <span class="fa-stack fa-lg pull-left">
+                                <i class="fa fa-binoculars fa-stack-1x "></i>
+                            </span>任务结果</a>
+                    </li>
+                </ul>
+            </li>
+
+            <li>
+                <a href="#" data-toggle="collapse" data-target=".collapse6">
+                    <span class="fa-stack fa-lg pull-left">
+                        <i class="fas fa-file-invoice-dollar fa-stack-1x "></i>
+                    </span>计费管理</a>
+                <ul class="nav-pills nav-stacked" style="list-style-type:none;">
+                    <li>
+                        <a href="/billing_info/" class="collapse collapse6" data-parent="#menu">
+                            <span class="fa-stack fa-lg pull-left">
+                                <i class="fas fa-money-check-alt fa-stack-1x "></i>
+                            </span>账单信息</a>
+                    </li>
+                    <li>
+                        <a href="/billing_device/" class="collapse collapse6" data-parent="#menu">
+                            <span class="fa-stack fa-lg pull-left">
+                                <i class="fas fa-money-check fa-stack-1x "></i>
+                            </span>计费设备</a>
+                    </li>
+                    <li>
+                        <a href="/billing_price/" class="collapse collapse6" data-parent="#menu">
+                            <span class="fa-stack fa-lg pull-left">
+                                <i class="fas fa-dollar-sign fa-stack-1x "></i>
+                            </span>单价设置</a>
+                    </li>
+                </ul>
+            </li>
+
+            <li>
+                <a href="#" data-toggle="collapse" data-target=".collapse7">
+                    <span class="fa-stack fa-lg pull-left">
+                        <i class="fas fa-file-invoice-dollar fa-stack-1x "></i>
+                    </span>导入导出</a>
+                <ul class="nav-pills nav-stacked" style="list-style-type:none;">
+                    <li>
+                        <a href="/import/" class="collapse collapse7" data-parent="#menu">
+                            <span class="fa-stack fa-lg pull-left">
+                                <i class="fa fa-file-import fa-stack-1x "></i>
+                            </span>导入数据</a>
+                    </li>
+                    <li>
+                        <a href="/export/" class="collapse collapse7" data-parent="#menu">
+                            <span class="fa-stack fa-lg pull-left">
+                                <i class="fa fa-file-export fa-stack-1x "></i>
+                            </span>导出数据</a>
+                    </li>
+                </ul>
+            </li>
+
+            <li>
+                <a href="#" data-toggle="collapse" data-target=".collapse8">
+                    <span class="fa-stack fa-lg pull-left">
+                        <i class="fas fa-file-invoice-dollar fa-stack-1x "></i>
+                    </span>事件日志</a>
+                <ul class="nav-pills nav-stacked" style="list-style-type:none;">
+                    <li>
+                        <a href="#" class="collapse collapse8" data-parent="#menu">
+                            <span class="fa-stack fa-lg pull-left">
+                                <i class="fa fa-cart-plus fa-stack-1x "></i>
+                            </span>事件</a>
+                    </li>
+                    <li>
+                        <a href="#" class="collapse collapse8" data-parent="#menu">
+                            <span class="fa-stack fa-lg pull-left">
+                                <i class="fa fa-cart-plus fa-stack-1x "></i>
+                            </span>日志</a>
+                    </li>
+                </ul>
+            </li>
+
+            <li>
+                <a href="#" data-toggle="collapse" data-target=".collapse9">
+                    <span class="fa-stack fa-lg pull-left">
+                        <i class="fas fa-file-invoice-dollar fa-stack-1x "></i>
+                    </span>运营管理</a>
+                <ul class="nav-pills nav-stacked" style="list-style-type:none;">
+                    <li>
+                        <a href="#" class="collapse collapse9" data-parent="#menu">
+                            <span class="fa-stack fa-lg pull-left">
+                                <i class="fa fa-address-card  fa-stack-1x "></i>
+                            </span>关于</a>
+                    </li>
+                    <li>
+                        <a href="#" class="collapse collapse9" data-parent="#menu">
+                            <span class="fa-stack fa-lg pull-left">
+                                <i class="fa fa-wrench fa-stack-1x "></i>
+                            </span>服务</a>
+                    </li>
+                    <li>
+                        <a href="#" class="collapse collapse9" data-parent="#menu">
+                            <span class="fa-stack fa-lg pull-left">
+                                <i class="fa fa-phone fa-stack-1x "></i>
+                            </span>联系</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>

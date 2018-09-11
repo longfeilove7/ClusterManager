@@ -52,7 +52,8 @@
     <table id="mytable" data-toggle="table" data-side-pagination="client" data-pagination="true" data-search="false" data-show-refresh="false"
         data-height="653" data-show-toggle="false" data-show-columns="false" data-detail-view="false" data-detail-formatter="detailFormatter"
         data-minimum-count-columns="2" data-show-pagination-switch="false" data-pagination="true" data-page-size="10" data-page-list="[10, 25, 50, 100, ALL]"
-        data-show-footer="false" data-sort-name="id" data-sort-order="desc" data-row-style="rowStyle" data-striped="true">
+        data-show-footer="false" data-sort-name="id" data-sort-order="desc" data-row-style="rowStyle" data-striped="true" data-ajax="ajaxRequest">
+        
 
         <thead class="thead-light">
             <tr>
@@ -125,14 +126,14 @@
                     </div>
                 </td>
                 <td>
-                    <div class="btn-group" data-toggle="buttons">
-                        <button type="button" id="btn1" class="singleButton" data-toggle="tooltip" title="开机" name="btn" onclick="toPowerOn('mytable',this)">
+                    <div class="btn-group" data-toggle="buttons-radio">
+                        <button type="button" id="btn1_{{ row.id }}" class="singleButton" value="{{row.powerStatus}}" data-toggle="tooltip" title="开机" name="btn" onclick="toPowerOn('mytable',this)">
                             <i class="fa fa-plug"></i>
                         </button>
-                        <button type="button" id="btn2" class="singleButton" data-toggle="tooltip" title="关机" name="btn" onclick="toPowerOff('mytable',this)">
+                        <button type="button" id="btn2_{{ row.id }}" class="singleButton" value="{{row.powerStatus}}" data-toggle="tooltip" title="关机" name="btn" onclick="toPowerOff('mytable',this)">
                             <i class="fa fa-power-off"></i>
                         </button>
-                        <button type="button" id="btn3" class="singleButton" data-toggle="tooltip" title="重启" name="btn" onclick="toPowerCycle('mytable',this)">
+                        <button type="button" id="btn3_{{ row.id }}" class="singleButton" value="{{row.powerStatus}}" data-toggle="tooltip" title="重启" name="btn" onclick="toPowerCycle('mytable',this)">
                             <i class="fa fa-recycle"></i>
                         </button>
                     </div>
@@ -140,13 +141,13 @@
                 <td>
                     <div class="btn-group" data-toggle="buttons">
                         <button type="button" id="btn1" class="singleButton" data-toggle="tooltip" title="SSH连接" name="btn" onclick="toHttp('mytable',this)">
-                            <i class="fas fa-globe"></i>
+                            <i class="fab fa-linux"></i>
                         </button>
                         <button type="button" id="btn2" class="singleButton" data-toggle="tooltip" title="RDP连接" name="btn" onclick="toRdp('mytable',this)">
                             <i class="fab fa-windows"></i>
                         </button>
-                        <button type="button" id="btn3" class="singleButton" data-toggle="tooltip" title="IPMI连接" name="btn" onclick="toSsh('mytable',this)">
-                            <i class="fab fa-linux"></i>
+                        <button type="button" id="btn3" class="singleButton" data-toggle="tooltip" title="IPMI连接" name="btn" onclick="window.open('http://{{ row.manageIP }}')">
+                            <i class="fas fa-globe"></i>
                         </button>
                     </div>
                 </td>

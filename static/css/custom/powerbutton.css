@@ -1,0 +1,27 @@
+.singleButton{
+    cursor:pointer;
+    background: transparent;
+    border: transparent;
+    /* color: rgb(160, 34, 34); */
+   /* height: 38px;*/
+    font-family: Arial;
+    font-size: 17px;            
+}
+/*开机按钮图标大小*/
+.fa-plug{
+    font-size:22px;
+    text-align: center;
+    color: green;
+}        
+/*关机按钮图标大小*/
+.fa-power-off{
+    font-size:20px;
+    text-align: center;
+    color: red;
+}
+/*重起按钮图标大小*/
+.fa-recycle{
+    font-size:20px;
+    text-align: center;
+    color:yellowgreen;
+}

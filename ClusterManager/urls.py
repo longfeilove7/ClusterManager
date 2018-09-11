@@ -64,7 +64,7 @@ urlpatterns = [
         name='task_result_json'),
     url(r'^solar_schedule/', views.ClassCeleryBeat.solar_schedule),
     url(r'^periodic_task/', views.ClassCeleryBeat.periodic_task),
-     url(r'^add_periodic/', views.ClassCeleryBeat.add_periodic),
+    url(r'^add_periodic/', views.ClassCeleryBeat.add_periodic),
     url(r'^interval_schedule/', views.ClassCeleryBeat.interval_schedule),
     url(r'^crontab_schedule/', views.ClassCeleryBeat.crontab_schedule),
     url(r'^crontab_del-(?P<nid>\d+)/', views.ClassCeleryBeat.crontab_del),
@@ -74,10 +74,22 @@ urlpatterns = [
     url(r'^batch_inspect_sdr/', views.ClassCeleryWorker.batchInspectSdr),
     url(r'^inspect_sdr/', views.ClassCeleryWorker.inspectSdr),
 
-        # for device billing
+    # for device billing
     url(r'^billing_info/', views.ClassBillingSystem.billingInfo),
     url(r'^billing_device/', views.ClassBillingSystem.billingDevice),
-    url(r'^billing_price/', views.ClassBillingSystem.billingPrice),   
+    url(r'^billing_price/', views.ClassBillingSystem.billingPrice),
+    url(r'^billing_switch/', views.ClassBillingSystem.billingSwitch),
+    url(r'^batch_billing_add/', views.ClassBillingSystem.batchBillingAdd),
+    url(r'^batch_billing_delete/', views.ClassBillingSystem.batchBillingDelete),
+
+    #for device monitor
+    url(r'^monitor_info/', views.ClassMonitorSystem.monitorInfo),
+    url(r'^monitor_device/', views.ClassMonitorSystem.monitorDevice),
+    url(r'^monitor_price/', views.ClassMonitorSystem.monitorPrice),
+    url(r'^monitor_switch/', views.ClassMonitorSystem.monitorSwitch),
+    url(r'^batch_monitor_add/', views.ClassMonitorSystem.batchMonitorAdd),
+    url(r'^batch_monitor_pause/', views.ClassMonitorSystem.batchMonitorPause),  
+    url(r'^batch_monitor_delete/', views.ClassMonitorSystem.batchMonitorDelete),     
 
     #for django-excel
     url(r'^django_excel', views.upload, name='uplink'),

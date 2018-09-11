@@ -18,19 +18,40 @@ from django_celery_results.models import TaskResult
 
 
 #查询电源状态
-@shared_task(name='HostManager.Tasks.powerStatus')
-def powerStatus(ipmiHost, ipmiUser, ipmiPassword):
+@shared_task(bind=True, name='HostManager.Tasks.powerStatus')
+def powerStatus(self,idName,ipmiHost, ipmiUser, ipmiPassword):
     powerStatus = "ipmitool -H " + ipmiHost + " -U " + ipmiUser + " -P " + ipmiPassword + " power status"
     powerStatus = os.popen(powerStatus)
     returnRead = powerStatus.read()
     print(returnRead)
-    nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    if "on" in returnRead:
-        return ipmiHost, nowTime, "on"
+    nowTime = datetime.datetime.now()
+    if "on" in returnRead:        
+        models.checkPowerStatus.objects.create(
+                checkTaskID=self.request.id,
+                checkHostID=idName,
+                checkHostIP=ipmiHost,
+                checkTime=nowTime,
+                checkResult="on",                
+            )        
+        return idName,ipmiHost, nowTime, "on"
     elif "off" in returnRead:
-        return ipmiHost, nowTime, "off"
+        models.checkPowerStatus.objects.create(
+                checkTaskID=self.request.id,
+                checkHostID=idName,
+                checkHostIP=ipmiHost,
+                checkTime=nowTime,
+                checkResult="off",                
+            )
+        return idName,ipmiHost, nowTime, "off"
     else:
-        return ipmiHost, nowTime, "fail"
+        models.checkPowerStatus.objects.create(
+                checkTaskID=self.request.id,
+                checkHostID=idName,
+                checkHostIP=ipmiHost,
+                checkTime=nowTime,
+                checkResult="fail",                
+            )
+        return idName,ipmiHost, nowTime, "fail"
 
 
 #电源上电开机
@@ -205,7 +226,7 @@ def inspectSdr(ipmiHost, ipmiUser, ipmiPassword):
     else:
         return ipmiHost, nowTime, "fail"
 
-
+#ping测试
 @task(name='HostManager.Tasks.fping', bind=True)
 def fping(self):
     #从数据库获得IP地址列表

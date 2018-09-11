@@ -111,13 +111,4 @@
             font-family: Arial;
             font-size: 17px;
         }
-        .singleButton{
-            cursor:pointer;
-            background: transparent;
-            border: transparent;
-            color: black;
-           /* height: 38px;*/
-            font-family: Arial;
-            font-size: 17px;            
-        }
         

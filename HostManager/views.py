@@ -1,6 +1,7 @@
 """
 命名规范：module_name, package_name, ClassName, method_name, ExceptionName, function_name, GLOBAL_VAR_NAME, instance_var_name, function_parameter_name, local_var_name.
 """
+from django.db.models import Count, Max, Avg, Min, Sum, F, Q, FloatField
 from django.shortcuts import render, redirect
 from django.shortcuts import HttpResponse
 from django.http import HttpRequest, HttpResponseBadRequest
@@ -97,8 +98,7 @@ class ClassSign():
         #查询数据库用户名
         user_list = models.Users.objects.filter(
             username=GLOBAL_VAR_USER).first()
-        #返回index页面
-        ClassCeleryBeat.getPowerStatus()
+        #返回index页面        
         return render(request, 'index.html', {'user_list': user_list})
 
 
@@ -199,6 +199,8 @@ class ClassHost:
             clusterName = request.POST.get('clusterName')
             hardware = request.POST.get('hardware')
             service = request.POST.get('service')
+            ipmiUser = request.POST.get('ipmiUser')
+            ipmiPassword = request.POST.get('ipmiPassword')
             models.Host.objects.filter(id=nid).update(
                 roomNO=roomNO,
                 cabinetNO=cabinetNO,
@@ -211,6 +213,8 @@ class ClassHost:
                 clusterName_id=clusterName,
                 hardware=hardware,
                 service=service,
+                ipmiUser=ipmiUser,
+                ipmiPassword=ipmiPassword,
             )
             print(roomNO, cabinetNO, bladeBoxNO, bladeNO, hardware, serviceIP,
                   manageIP, storageIP, hostName, service, clusterName)
@@ -411,21 +415,6 @@ class ClassCeleryBeat():
             CrontabSchedule.objects.filter(id=nid).delete()
             return redirect('/crontab_schedule/')
 
-    def getPowerStatus():
-        #从数据库获得IP地址列表
-        db_list = models.Host.objects.values("id", "manageIP", "ipmiUser",
-                                             "ipmiPassword")
-        #遍历列表获得内部字典
-        for key_dict in db_list:
-            #获取单条字典的对应值
-            idName = key_dict['id']
-            ipmiHost = key_dict['manageIP']
-            ipmiUser = key_dict['ipmiUser']
-            ipmiPassword = key_dict['ipmiPassword']
-            #调用创建任务函数，并传参数
-            ClassCeleryBeat.create_PowerStatus(idName, ipmiHost, ipmiUser,
-                                               ipmiPassword)
-
     #创建定时任务
     def create_PowerStatus(idName, ipmiHost, ipmiUser, ipmiPassword):
         #定义一个时间间隔
@@ -447,7 +436,7 @@ class ClassCeleryBeat():
             name=idName,
             task='HostManager.Tasks.powerStatus',
             interval=schedule,  # we created this above.
-            args=json.dumps([ipmiHost, ipmiUser, ipmiPassword]),
+            args=json.dumps([idName, ipmiHost, ipmiUser, ipmiPassword]),
             # kwargs=json.dumps({
             #     'be_careful': True,
             # }),
@@ -458,14 +447,23 @@ class ClassCeleryBeat():
 
     #关闭任务
     def disable_task(name):
-        try:
-            PeriodicTask = celery_models.PeriodicTask.objects.get(name=name)
-            PeriodicTask.enabled = False  # 设置关闭
-            PeriodicTask.save()
+        try:            
+            periodicTask = PeriodicTask.objects.get(name=name)
+            periodicTask.enabled = False  # 设置关闭
+            periodicTask.save()
             return True
-        except celery_models.PeriodicTask.DoesNotExist:
+        except PeriodicTask.DoesNotExist:
             return True
 
+
+    #关闭任务
+    def delete_task(name):
+        try:            
+            periodicTask = PeriodicTask.objects.get(name=name)
+            periodicTask.delete()  # 设置删除           
+            return True
+        except PeriodicTask.DoesNotExist:
+            return True
 
 class ClassCeleryResult:
     def task_result(request):
@@ -614,14 +612,15 @@ class ClassCeleryWorker():
             data = json.dumps(result).encode()
             print(result)
             print(ipmiID)
-
-            powerOnTime = result[1]
-            models.Host.objects.filter(id=ipmiID).update(
-                powerOnTime=result[1], )
-            models.HostPowerHistory.objects.create(
-                powerOnTimeHistory=result[1],
-                host_id=ipmiID,
-            )
+            if result[2] == "success":
+                powerOnTime = result[1]
+                models.Host.objects.filter(id=ipmiID).update(
+                    powerOnTime=result[1], )
+                models.HostPowerHistory.objects.create(
+                    powerOnTimeHistory=result[1],
+                    host_id=ipmiID,
+                )
+                models.Host.objects.filter(id=ipmiID).update(powerStatus=1, )
             return HttpResponse(data)
         elif request.method == 'GET':
             print(request.GET)
@@ -646,18 +645,19 @@ class ClassCeleryWorker():
                                           ipmiPassword).get()
             print(result)
             print(type(result))
-            powerOnTime = db_dict['powerOnTime']
-
-            powerOffTime = result[1]
-            runTime = ClassCeleryWorker.runTimeCalculate(
-                ipmiID, powerOnTime, powerOffTime)
-            result.append(str(runTime))
-            print(result)
-            models.Host.objects.filter(id=ipmiID).update(
-                powerOffTime=result[1], )
-            models.HostPowerHistory.objects.filter(
-                powerOnTimeHistory=powerOnTime, host_id=ipmiID).update(
-                    powerOffTimeHistory=result[1], )
+            if result[2] == "success":
+                powerOnTime = db_dict['powerOnTime']
+                powerOffTime = result[1]
+                runTime = ClassCountCalculate.runTimeCalculate(
+                    ipmiID, powerOnTime, powerOffTime)
+                result.append(str(runTime))
+                print(result)
+                models.Host.objects.filter(id=ipmiID).update(
+                    powerOffTime=result[1], )
+                models.HostPowerHistory.objects.filter(
+                    powerOnTimeHistory=powerOnTime, host_id=ipmiID).update(
+                        powerOffTimeHistory=result[1], )
+                models.Host.objects.filter(id=ipmiID).update(powerStatus=0, )
             data = json.dumps(result).encode()
             return HttpResponse(data)
         elif request.method == 'GET':
@@ -682,50 +682,23 @@ class ClassCeleryWorker():
             result = tasks.powerCycle.delay(ipmiHost, ipmiUser,
                                             ipmiPassword).get()
             data = json.dumps(result).encode()
-            print(result)
-            powerOnTime = db_dict['powerOnTime']
-            history_dict = models.HostPowerHistory.objects.filter(
-                powerOnTimeHistory=powerOnTime, host_id=ipmiID).values()[0]
-            models.Host.objects.filter(id=ipmiID).update(
-                powerCycleTime=result[1])
-            models.HostPowerHistory.objects.filter(
-                powerOnTimeHistory=powerOnTime, host_id=ipmiID).update(
-                    powerCycleTimes=int(history_dict['powerCycleTimes']) +
-                    int(1))
+            if result[2] == "success":
+                print(result)
+                powerOnTime = db_dict['powerOnTime']
+                history_dict = models.HostPowerHistory.objects.filter(
+                    powerOnTimeHistory=powerOnTime, host_id=ipmiID).values()[0]
+                models.Host.objects.filter(id=ipmiID).update(
+                    powerCycleTime=result[1])
+                models.HostPowerHistory.objects.filter(
+                    powerOnTimeHistory=powerOnTime, host_id=ipmiID).update(
+                        powerCycleTimes=int(history_dict['powerCycleTimes']) +
+                        int(1))
             return HttpResponse(data)
         elif request.method == 'GET':
             print(request.GET)
             return ()
         else:
             return render(request, 'host_info.html', context)
-
-    def runTimeCalculate(ipmiID, powerOnTime, powerOffTime):
-        """"""
-        db_dict = models.Host.objects.filter(id=ipmiID).values()[0]
-        db_tuple = models.Host.objects.filter().values_list()[0]
-        print(db_dict)
-        print(db_tuple)
-        print(db_dict['powerOnTime'])
-        print(db_dict['powerOffTime'])
-        print(powerOffTime)
-        #offset-naive是不含时区的类型，而offset-aware是有时区类型
-        runTime = datetime.datetime.strptime(
-            powerOffTime, '%Y-%m-%d %H:%M:%S'
-        ) - db_dict['powerOnTime'].replace(tzinfo=None) - datetime.timedelta(
-            days=0,
-            seconds=0,
-            microseconds=0,
-            milliseconds=0,
-            minutes=0,
-            hours=8,
-            weeks=0)
-        print(runTime)
-        models.Host.objects.filter(id=ipmiID).update(runTime=str(runTime), )
-        models.HostPowerHistory.objects.filter(
-            powerOnTimeHistory=powerOnTime, host_id=ipmiID).update(
-                runTimeHistory=str(runTime), )
-        return (runTime)
-
 
 #批量开机函数
 
@@ -759,21 +732,26 @@ class ClassCeleryWorker():
                 ipmiHost = ipmiIP
                 result = tasks.powerOn.delay(ipmiHost, ipmiUser,
                                              ipmiPassword).get()
+                print("result")
+                print(result)
                 print(request)
                 print(type(result))
                 listResult.append(result)
                 print(listResult)
                 print(type(listResult))
                 result.insert(0, ipmiID)
-                powerOnTime = result[1]
-                #更新开机时间到主机信息表
-                models.Host.objects.filter(id=ipmiID).update(
-                    powerOnTime=result[2], )
-                #更新开机时间到历史记录表
-                models.HostPowerHistory.objects.create(
-                    powerOnTimeHistory=result[2],
-                    host_id=ipmiID,
-                )
+                if result[3] == "success":
+                    powerOnTime = result[2]
+                    #更新开机时间到主机信息表
+                    models.Host.objects.filter(id=ipmiID).update(
+                        powerOnTime=powerOnTime, )
+                    #更新开机时间到历史记录表
+                    models.HostPowerHistory.objects.create(
+                        powerOnTimeHistory=powerOnTime,
+                        host_id=ipmiID,
+                    )
+                    models.Host.objects.filter(id=ipmiID).update(
+                        powerStatus=1, )
             data = json.dumps(listResult).encode()
             return HttpResponse(data)
         elif request.method == 'GET':
@@ -819,16 +797,19 @@ class ClassCeleryWorker():
                 print(listResult)
                 print(type(listResult))
 
-                runTime = ClassCeleryWorker.runTimeCalculate(
+                runTime = ClassCountCalculate.runTimeCalculate(
                     ipmiID, powerOnTime, powerOffTime)
                 result.append(str(runTime))
                 result.insert(0, ipmiID)
-                powerOffTime = result[1]
-                models.Host.objects.filter(id=ipmiID).update(
-                    powerOffTime=result[2], )
-                models.HostPowerHistory.objects.filter(
-                    powerOnTimeHistory=powerOnTime, host_id=ipmiID).update(
-                        powerOffTimeHistory=result[2], )
+                if result[3] == "success":
+                    powerOffTime = result[2]
+                    models.Host.objects.filter(id=ipmiID).update(
+                        powerOffTime=powerOffTime, )
+                    models.HostPowerHistory.objects.filter(
+                        powerOnTimeHistory=powerOnTime, host_id=ipmiID).update(
+                            powerOffTimeHistory=powerOffTime, )
+                    models.Host.objects.filter(id=ipmiID).update(
+                        powerStatus=0, )
             data = json.dumps(listResult).encode()
             return HttpResponse(data)
         elif request.method == 'GET':
@@ -873,6 +854,17 @@ class ClassCeleryWorker():
                 listResult.append(result)
                 print(listResult)
                 print(type(listResult))
+                if result[2] == "success":
+                    powerOnTime = db_dict['powerOnTime']
+                    history_dict = models.HostPowerHistory.objects.filter(
+                        powerOnTimeHistory=powerOnTime,
+                        host_id=ipmiID).values()[0]
+                    models.Host.objects.filter(id=ipmiID).update(
+                        powerCycleTime=result[1])
+                    models.HostPowerHistory.objects.filter(
+                        powerOnTimeHistory=powerOnTime, host_id=ipmiID).update(
+                            powerCycleTimes=int(
+                                history_dict['powerCycleTimes']) + int(1))
             data = json.dumps(listResult).encode()
             return HttpResponse(data)
         elif request.method == 'GET':
@@ -950,6 +942,60 @@ class ClassCeleryWorker():
         else:
             return render(request, 'inspect_info.html', context)
 
+class ClassCountCalculate():
+    def runTimeCalculate(ipmiID, powerOnTime, powerOffTime):
+        """"""
+        db_dict = models.Host.objects.filter(id=ipmiID).values()[0]
+        db_tuple = models.Host.objects.filter().values_list()[0]
+        print(db_dict)
+        print(db_tuple)
+        print(db_dict['powerOnTime'])
+        print(db_dict['powerOffTime'])
+        print(powerOffTime)
+        #offset-naive是不含时区的类型，而offset-aware是有时区类型
+        runTime = datetime.datetime.strptime(
+            powerOffTime, '%Y-%m-%d %H:%M:%S'
+        ) - db_dict['powerOnTime'].replace(tzinfo=None) - datetime.timedelta(
+            days=0,
+            seconds=0,
+            microseconds=0,
+            milliseconds=0,
+            minutes=0,
+            hours=8,
+            weeks=0)
+        print(runTime)
+        models.Host.objects.filter(id=ipmiID).update(runTime=runTime)
+        models.HostPowerHistory.objects.filter(
+            powerOnTimeHistory=powerOnTime, host_id=ipmiID).update(
+                runTimeHistory= runTime, )
+        return (runTime)
+
+    def countRunTimeCalculate(ipmiID):
+        """"""         
+    # to calculate the all runtimehistory
+        db_list = models.HostPowerHistory.objects.filter(host_id=ipmiID).values("host_id", "runTimeHistory")
+        print(db_list)
+        listRunTimeHistory=[]
+        #遍历列表获得内部字典
+        for key_dict in db_list:
+            #获取单条字典的对应值
+            host_id = key_dict['host_id']
+            runTimeHistory = key_dict['runTimeHistory']
+            # set the not null to a list
+            if runTimeHistory is not None:                    
+                #print(runTimeHistory)                  
+                listRunTimeHistory.append(runTimeHistory)
+        #print(listRunTimeHistory)
+        #print(type(listRunTimeHistory))
+        countRunTimeHistory = datetime.timedelta(0, 0)
+        for x in listRunTimeHistory:                
+            countRunTimeHistory +=  x        
+        # models.Host.objects.filter(id=ipmiID).update(runTime=str(runTime), )
+        # models.HostPowerHistory.objects.filter(
+        #     powerOnTimeHistory=powerOnTime, host_id=ipmiID).update(
+        #         runTimeHistory= runTime )
+        return (countRunTimeHistory)
+
 
 class ClassBillingSystem():
     def billingInfo(request):
@@ -958,8 +1004,13 @@ class ClassBillingSystem():
         user_list = models.Users.objects.filter(
             username=GLOBAL_VAR_USER).first()
         if request.method == 'GET':
-            obj = models.Host.objects.all()
+            #filter the billing value equal 1
+            obj = models.Host.objects.filter(billingStatus=1)
             cluster_list = models.Clusters.objects.all()
+            # the .aggregate(Sum()) to sum  .aggregate(Avg()) to average.but can't use for timedelta
+            test = models.HostPowerHistory.objects.all().aggregate(
+                Count("powerCycleTimes"))
+            print(test)
             return render(request, 'billing_info.html', {
                 'obj': obj,
                 'cluster_list': cluster_list,
@@ -979,6 +1030,7 @@ class ClassBillingSystem():
                 'cluster_list': cluster_list,
                 'user_list': user_list
             })
+# the billing price function
 
     def billingPrice(request):
         """"""
@@ -988,12 +1040,314 @@ class ClassBillingSystem():
         if request.method == 'GET':
             obj = models.Host.objects.all()
             cluster_list = models.Clusters.objects.all()
-            return render(request, 'billing_price.html', {
+            billing_list = models.Billing.objects.all()
+            return render(
+                request, 'billing_price.html', {
+                    'obj': obj,
+                    'cluster_list': cluster_list,
+                    'user_list': user_list,
+                    'billing_list': billing_list
+                })
+
+# the billing switch button function
+
+    def billingSwitch(request):
+        """"""
+        context = {}
+        if request.method == 'POST':
+            ipmiID = request.POST.get('ID')
+            print(ipmiID)
+            setValue = request.POST.get('setValue')
+            print("test" + setValue)
+            models.Host.objects.filter(id=ipmiID).update(
+                billingStatus=setValue, )
+            data = json.dumps(setValue).encode()
+            return HttpResponse(data)
+        elif request.method == 'GET':
+            print(request.GET)
+            return ()
+        else:
+            return render(request, 'billing_device.html', context)
+
+# the batch add billing button function
+
+    def batchBillingAdd(request):
+        """"""
+        context = {}
+        if request.method == 'POST':
+            allValue = request.POST.get('allValue')
+            print(allValue)
+            listAllValue = allValue.split("-")
+            print(listAllValue)
+            listResult = []
+            setValue = request.POST.get('setValue')
+            print(setValue)
+            listBilling = []
+            for dictAllValue in listAllValue:
+                print(type(dictAllValue))
+                dictAllValue = eval(dictAllValue)
+                ipmiID = dictAllValue['ID']
+                print(ipmiID)
+                models.Host.objects.filter(id=ipmiID).update(
+                    billingStatus=setValue, )
+                db_dict = models.Host.objects.filter(id=ipmiID).values()[0]
+                getID = db_dict['id']
+                getBilling = db_dict['billingStatus']
+                dictBilling = [getID, getBilling]
+                print(dictBilling)
+                print(db_dict)
+                listBilling.append(dictBilling)
+            data = json.dumps(listBilling).encode()
+            return HttpResponse(data)
+        elif request.method == 'GET':
+            print(request.GET)
+            return ()
+        else:
+            return render(request, 'billing_device.html', context)
+
+
+# the batch delete billing function
+
+    def batchBillingDelete(request):
+        """"""
+        context = {}
+        if request.method == 'POST':
+            allValue = request.POST.get('allValue')
+            print(allValue)
+            listAllValue = allValue.split("-")
+            print(listAllValue)
+            listResult = []
+            setValue = request.POST.get('setValue')
+            print(setValue)
+            listBilling = []
+            for dictAllValue in listAllValue:
+                print(type(dictAllValue))
+                dictAllValue = eval(dictAllValue)
+                ipmiID = dictAllValue['ID']
+                print(ipmiID)
+                models.Host.objects.filter(id=ipmiID).update(
+                    billingStatus=setValue, )
+                db_dict = models.Host.objects.filter(id=ipmiID).values()[0]
+                getID = db_dict['id']
+                getBilling = db_dict['billingStatus']
+                dictBilling = [getID, getBilling]
+                print(dictBilling)
+                print(db_dict)
+                listBilling.append(dictBilling)
+            data = json.dumps(listBilling).encode()
+            return HttpResponse(data)
+        elif request.method == 'GET':
+            print(request.GET)
+            return ()
+        else:
+            return render(request, 'billing_device.html', context)
+
+
+class ClassMonitorSystem():
+    def monitorInfo(request):
+        """"""
+        global GLOBAL_VAR_USER
+        user_list = models.Users.objects.filter(
+            username=GLOBAL_VAR_USER).first()
+        if request.method == 'GET':
+            #filter the monitor value equal 1
+            obj = models.Host.objects.filter(monitorStatus=1)
+            cluster_list = models.Clusters.objects.all()
+            # the .aggregate(Sum()) to sum  .aggregate(Avg()) to average.but can't use for timedelta
+            test = models.HostPowerHistory.objects.all().aggregate(
+                Count("powerCycleTimes"))
+            print(test)
+            return render(request, 'monitor_info.html', {
                 'obj': obj,
                 'cluster_list': cluster_list,
                 'user_list': user_list
             })
 
+    def monitorDevice(request):
+        """"""
+        global GLOBAL_VAR_USER
+        user_list = models.Users.objects.filter(
+            username=GLOBAL_VAR_USER).first()
+        if request.method == 'GET':
+            obj = models.Host.objects.all()
+            cluster_list = models.Clusters.objects.all()
+            return render(request, 'monitor_device.html', {
+                'obj': obj,
+                'cluster_list': cluster_list,
+                'user_list': user_list
+            })
+# the monitor price function
+
+    def monitorPrice(request):
+        """"""
+        global GLOBAL_VAR_USER
+        user_list = models.Users.objects.filter(
+            username=GLOBAL_VAR_USER).first()
+        if request.method == 'GET':
+            obj = models.Host.objects.all()
+            cluster_list = models.Clusters.objects.all()
+            monitor_list = models.monitor.objects.all()
+            return render(
+                request, 'monitor_price.html', {
+                    'obj': obj,
+                    'cluster_list': cluster_list,
+                    'user_list': user_list,
+                    'monitor_list': monitor_list
+                })
+
+# the monitor switch button function
+    def monitorSwitch(request):
+        """"""
+        context = {}
+        if request.method == 'POST':
+            ipmiID = request.POST.get('ID')
+            #print(ipmiID)
+            setValue = request.POST.get('setValue')
+            #print("setValue" + setValue)
+            idName = request.POST.get('ID')            
+            db_dict = models.Host.objects.filter(id=ipmiID).values()[0]
+            ipmiHost = db_dict['manageIP']
+            ipmiUser = db_dict['ipmiUser']
+            #print(ipmiUser)
+            ipmiPassword = db_dict['ipmiPassword']
+            #print(ipmiPassword)                    
+            models.Host.objects.filter(id=ipmiID).update(
+                monitorStatus=setValue, )
+            data = json.dumps(setValue).encode()
+            # countRunTimeHistory = ClassCountCalculate.countRunTimeCalculate(ipmiID) 
+            # print(countRunTimeHistory)                 
+            #if the setValue equal 1 then to set beat
+            if setValue == "1":                
+                ClassCeleryBeat.create_PowerStatus(idName, ipmiHost, ipmiUser,
+                                               ipmiPassword)
+            #if the setValue equal 0 then to stop beat
+            elif setValue =="0":
+                ClassCeleryBeat.disable_task(idName)
+            return HttpResponse(data)
+        elif request.method == 'GET':
+            print(request.GET)
+            return ()
+        else:
+            return render(request, 'monitor_device.html', context)
+
+# the batch add monitor button function
+
+    def batchMonitorAdd(request):
+        """"""
+        context = {}
+        if request.method == 'POST':
+            allValue = request.POST.get('allValue')
+            print(allValue)
+            listAllValue = allValue.split("-")
+            print(listAllValue)
+            listResult = []
+            setValue = request.POST.get('setValue')
+            print(setValue)
+            listMonitor = []
+            for dictAllValue in listAllValue:
+                print(type(dictAllValue))
+                dictAllValue = eval(dictAllValue)
+                ipmiID = dictAllValue['ID']
+                print(ipmiID)                
+                models.Host.objects.filter(id=ipmiID).update(
+                    monitorStatus=setValue, )
+                db_dict = models.Host.objects.filter(id=ipmiID).values()[0]
+                getID = db_dict['id']
+                getmonitor = db_dict['monitorStatus']
+                dictMonitor = [getID, getmonitor]                
+                print(dictMonitor)
+                print(db_dict)
+                listMonitor.append(dictMonitor)
+                idName = ipmiID
+                ipmiUser = db_dict['ipmiUser']
+                ipmiHost = db_dict['manageIP']
+                ipmiPassword = db_dict['ipmiPassword']
+                ClassCeleryBeat.create_PowerStatus(idName, ipmiHost, ipmiUser,
+                                               ipmiPassword)
+            data = json.dumps(listMonitor).encode()
+            return HttpResponse(data)
+        elif request.method == 'GET':
+            print(request.GET)
+            return ()
+        else:
+            return render(request, 'monitor_device.html', context)
+
+
+# the batch Pause monitor function
+
+    def batchMonitorPause(request):
+        """"""
+        context = {}
+        if request.method == 'POST':
+            allValue = request.POST.get('allValue')
+            print(allValue)
+            listAllValue = allValue.split("-")
+            print(listAllValue)
+            listResult = []
+            setValue = request.POST.get('setValue')
+            print(setValue)
+            listMonitor = []
+            for dictAllValue in listAllValue:
+                print(type(dictAllValue))
+                dictAllValue = eval(dictAllValue)
+                ipmiID = dictAllValue['ID']
+                print(ipmiID)
+                models.Host.objects.filter(id=ipmiID).update(
+                    monitorStatus=setValue, )
+                db_dict = models.Host.objects.filter(id=ipmiID).values()[0]
+                getID = db_dict['id']
+                getmonitor = db_dict['monitorStatus']
+                dictMonitor = [getID, getmonitor]
+                print(dictMonitor)
+                print(db_dict)
+                listMonitor.append(dictMonitor)
+                idName = ipmiID
+                ClassCeleryBeat.disable_task(idName)
+            data = json.dumps(listMonitor).encode()
+            return HttpResponse(data)
+        elif request.method == 'GET':
+            print(request.GET)
+            return ()
+        else:
+            return render(request, 'monitor_device.html', context)
+
+# the batch delete monitor function
+
+    def batchMonitorDelete(request):
+        """"""
+        context = {}
+        if request.method == 'POST':
+            allValue = request.POST.get('allValue')
+            print(allValue)
+            listAllValue = allValue.split("-")
+            print(listAllValue)
+            listResult = []
+            setValue = request.POST.get('setValue')
+            print(setValue)
+            listMonitor = []
+            for dictAllValue in listAllValue:
+                print(type(dictAllValue))
+                dictAllValue = eval(dictAllValue)
+                ipmiID = dictAllValue['ID']
+                print(ipmiID)
+                models.Host.objects.filter(id=ipmiID).update(
+                    monitorStatus=setValue, )
+                db_dict = models.Host.objects.filter(id=ipmiID).values()[0]
+                getID = db_dict['id']
+                getmonitor = db_dict['monitorStatus']
+                dictMonitor = [getID, getmonitor]
+                print(dictMonitor)
+                print(db_dict)
+                listMonitor.append(dictMonitor)
+                idName = ipmiID
+                ClassCeleryBeat.delete_task(idName)
+            data = json.dumps(listMonitor).encode()
+            return HttpResponse(data)
+        elif request.method == 'GET':
+            print(request.GET)
+            return ()
+        else:
+            return render(request, 'monitor_device.html', context)
 
 data = [[1, 2, 3], [4, 5, 6]]
 

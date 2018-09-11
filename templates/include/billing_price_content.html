@@ -1,0 +1,228 @@
+<div id="page-content-wrapper">
+
+    <!--  右边主机内容-->
+
+    <nav class="navbar navbar-expand-md bg-secondary navbar-dark">
+        <a class="navbar-brand" href="#">单价设置</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse"
+            aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#" id="btnBatAdd" data-toggle="modal" data-target="#addBillingPrice">添加单价</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="btnBatDelete">批量删除</a>
+                </li>
+            </ul>
+            <form class="form-inline mt-2 mt-md-0">
+                <input class="form-control mr-sm-2" id="searchbox" type="text" placeholder="Search" aria-label="Search">
+                <!-- <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>                      -->
+            </form>
+        </div>
+    </nav>
+
+    <table id="mytable" class="table table-striped table-hover table-sm" data-toggle="table">
+        <thead class="thead-light">
+            <tr>
+                <th>
+                    <input type="checkbox" id="select-all" onclick="selectAll()">
+                </th>
+                <th>id</th>
+                <th>集群名称</th>
+                <th>设备数量</th>
+                <th>计费数量</th>
+                <th>计费单价</th>
+                <!-- <th>联系人</th>
+                <th>电话</th>
+                <th>邮件</th>
+                <th>QQ</th>
+                <th>微信</th> -->
+                <th>修改</th>
+                <th>删除</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in cluster_list %}
+            <tr>
+                <td>
+                    <input type="checkbox" name="selected" value="{'ID':{{ row.id }},'manageIP':'{{ row.manageIP}}'}" onclick="oneToAll()" />
+                </td>
+                <td>{{ row.id }}</td>
+                <td>{{ row.clusterName }}</td>
+                <td>{{ row.deviceNumber }}</td>
+                <td>{{ row.billingNumber }}</td>
+                <td>{{ row.billingPrice }}</td>
+                <td>
+                    <button type="button" class="singleButton" id="{{ row.id }}" name="btn" onclick="toEditCluster('mytable',this)" data-toggle="modal"
+                        data-target="#editModalCluster">
+                        <i class="fa fa-edit fa-4"></i>
+                    </button>
+                </td>
+                <td>
+                    <button type="button" class="singleButton" id="{{ row.id }}" name="btn" onclick="toDeleteCluster('mytable',this)" data-toggle="modal"
+                        data-target="#delModalCluster">
+                        <i class="fas fa-trash-alt fa-4"></i>
+                    </button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+<!--  添加集群模态对话框-->
+<form role="form" action="/add_cluster/" method="post">
+    <!-- 模态框 -->
+    <div class="modal fade" id="addBillingPrice">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <!-- 模态框头部 -->
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">
+                        添加单价
+                    </h4>
+                </div>
+
+                <!-- 模态框主体 -->
+
+                <div class="modal-body">
+
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-lg-6 form-group">
+                            <select class="form-control" name="clusterName" required>
+                                <option value="">选择集群</option>
+                                {% for cluster in cluster_list %}
+                                <option value="{{ cluster.id }}">{{ cluster.clusterName }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-lg-6 form-group">
+                            <input class="form-control" type="text" name="deviceNumber" placeholder="设备数量">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6 form-group">
+                            <input class="form-control input-sm" type="text" name="billingNumber" placeholder="计费数量">
+                        </div>
+                        <div class="col-lg-6 form-group">
+                            <input class="form-control" type="text" name="billingPrice" placeholder="计费单价">
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <!-- 模态框底部 -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="submit" class="btn btn-primary">提交</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</form>
+
+<!--  修改集群模态对话框-->
+<form role="form" method="post" id="editFormCluster">
+    <!-- 模态框 -->
+    <div class="modal fade" id="editModalCluster">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <!-- 模态框头部 -->
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">
+                        修改集群
+                    </h4>
+                </div>
+
+                <!-- 模态框主体 -->
+
+                <div class="modal-body">
+
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-lg-6 form-group">
+                            <input class="form-control" type="text" name="clusterName" placeholder="集群名称" required>
+                        </div>
+                        <div class="col-lg-6 form-group">
+                            <input class="form-control" type="text" name="deviceNumber" placeholder="设备数量">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6 form-group">
+                            <input class="form-control input-sm" type="text" name="customerName" placeholder="客户名称">
+                        </div>
+                        <div class="col-lg-6 form-group">
+                            <input class="form-control" type="text" name="contactPerson" placeholder="联系人">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6 form-group">
+                            <input class="form-control" type="text" name="contactPhone" placeholder="联系电话">
+                        </div>
+                        <div class="col-lg-6 form-group">
+                            <input class="form-control" type="text" name="contactEmail" placeholder="邮件">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6 form-group">
+                            <input class="form-control" type="text" name="contactQQ" placeholder="QQ">
+                        </div>
+                        <div class="col-lg-6 form-group">
+                            <input class="form-control" type="text" name="contactWeicat" placeholder="微信">
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- 模态框底部 -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="submit" class="btn btn-primary">提交</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<!--  删除集群的模态-->
+<form method="post" role="form" id="delFormCluster">
+    {% csrf_token %}
+    <div id="delModalCluster" class="modal fade">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <!-- 模态框头部 -->
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">
+                        删除集群
+                    </h4>
+                </div>
+
+                <!-- 模态框主体 -->
+                <div class="modal-body">
+                    确定要删除ID为[<span id="spanId"></span>]的集群吗?
+                </div>
+
+                <!-- 模态框底部 -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="submit" class="btn btn-danger">删除</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

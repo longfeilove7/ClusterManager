@@ -1,33 +1,3 @@
-// using jQuery
-function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = jQuery.trim(cookies[i]);
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-var csrftoken = getCookie('csrftoken');
-
-function csrfSafeMethod(method) {
-    // these HTTP methods do not require CSRF protection
-    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-}
-$.ajaxSetup({
-    beforeSend: function (xhr, settings) {
-        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-            xhr.setRequestHeader("X-CSRFToken", csrftoken);
-        }
-    }
-});
-
 /**
 * 遍历表格内容返回数组
 * @param Int  id 表格id
@@ -36,6 +6,12 @@ $.ajaxSetup({
 function toPowerOn(id, e) {
     var getID = e.parentNode.parentNode.parentNode.children[1].innerHTML;
     var getIP = e.parentNode.parentNode.parentNode.children[8].innerHTML;
+    var getPowerOn = $("#btn1_" + getID);
+    //console.log(getPowerOn)
+    var getPowerOff = $("#btn2_" + getID);
+    //console.log(getPowerOff)
+    var getPowerCycle = $("#btn3_" + getID);
+    //console.log(getPowerCycle)
 
     $.confirm({
         title: '对如下设备开机?',
@@ -69,8 +45,7 @@ function toPowerOn(id, e) {
                         success: function (data) {
                             console.log(data)
                             //alert(data)
-                            //以上是后端函数返回成功的信息
-                            e.parentNode.parentNode.parentNode.children[13].innerHTML = data[1]
+                            //以上是后端函数返回成功的信息                                
                             if (data[2] == "fail") {
                                 $.alert({
                                     title: '提示：',
@@ -84,6 +59,15 @@ function toPowerOn(id, e) {
                                         }
                                     }
                                 })
+                            }
+                            else {
+                                e.parentNode.parentNode.parentNode.children[13].innerHTML = data[1]
+                                getPowerOn.attr('disabled', true);
+                                getPowerOff.attr('disabled', false);
+                                getPowerCycle.attr('disabled', false);
+                                getPowerOn.children().css('color', 'grey');
+                                getPowerOff.children().css('color', 'red');
+                                getPowerCycle.children().css('color', 'yellowgreen');
                             }
                         },
                         error: function (request, info, e) {
@@ -115,6 +99,12 @@ function toPowerOn(id, e) {
 function toPowerOff(id, e) {
     var getID = e.parentNode.parentNode.parentNode.children[1].innerHTML;
     var getIP = e.parentNode.parentNode.parentNode.children[8].innerHTML;
+    var getPowerOn = $("#btn1_" + getID);
+    //console.log(getPowerOn)
+    var getPowerOff = $("#btn2_" + getID);
+    //console.log(getPowerOff)
+    var getPowerCycle = $("#btn3_" + getID);
+    //console.log(getPowerCycle)
 
     $.confirm({
         title: '对如下设备关机?',
@@ -146,8 +136,6 @@ function toPowerOff(id, e) {
                             }
                         },
                         success: function (data) {
-                            e.parentNode.parentNode.parentNode.children[14].innerHTML = data[1]
-                            e.parentNode.parentNode.parentNode.children[16].innerHTML = '<a href="/power_history-' + getID + '/">' + data[3] + '</a>'
                             if (data[2] == "fail") {
                                 $.alert({
                                     title: '提示：',
@@ -161,6 +149,16 @@ function toPowerOff(id, e) {
                                         }
                                     }
                                 })
+                            }
+                            else {
+                                e.parentNode.parentNode.parentNode.children[14].innerHTML = data[1]
+                                e.parentNode.parentNode.parentNode.children[16].innerHTML = '<a href="/power_history-' + getID + '/">' + data[3] + '</a>'
+                                getPowerOn.attr('disabled', false);
+                                getPowerOff.attr('disabled', true);
+                                getPowerCycle.attr('disabled', true);
+                                getPowerOn.children().css('color', 'green');
+                                getPowerOff.children().css('color', 'grey');
+                                getPowerCycle.children().css('color', 'grey');
                             }
                             console.log(data)
                             //alert(data[1])
@@ -329,10 +327,15 @@ function toBatchPowerOn(id, e) {
                                     newdata = data[i];
                                     console.log(newdata);
                                     getID = newdata[0];
+                                    var getPowerOn = $("#btn1_" + getID);
+                                    //console.log(getPowerOn)
+                                    var getPowerOff = $("#btn2_" + getID);
+                                    //console.log(getPowerOff)
+                                    var getPowerCycle = $("#btn3_" + getID);
+                                    //console.log(getPowerCycle)
                                     var index = 0;
                                     // from the ID to get the rowID
                                     $("table tr").each(function (i) {
-
                                         if ($($(this).find("td").get(1)).text() == getID) {
                                             index = i - 1;
                                             //console.log("index" + index)
@@ -341,7 +344,7 @@ function toBatchPowerOn(id, e) {
                                     rowID = index;
                                     console.log("rowID " + rowID)
                                     //e.parentNode.parentNode.children[13].innerHTML=data[1]
-                                    mytable.rows[rowID].cells[13].innerHTML = newdata[2];
+
                                     if (newdata[3] == "fail") {
                                         $.alert({
                                             title: '提示：',
@@ -355,6 +358,15 @@ function toBatchPowerOn(id, e) {
                                                 }
                                             }
                                         })
+                                    }
+                                    else {
+                                        mytable.rows[rowID].cells[13].innerHTML = newdata[2];
+                                        getPowerOn.attr('disabled', true);
+                                        getPowerOff.attr('disabled', false);
+                                        getPowerCycle.attr('disabled', false);
+                                        getPowerOn.children().css('color', 'grey');
+                                        getPowerOff.children().css('color', 'red');
+                                        getPowerCycle.children().css('color', 'yellowgreen');
                                     }
                                 }
                                 //alert(data[1])
@@ -446,10 +458,15 @@ function toBatchPowerOff(id, e) {
                                     newdata = data[i];
                                     console.log(newdata);
                                     getID = newdata[0];
+                                    var getPowerOn = $("#btn1_" + getID);
+                                    //console.log(getPowerOn)
+                                    var getPowerOff = $("#btn2_" + getID);
+                                    //console.log(getPowerOff)
+                                    var getPowerCycle = $("#btn3_" + getID);
+                                    //console.log(getPowerCycle)
                                     var index = 0;
                                     // from the ID to get the rowID
                                     $("table tr").each(function (i) {
-
                                         if ($($(this).find("td").get(1)).text() == getID) {
                                             index = i - 1;
                                             //console.log("index" + index)
@@ -458,8 +475,7 @@ function toBatchPowerOff(id, e) {
                                     rowID = index;
                                     console.log("rowID " + rowID)
                                     //e.parentNode.parentNode.children[13].innerHTML=data[1]
-                                    mytable.rows[rowID].cells[14].innerHTML = newdata[2];
-                                    mytable.rows[rowID].cells[16].innerHTML = '<a href="/power_history-' + getID + '/">' + newdata[4] + '</a>';
+
                                     if (newdata[3] == "fail") {
                                         $.alert({
                                             title: '提示：',
@@ -474,6 +490,16 @@ function toBatchPowerOff(id, e) {
                                             }
                                         })
 
+                                    }
+                                    else {
+                                        mytable.rows[rowID].cells[14].innerHTML = newdata[2];
+                                        mytable.rows[rowID].cells[16].innerHTML = '<a href="/power_history-' + getID + '/">' + newdata[4] + '</a>';
+                                        getPowerOn.attr('disabled', false);
+                                        getPowerOff.attr('disabled', true);
+                                        getPowerCycle.attr('disabled', true);
+                                        getPowerOn.children().css('color', 'green');
+                                        getPowerOff.children().css('color', 'grey');
+                                        getPowerCycle.children().css('color', 'grey');
                                     }
                                 }
                                 //alert(data[1])
@@ -565,7 +591,6 @@ function toBatchPowerCycle(id, e) {
                                     var index = 0;
                                     // from the ID to get the rowID
                                     $("table tr").each(function (i) {
-
                                         if ($($(this).find("td").get(1)).text() == getID) {
                                             index = i - 1;
                                             //console.log("index" + index)
@@ -573,9 +598,8 @@ function toBatchPowerCycle(id, e) {
                                     })
                                     rowID = index;
                                     console.log("rowID " + rowID)
-                                    //e.parentNode.parentNode.children[13].innerHTML=data[1]
-                                    mytable.rows[rowID].cells[13].innerHTML = newdata[2];
-                                    if (newdata[3] == "fail") {
+                                    //e.parentNode.parentNode.children[13].innerHTML=data[1]                                    
+                                    if (newdata[2] == "fail") {
                                         $.alert({
                                             title: '提示：',
                                             content: "设备IP：" + newdata[1] + " 重启失败！",

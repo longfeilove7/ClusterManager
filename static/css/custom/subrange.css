@@ -2,24 +2,6 @@
 .table tbody tr td{
     vertical-align: middle;          
 }
-/*开机按钮图标大小*/
-.fa-plug{
-    font-size:22px;
-    text-align: center;
-    color: green;
-}        
-/*关机按钮图标大小*/
-.fa-power-off{
-    font-size:20px;
-    text-align: center;
-    color: red;
-}
-/*重起按钮图标大小*/
-.fa-recycle{
-    font-size:20px;
-    text-align: center;
-    color:yellowgreen;
-}
 /*编辑按钮图标大小*/
 .fa-edit{
     font-size:22px;

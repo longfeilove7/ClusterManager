@@ -38,25 +38,52 @@ class Host(models.Model):
     powerCycleTime = models.DateTimeField(null=True)
     powerOffTime = models.DateTimeField(null=True)
     checkOnline = models.CharField(max_length=32,null=True)
-    runTime = models.CharField(max_length=32,null=True)
+    runTime = models.DurationField(null=True)
     ipmiUser = models.CharField(max_length=64,null=True)
     ipmiPassword = models.CharField(max_length=64,null=True)
     clusterName = models.ForeignKey(Clusters,on_delete=models.CASCADE)
+    powerStatus = models.CharField(max_length=1,default="0")
+    monitorStatus = models.CharField(max_length=1,default="0")
+    billingStatus = models.CharField(max_length=1,default="0")
 
 
 class HostPowerHistory(models.Model):
     host = models.ForeignKey(Host,on_delete=models.CASCADE) 
     powerOnTimeHistory = models.DateTimeField(null=True)
-    powerCycleTimes = models.CharField(max_length = 32,default="0")
+    powerCycleTimes = models.IntegerField(default="0")
     powerOffTimeHistory = models.DateTimeField(null=True)
-    runTimeHistory = models.CharField(max_length=32,null=True)
-    
+    runTimeHistory = models.DurationField(null=True)
+
+class HostCountPowerHistory(models.Model):
+    host = models.ForeignKey(Host,on_delete=models.CASCADE)   
+    countRunTimeHistory = models.DurationField(null=True)    
+
+class checkPowerStatus(models.Model):
+    checkTaskID = models.CharField(max_length=255,null=True)
+    checkHostID = models.CharField(max_length=32,null=True)
+    checkHostIP = models.GenericIPAddressField(null=True)
+    checkTime = models.DateTimeField(null=True)
+    checkResult =  models.CharField(max_length=32,null=True)   
 
 class Automate(models.Model):
     inspectTime =models.CharField(max_length=32,null=True)
     
-    
+class Billing(models.Model):
+    clusterName = models.ForeignKey(Clusters,on_delete=models.CASCADE)
+    billingNumber = models.CharField(max_length=32,null=True)
+    billingPrice = models.CharField(max_length=32,null=True)  
+    billingStartTime = models.CharField(max_length=32,null=True)
+    billingStopTime = models.CharField(max_length=32,null=True)
 
+class BillingHistory(models.Model):
+    clusterName = models.CharField(max_length=32,null=True)
+    deviceNumber = models.CharField(max_length=32,null=True)
+    billingNumber = models.CharField(max_length=32,null=True)
+    billingPrice = models.CharField(max_length=32,null=True)  
+    billingStartTime = models.CharField(max_length=32,null=True)
+    billingStopTime = models.CharField(max_length=32,null=True)
+    billingNowTime = models.CharField(max_length=32,null=True)
+    billingCount = models.CharField(max_length=32,null=True)
 
 class Users(models.Model):
     username = models.CharField(max_length=64)

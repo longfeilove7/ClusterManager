@@ -32,20 +32,20 @@
     /*         编辑巡检任务的模态*/
     function toEditInspect(id, e) {
         /*            获取当前点击事件标签上的id*/
-        var getID = e.parentNode.parentNode.children[0].innerHTML;
-        var getRoomNO = e.parentNode.parentNode.children[1].innerHTML;
-        var getCabinetNO = e.parentNode.parentNode.children[2].innerHTML;
-        var getBladeBoxNO = e.parentNode.parentNode.children[3].innerHTML;
-        var getBladeNO = e.parentNode.parentNode.children[4].innerHTML;
-        var getHostName = e.parentNode.parentNode.children[5].innerHTML;
-        var getServiceIP = e.parentNode.parentNode.children[6].innerHTML;
-        var getManageIP = e.parentNode.parentNode.children[7].innerHTML;
-        var getStorageIP = e.parentNode.parentNode.children[8].innerHTML;
+        var getID = e.parentNode.parentNode.children[1].innerHTML;
+        var getRoomNO = e.parentNode.parentNode.children[2].innerHTML;
+        var getCabinetNO = e.parentNode.parentNode.children[3].innerHTML;
+        var getBladeBoxNO = e.parentNode.parentNode.children[4].innerHTML;
+        var getBladeNO = e.parentNode.parentNode.children[5].innerHTML;
+        var getHostName = e.parentNode.parentNode.children[6].innerHTML;
+        var getServiceIP = e.parentNode.parentNode.children[7].innerHTML;
+        var getManageIP = e.parentNode.parentNode.children[8].innerHTML;
+        var getStorageIP = e.parentNode.parentNode.children[9].innerHTML;
         var getService = e.parentNode.parentNode.children[11].innerHTML;
-        var getHardware = e.parentNode.parentNode.children[10].innerHTML;
+        var getHardware = e.parentNode.parentNode.children[11].innerHTML;
         var getIpmiUser = e.parentNode.parentNode.children[11].innerHTML;
         var getIpmiPassword = e.parentNode.parentNode.children[12].innerHTML;
-        var getClusterName = e.parentNode.parentNode.children[9].innerHTML;
+        var getClusterName = e.parentNode.parentNode.children[10].innerHTML;
         console.log("getid = " + getID)
         console.log("getClusterName" + getClusterName)
         // document.body.onclick = function (event) { 部分浏览器不支持此方法，改用如上parentNode方式。

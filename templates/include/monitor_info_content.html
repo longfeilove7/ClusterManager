@@ -13,11 +13,11 @@
                 <li class="nav-item">
                     <!-- <a class="nav-link" href="#" id="batchBtn1" onclick="toBatchPowerOn('mytable',this)">批量开机</a> -->
                     <div style="position: relative; top: 0px; width: 200px; margin: 0 auto;">
-                        <input class="form-control" id="startDateTime" placeholder="开始时间">
+                        <input class="form-control" id="startDateTime" placeholder="2018-12-01 04:06:54">
                     </div>
                 </li>
                 <li>
-                    <div style="position: relative; top: 0px; width: 5px; margin: 0 auto;">
+                    <div style="position: relative; top: 0px; width: 10px; margin: 0 auto;">
                     </div>
                 </li>
                 <li class="nav-item">
@@ -28,7 +28,7 @@
                 </li>
                 <!-- Dropdown -->
                 <li class="nav-item dropdown">
-                        <a class="nav-link" href="#" id="batchBtn" onclick="toBatchPowerOff('mytable',this)">查询</a>
+                        <a class="nav-link" href="#" id="batchBtn" onclick="toCountPowerStatus('mytable',this)">查询</a>
                 </li>
             </ul>
             <form class="form-inline mt-2 mt-md-0">
@@ -55,11 +55,11 @@
                 <th>管理IP</th>
                 <th>存储IP</th>
                 <th>集群</th>
-                <th>开机时间</th>
-                <th>关机时间</th>
-                <th>状态</th>
-                <th>累计时长</th>
-                <th>累计费用</th>
+                <th>监测周期</th>
+                <th>监测时长</th>
+                <th>开机时长</th>
+                <th>关机时长</th>                
+                <th>监测失败</th>
             </tr>
         </thead>
         <tbody>
@@ -75,11 +75,11 @@
                 <td>{{ row.clusterName.clusterName }}</td>
                 <td>{{ row.powerOnTime|date:"Y-m-d H:i:s" }}</td>
                 <td>{{ row.powerOffTime|date:"Y-m-d H:i:s" }}</td>
-                <td>{{ row.checkOnline }}</td>
                 <td>
-                    <a href="/power_history-{{ row.id }}/">{{ row.runTime }}</a>
+                    <a href="/power_history-{{ row.id }}/">{{ row.countPowerOnHour }}:{{ row.countPowerOnMinute }}'</a>
                 </td>
-                <td>{{ row.checkOnline }}</td>
+                <td>{{ row.countPowerOffHour }}:{{ row.countPowerOffMinute }}'</td>                
+                <td>{{ row.countPowerFailHour }}:{{ row.countPowerFailMinute }}'</td>
             </tr>
             {% endfor %}
         </tbody>

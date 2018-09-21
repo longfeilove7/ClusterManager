@@ -2,6 +2,7 @@
 命名规范：module_name, package_name, ClassName, method_name, ExceptionName, function_name, GLOBAL_VAR_NAME, instance_var_name, function_parameter_name, local_var_name.
 """
 from django.db.models import Count, Max, Avg, Min, Sum, F, Q, FloatField
+from django.db import models
 from django.shortcuts import render, redirect
 from django.shortcuts import HttpResponse
 from django.http import HttpRequest, HttpResponseBadRequest
@@ -24,6 +25,8 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 import datetime
 import pytz
+from django.utils import timezone
+from itertools import chain
 #import django_excel as excel
 from HostManager.models import Question, Choice, Host, Clusters
 from django import forms
@@ -98,7 +101,7 @@ class ClassSign():
         #查询数据库用户名
         user_list = models.Users.objects.filter(
             username=GLOBAL_VAR_USER).first()
-        #返回index页面        
+        #返回index页面
         return render(request, 'index.html', {'user_list': user_list})
 
 
@@ -419,7 +422,7 @@ class ClassCeleryBeat():
     def create_PowerStatus(idName, ipmiHost, ipmiUser, ipmiPassword):
         #定义一个时间间隔
         schedule, created = IntervalSchedule.objects.get_or_create(
-            every=180,
+            every=300,
             period=IntervalSchedule.SECONDS,
         )
         #定义一个时间周期
@@ -447,7 +450,7 @@ class ClassCeleryBeat():
 
     #关闭任务
     def disable_task(name):
-        try:            
+        try:
             periodicTask = PeriodicTask.objects.get(name=name)
             periodicTask.enabled = False  # 设置关闭
             periodicTask.save()
@@ -455,15 +458,15 @@ class ClassCeleryBeat():
         except PeriodicTask.DoesNotExist:
             return True
 
-
     #关闭任务
     def delete_task(name):
-        try:            
+        try:
             periodicTask = PeriodicTask.objects.get(name=name)
-            periodicTask.delete()  # 设置删除           
+            periodicTask.delete()  # 设置删除
             return True
         except PeriodicTask.DoesNotExist:
             return True
+
 
 class ClassCeleryResult:
     def task_result(request):
@@ -699,6 +702,7 @@ class ClassCeleryWorker():
             return ()
         else:
             return render(request, 'host_info.html', context)
+
 
 #批量开机函数
 
@@ -942,6 +946,7 @@ class ClassCeleryWorker():
         else:
             return render(request, 'inspect_info.html', context)
 
+
 class ClassCountCalculate():
     def runTimeCalculate(ipmiID, powerOnTime, powerOffTime):
         """"""
@@ -967,29 +972,30 @@ class ClassCountCalculate():
         models.Host.objects.filter(id=ipmiID).update(runTime=runTime)
         models.HostPowerHistory.objects.filter(
             powerOnTimeHistory=powerOnTime, host_id=ipmiID).update(
-                runTimeHistory= runTime, )
+                runTimeHistory=runTime, )
         return (runTime)
 
     def countRunTimeCalculate(ipmiID):
-        """"""         
-    # to calculate the all runtimehistory
-        db_list = models.HostPowerHistory.objects.filter(host_id=ipmiID).values("host_id", "runTimeHistory")
+        """"""
+        # to calculate the all runtimehistory
+        db_list = models.HostPowerHistory.objects.filter(
+            host_id=ipmiID).values("host_id", "runTimeHistory")
         print(db_list)
-        listRunTimeHistory=[]
+        listRunTimeHistory = []
         #遍历列表获得内部字典
         for key_dict in db_list:
             #获取单条字典的对应值
             host_id = key_dict['host_id']
             runTimeHistory = key_dict['runTimeHistory']
             # set the not null to a list
-            if runTimeHistory is not None:                    
-                #print(runTimeHistory)                  
+            if runTimeHistory is not None:
+                #print(runTimeHistory)
                 listRunTimeHistory.append(runTimeHistory)
         #print(listRunTimeHistory)
         #print(type(listRunTimeHistory))
         countRunTimeHistory = datetime.timedelta(0, 0)
-        for x in listRunTimeHistory:                
-            countRunTimeHistory +=  x        
+        for x in listRunTimeHistory:
+            countRunTimeHistory += x
         # models.Host.objects.filter(id=ipmiID).update(runTime=str(runTime), )
         # models.HostPowerHistory.objects.filter(
         #     powerOnTimeHistory=powerOnTime, host_id=ipmiID).update(
@@ -1005,7 +1011,13 @@ class ClassBillingSystem():
             username=GLOBAL_VAR_USER).first()
         if request.method == 'GET':
             #filter the billing value equal 1
-            obj = models.Host.objects.filter(billingStatus=1)
+            host = models.Host.objects.filter(billingStatus=1)
+            #obj =  host.annotate(countPowerOnHour=5*Count("checkpoweron")/60).annotate(countPowerOffHour=5*Count("checkpoweroff")/60).annotate(countPowerFailHour=5*Count("checkpowerfail")/60).annotate(countPowerOnMinute=5*Count("checkpoweron")%60).annotate(countPowerOffMinute=5*Count("checkpoweroff")%60).annotate(countPowerFailMinute=5*Count("checkpowerfail")%60)
+            #设置每台机器1小时的租用价格
+            price =str(5)
+            obj = models.Host.objects.raw(
+                "select id,ifnull(sumRunTimeHour,0) as sumRunTimeHour,ifnull(sumRunTimeMinute,0) as sumRunTimeMinute,ifnull((sumRunTimeHour*"+price+"+sumRunTimeMinute/60*"+price+"),0) as sumMoney  from (select * from (SELECT * FROM hostmanager_host WHERE billingstatus=1) as a left join (SELECT host_id,sum(runtimehistory)/1000000/60 div 3600  as sumRunTimeHour,round((sum(runtimehistory)/1000000/60 mod 60))  as sumRunTimeMinute FROM hostmanager_hostpowerhistory group by host_id) as b on a.id=b.host_id) as temp"
+            )
             cluster_list = models.Clusters.objects.all()
             # the .aggregate(Sum()) to sum  .aggregate(Avg()) to average.but can't use for timedelta
             test = models.HostPowerHistory.objects.all().aggregate(
@@ -1151,7 +1163,40 @@ class ClassMonitorSystem():
             username=GLOBAL_VAR_USER).first()
         if request.method == 'GET':
             #filter the monitor value equal 1
-            obj = models.Host.objects.filter(monitorStatus=1)
+            #注意：annotate的参数表名（checkpowerstatus）一定要全小写,并且与host表有外键关联,5分钟一检测，结果成以5表示总时间
+            host = models.Host.objects.filter(monitorStatus=1)
+            checkPowerOn = models.checkPowerOn.objects.filter(checkHost_id=39)
+            checkPoweroff = models.checkPowerOff.objects.filter(
+                checkHost_id=39)
+            checkPowerfail = models.checkPowerFail.objects.filter(
+                checkHost_id=39)            
+            #获取当天0点时间，由于涉及时区需要处理
+            startTime = timezone.now() - datetime.timedelta(hours=datetime.datetime.now().hour,minutes=datetime.datetime.now().minute,seconds=datetime.datetime.now().second)
+            endTime = timezone.now()
+            strStartTime = startTime.strftime('%Y-%m-%d %H:%M:%S')
+            strEndTime = endTime.strftime('%Y-%m-%d %H:%M:%S')
+            print(strStartTime)
+            print(strEndTime)
+            #mysql 取书整floor(number),除法取整，x div y ,除法取余数, x mod y,四舍五入，round
+            obj = models.Host.objects.raw(
+                "SELECT id,ifnull(countPowerOffHour,0) AS countPowerOffHour,ifnull(countPowerOffMinute,0) AS countPowerOffMinute,ifnull(countPowerOnHour,0) AS countPowerOnHour,ifnull(countPowerOnMinute,0) AS countPowerOnMinute,ifnull(countPowerFailHour,0) AS countPowerFailHour,ifnull(countPowerFailMinute,0) AS countPowerFailMinute FROM (SELECT * FROM ((SELECT * FROM hostmanager_host WHERE monitorstatus=1) AS a) LEFT JOIN (SELECT checkHost_id AS OFF_id,(COUNT(*)-1)*5 div 60 as countPowerOffHour,(COUNT(*)-1)*5 mod 60 as countPowerOffMinute FROM hostmanager_checkpoweroff WHERE checktime<'"+strEndTime+"' AND checktime>'"+strStartTime+"'  GROUP BY checkhost_id) as b on a.id=b.OFF_id LEFT JOIN (SELECT checkHost_id AS ON_id,(COUNT(*)-1)*5 div 60 as countPowerOnHour,(COUNT(*)-1)*5 mod 60 as countPowerOnMinute FROM hostmanager_checkpoweron WHERE checktime<'"+strEndTime+"' AND checktime>'"+strStartTime+"'  GROUP BY checkhost_id) as c on a.id=c.ON_id LEFT JOIN (SELECT checkHost_id AS FAIL_id,(COUNT(*)-1)*5 div 60 as countPowerFailHour,(COUNT(*)-1)*5 mod 60 as countPowerFailMinute FROM hostmanager_checkpowerfail WHERE checktime<'"+strEndTime+"' AND checktime>'"+strStartTime+"'  GROUP BY checkhost_id) as d on a.id=d.FAIL_id) AS TEMP"
+            )
+            #print(obj1)
+            #for item in obj1:
+            #   print(item)
+            #通过chain合并
+            # checkPowerStatus = chain(checkPowerOn, checkPoweroff, checkPowerfail)
+            # for item in checkPowerStatus:
+            #     print(item)
+            #obj = host.annotate(countPowerOnHour=5*Count("checkpoweron")/60).annotate(countPowerOffHour=5*Count("checkpoweroff")/60).annotate(countPowerFailHour=5*Count("checkpowerfail")/60).annotate(countPowerOnMinute=5*Count("checkpoweron")%60).annotate(countPowerOffMinute=5*Count("checkpoweroff")%60).annotate(countPowerFailMinute=5*Count("checkpowerfail")%60)
+
+            #print(obj)
+            #test = host.checkPowerOn_set.all()
+            print("111111111111111111111111111111111111111111")
+            #print(test)
+            #obj1 = host.filter(pk__checkHostIP=39)
+            #obj = models.checkPowerOff.objects.filter(checkHost_id=39).filter(checkHost__monitorStatus=1)
+            print(obj)
             cluster_list = models.Clusters.objects.all()
             # the .aggregate(Sum()) to sum  .aggregate(Avg()) to average.but can't use for timedelta
             test = models.HostPowerHistory.objects.all().aggregate(
@@ -1196,6 +1241,7 @@ class ClassMonitorSystem():
                 })
 
 # the monitor switch button function
+
     def monitorSwitch(request):
         """"""
         context = {}
@@ -1204,24 +1250,24 @@ class ClassMonitorSystem():
             #print(ipmiID)
             setValue = request.POST.get('setValue')
             #print("setValue" + setValue)
-            idName = request.POST.get('ID')            
+            idName = request.POST.get('ID')
             db_dict = models.Host.objects.filter(id=ipmiID).values()[0]
             ipmiHost = db_dict['manageIP']
             ipmiUser = db_dict['ipmiUser']
             #print(ipmiUser)
             ipmiPassword = db_dict['ipmiPassword']
-            #print(ipmiPassword)                    
+            #print(ipmiPassword)
             models.Host.objects.filter(id=ipmiID).update(
                 monitorStatus=setValue, )
             data = json.dumps(setValue).encode()
-            # countRunTimeHistory = ClassCountCalculate.countRunTimeCalculate(ipmiID) 
-            # print(countRunTimeHistory)                 
+            # countRunTimeHistory = ClassCountCalculate.countRunTimeCalculate(ipmiID)
+            # print(countRunTimeHistory)
             #if the setValue equal 1 then to set beat
-            if setValue == "1":                
+            if setValue == "1":
                 ClassCeleryBeat.create_PowerStatus(idName, ipmiHost, ipmiUser,
-                                               ipmiPassword)
+                                                   ipmiPassword)
             #if the setValue equal 0 then to stop beat
-            elif setValue =="0":
+            elif setValue == "0":
                 ClassCeleryBeat.disable_task(idName)
             return HttpResponse(data)
         elif request.method == 'GET':
@@ -1248,13 +1294,13 @@ class ClassMonitorSystem():
                 print(type(dictAllValue))
                 dictAllValue = eval(dictAllValue)
                 ipmiID = dictAllValue['ID']
-                print(ipmiID)                
+                print(ipmiID)
                 models.Host.objects.filter(id=ipmiID).update(
                     monitorStatus=setValue, )
                 db_dict = models.Host.objects.filter(id=ipmiID).values()[0]
                 getID = db_dict['id']
                 getmonitor = db_dict['monitorStatus']
-                dictMonitor = [getID, getmonitor]                
+                dictMonitor = [getID, getmonitor]
                 print(dictMonitor)
                 print(db_dict)
                 listMonitor.append(dictMonitor)
@@ -1263,7 +1309,7 @@ class ClassMonitorSystem():
                 ipmiHost = db_dict['manageIP']
                 ipmiPassword = db_dict['ipmiPassword']
                 ClassCeleryBeat.create_PowerStatus(idName, ipmiHost, ipmiUser,
-                                               ipmiPassword)
+                                                   ipmiPassword)
             data = json.dumps(listMonitor).encode()
             return HttpResponse(data)
         elif request.method == 'GET':
@@ -1271,7 +1317,6 @@ class ClassMonitorSystem():
             return ()
         else:
             return render(request, 'monitor_device.html', context)
-
 
 # the batch Pause monitor function
 
@@ -1310,6 +1355,7 @@ class ClassMonitorSystem():
             return ()
         else:
             return render(request, 'monitor_device.html', context)
+
 
 # the batch delete monitor function
 

@@ -7,6 +7,7 @@ from celery import shared_task
 from celery import task
 import os, sys, time
 import datetime
+from django.utils import timezone
 from HostManager import models
 import pytz
 from django_celery_beat.models import PeriodicTask
@@ -17,36 +18,36 @@ from django_celery_beat.models import SolarSchedule
 from django_celery_results.models import TaskResult
 
 
-#查询电源状态
+#查询电源状态,通过bind=true，给任务增加self参数，获得任务ID:self.request.id
 @shared_task(bind=True, name='HostManager.Tasks.powerStatus')
 def powerStatus(self,idName,ipmiHost, ipmiUser, ipmiPassword):
     powerStatus = "ipmitool -H " + ipmiHost + " -U " + ipmiUser + " -P " + ipmiPassword + " power status"
     powerStatus = os.popen(powerStatus)
     returnRead = powerStatus.read()
     print(returnRead)
-    nowTime = datetime.datetime.now()
+    nowTime = timezone.now()
     if "on" in returnRead:        
-        models.checkPowerStatus.objects.create(
+        models.checkPowerOn.objects.create(
                 checkTaskID=self.request.id,
-                checkHostID=idName,
+                checkHost_id=idName,
                 checkHostIP=ipmiHost,
                 checkTime=nowTime,
                 checkResult="on",                
             )        
         return idName,ipmiHost, nowTime, "on"
     elif "off" in returnRead:
-        models.checkPowerStatus.objects.create(
+        models.checkPowerOff.objects.create(
                 checkTaskID=self.request.id,
-                checkHostID=idName,
+                checkHost_id=idName,
                 checkHostIP=ipmiHost,
                 checkTime=nowTime,
                 checkResult="off",                
             )
         return idName,ipmiHost, nowTime, "off"
     else:
-        models.checkPowerStatus.objects.create(
+        models.checkPowerFail.objects.create(
                 checkTaskID=self.request.id,
-                checkHostID=idName,
+                checkHost_id=idName,
                 checkHostIP=ipmiHost,
                 checkTime=nowTime,
                 checkResult="fail",                

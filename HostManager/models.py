@@ -58,9 +58,23 @@ class HostCountPowerHistory(models.Model):
     host = models.ForeignKey(Host,on_delete=models.CASCADE)   
     countRunTimeHistory = models.DurationField(null=True)    
 
-class checkPowerStatus(models.Model):
+class checkPowerOn(models.Model):
     checkTaskID = models.CharField(max_length=255,null=True)
-    checkHostID = models.CharField(max_length=32,null=True)
+    checkHost = models.ForeignKey(Host,null=True,on_delete=models.CASCADE) 
+    checkHostIP = models.GenericIPAddressField(null=True)
+    checkTime = models.DateTimeField(null=True)
+    checkResult =  models.CharField(max_length=32,null=True)   
+
+class checkPowerOff(models.Model):
+    checkTaskID = models.CharField(max_length=255,null=True)
+    checkHost = models.ForeignKey(Host,null=True,on_delete=models.CASCADE) 
+    checkHostIP = models.GenericIPAddressField(null=True)
+    checkTime = models.DateTimeField(null=True)
+    checkResult =  models.CharField(max_length=32,null=True)   
+    
+class checkPowerFail(models.Model):
+    checkTaskID = models.CharField(max_length=255,null=True)
+    checkHost = models.ForeignKey(Host,null=True,on_delete=models.CASCADE) 
     checkHostIP = models.GenericIPAddressField(null=True)
     checkTime = models.DateTimeField(null=True)
     checkResult =  models.CharField(max_length=32,null=True)   

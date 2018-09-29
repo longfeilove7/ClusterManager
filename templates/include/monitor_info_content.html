@@ -2,45 +2,11 @@
 
     <!--  右边主机内容-->
 
-    <nav class="navbar navbar-expand-md bg-secondary navbar-dark">
-        <a class="navbar-brand" href="#">监控信息</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse"
-            aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
-                    <!-- <a class="nav-link" href="#" id="batchBtn1" onclick="toBatchPowerOn('mytable',this)">批量开机</a> -->
-                    <div style="position: relative; top: 0px; width: 200px; margin: 0 auto;">
-                        <input class="form-control" id="startDateTime" placeholder="2018-12-01 04:06:54">
-                    </div>
-                </li>
-                <li>
-                    <div style="position: relative; top: 0px; width: 10px; margin: 0 auto;">
-                    </div>
-                </li>
-                <li class="nav-item">
-                    <!-- <a class="nav-link" href="#" id="batchBtn2" onclick="toBatchPowerOff('mytable',this)">批量关机</a> -->
-                    <div style="position: relative; top: 0px; width: 200px; margin: 0 auto;">
-                        <input class="form-control" id="endDateTime" placeholder="截至时间">
-                    </div>
-                </li>
-                <!-- Dropdown -->
-                <li class="nav-item dropdown">
-                        <a class="nav-link" href="#" id="batchBtn" onclick="toCountPowerStatus('mytable',this)">查询</a>
-                </li>
-            </ul>
-            <form class="form-inline mt-2 mt-md-0">
-                <input class="form-control mr-sm-2" id="searchbox" type="text" placeholder="Search" aria-label="Search">
-                <!-- <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>                      -->
-            </form>
-        </div>
-    </nav>
 
 
 
-    <table id="mytable" data-toggle="table" data-side-pagination="client" data-pagination="true" data-search="false" data-show-refresh="false"
+
+    <!-- <table id="mytable" data-toggle="table" data-side-pagination="client" data-pagination="true" data-search="false" data-show-refresh="false"
         data-height="653" data-show-toggle="false" data-show-columns="false" data-detail-view="false" data-detail-formatter="detailFormatter"
         data-minimum-count-columns="2" data-show-pagination-switch="false" data-pagination="true" data-page-size="10" data-page-list="[10, 25, 50, 100, ALL]"
         data-show-footer="false" data-sort-name="id" data-sort-order="desc" data-row-style="rowStyle" data-striped="true">
@@ -83,5 +49,28 @@
             </tr>
             {% endfor %}
         </tbody>
+    </table> -->
+    <div id="toolbar">
+        <div class="form-inline" role="form">
+            <div class="form-group">
+                <span>&thinsp;从:&thinsp;</span>
+                <input class="form-control w70" id="startDateTime" placeholder="开始时间">
+            </div>
+            <div class="form-group">
+                <span>&thinsp;到:&thinsp;</span>
+                <input class="form-control" id="endDateTime" placeholder="结束时间">
+            </div>
+            &ensp;
+            <button id="refresh" class="btn btn-xs btn-outline-success my-2 my-sm-0" type="submit" data-toggle="tooltip"
+                title="点击查询" onclick="toMonitorTimeQuery('mytable',this)">查询</button>
+            <span>&ensp;默认显示从0点到当前时间查询集</span>
+        </div>
+    </div>
+    <table id="mytable" data-toolbar="#toolbar" data-search="true" data-show-refresh="true" data-show-toggle="true"
+        data-show-columns="true" data-detail-view="true" data-detail-formatter="detailFormatter"
+        data-minimum-count-columns="2" data-show-pagination-switch="true" data-pagination="true" data-id-field="id"
+        data-page-list="[10, 25, 50, 100, ALL]" data-show-footer="false" data-side-pagination="server" data-url="{% url 'monitor_info_query' %}"
+        data-response-handler="responseHandler" data-striped="true" data-search-time-out="500" data-sortable="true" data-page-size="15"
+        data-row-style="rowStyle">
     </table>
 </div>

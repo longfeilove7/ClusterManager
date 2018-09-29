@@ -1,0 +1,7 @@
+.table-striped > tbody > tr:nth-child(2n+1) > td, 
+.table-striped > tbody > tr:nth-child(2n+1) > th {
+    background-color: rgb(242, 245, 247); /*此处是隔行变色自己想用的颜色*/
+ }
+ .table-refresh{
+    background-color: rgb(242, 245, 247); 
+ }

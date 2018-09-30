@@ -91,14 +91,15 @@ urlpatterns = [
     url(r'^monitor_device/', views.ClassMonitorSystem.monitorDevice),
     url(r'^monitor_price/', views.ClassMonitorSystem.monitorPrice),
     url(r'^monitor_switch/', views.ClassMonitorSystem.monitorSwitch),
+    url(r'^monitor_info_switch/',
+        views.ClassMonitorSystem.monitorSwitchQuery,
+        name='monitor_info_query'),
     url(r'^batch_monitor_add/', views.ClassMonitorSystem.batchMonitorAdd),
     url(r'^batch_monitor_pause/', views.ClassMonitorSystem.batchMonitorPause),
     url(r'^batch_monitor_delete/',
         views.ClassMonitorSystem.batchMonitorDelete),
     url(r'^monitor_time_query/', views.ClassMonitorSystem.monitorInfoQuery),
-    url(r'^monitor_info_json1/',
-        views.ClassMonitorSystem.monitorTimeQuery,
-        name='monitor_info_json'),
+
 
     #for django-excel
     url(r'^django_excel', views.upload, name='uplink'),

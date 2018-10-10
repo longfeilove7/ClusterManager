@@ -1,7 +1,7 @@
-{% extends 'extends/base.html' %} 
-{% block baseCss %} 
-{% include 'include/css.html' %} 
-{% endblock %} 
+{% extends 'extends/base.html' %}
+{% block baseCss %}
+{% include 'include/css.html' %}
+{% endblock %}
 {% block baseBody %}
 {% include "include/sidebar.html"%}
 <!-- Add your site or application content here -->
@@ -17,9 +17,9 @@
 </div>
 <!-- /#wrapper -->
 
-{% endblock %} 
-{% block baseScript %} 
-{% include 'include/js.html' %} 
+{% endblock %}
+{% block baseScript %}
+{% include 'include/js.html' %}
 <script src="/static/js/custom/monitorbuttonswitch.js"></script>
 <script src="/static/js/custom/monitortimequery.js"></script>
 <script>
@@ -29,88 +29,108 @@
     function initTable() {
         $table.bootstrapTable({
             height: getHeight(),
+            //clickToSelect设为true表示点击一行时，自动选中或取消第一列复选框
+            //clickToSelect: true,
+            //由于bootstrap 4.0停止使用glyphicon，所以改用fontawesome
+            iconsPrefix: 'fas',
+            icons: {
+                paginationSwitchDown: 'fa-eye',
+                paginationSwitchUp: 'fa-eye-slash',
+                refresh: 'fa-sync',
+                toggle: 'fa-toggle-off',
+                columns: 'fa-columns',
+                detailOpen: 'glyphicon-plus icon-plus',
+                detailClose: 'glyphicon-minus icon-minus'
+            },
             columns: [
                 [
-                //     {
-                //     field: 'state',
-                //     checkbox: true,
-                //     align: 'center',
-                //     valign: 'middle'
-                // },
-                {
-                    field: 'id',
-                    title: 'ID',
-                    sortable: true,
-                    footerFormatter: totalNameFormatter,
-                    align: 'center'
-                }, {
-                    field: 'serviceIP',
-                    title: '业务IP',
-                    sortable: true,
-                    align: 'center',
-                    footerFormatter: totalPriceFormatter
-                }, {
-                    field: 'manageIP',
-                    title: '管理IP',
-                    sortable: true,
-                    align: 'center',
-                    footerFormatter: totalPriceFormatter
-                }, {
-                    field: 'storageIP',
-                    title: '存储IP',
-                    sortable: true,
-                    align: 'center',
-                    footerFormatter: totalPriceFormatter
-                }, {
-                    field: 'clusterName',
-                    title: '集群',
-                    sortable: false,
-                    align: 'center',
-                    footerFormatter: totalPriceFormatter
-                }, {
-                    field: 'countQueryTime',
-                    title: '查询时长',
-                    sortable: false,
-                    align: 'center',
-                    footerFormatter: totalPriceFormatter
-                }, {
-                    field: 'cycleTime',
-                    title: '监测周期',
-                    sortable: false,
-                    align: 'center',
-                    footerFormatter: totalPriceFormatter
-                }, {
-                    field: 'countMonitorTime',
-                    title: '监测时长',
-                    sortable: false,
-                    align: 'center',
-                    footerFormatter: totalPriceFormatter
-                }, {
-                    field: 'countPowerOnTime',
-                    title: '开机时长',
-                    sortable: false,
-                    align: 'center',
-                    footerFormatter: totalPriceFormatter
-                }, {
-                    field: 'countPowerOffTime',
-                    title: '关机时长',
-                    sortable: false,
-                    align: 'center',
-                    footerFormatter: totalPriceFormatter
-                }, {
-                    field: 'countPowerFailTime',
-                    title: '监测失败',
-                    sortable: false,
-                    align: 'center',
-                    footerFormatter: totalPriceFormatter
-                }
-                    // , {
-                    //     field: 'operate',
-                    //     title: '删除',
-                    //     align: 'center',
-                    //     events: operateEvents,
-                    //     formatter: operateFormatter
-                    // }
+                        {
+                        field: 'state',
+                        checkbox: true,
+                        align: 'center',
+                        valign: 'middle'
+                    },
+                    {
+                        field: 'id',
+                        title: 'ID',
+                        sortable: true,
+                        footerFormatter: totalNameFormatter,
+                        align: 'center'
+                    }, {
+                        field: 'roomNO',
+                        title: '机房',
+                        sortable: true,
+                        align: 'center',
+                        footerFormatter: totalPriceFormatter
+                    }, {
+                        field: 'cabinetNO',
+                        title: '机柜',
+                        sortable: true,
+                        align: 'center',
+                        footerFormatter: totalPriceFormatter
+                    }, {
+                        field: 'bladeBoxNO',
+                        title: '刀箱',
+                        sortable: true,
+                        align: 'center',
+                        footerFormatter: totalPriceFormatter
+                    }, {
+                        field: 'bladeNO',
+                        title: '刀片',
+                        sortable: false,
+                        align: 'center',
+                        footerFormatter: totalPriceFormatter
+                    }, {
+                        field: 'hostName',
+                        title: '主机名',
+                        sortable: false,
+                        align: 'center',
+                        footerFormatter: totalPriceFormatter
+                    }, {
+                        field: 'serviceIP',
+                        title: '业务IP',
+                        sortable: false,
+                        align: 'center',
+                        footerFormatter: totalPriceFormatter
+                    }, {
+                        field: 'manageIP',
+                        title: '管理IP',
+                        sortable: false,
+                        align: 'center',
+                        footerFormatter: totalPriceFormatter
+                    }, {
+                        field: 'storageIP',
+                        title: '存储IP',
+                        sortable: false,
+                        align: 'center',
+                        footerFormatter: totalPriceFormatter
+                    }, {
+                        field: 'clusterName',
+                        title: '集群',
+                        sortable: false,
+                        align: 'center',
+                        footerFormatter: totalPriceFormatter
+                    }, {
+                        field: 'hardware',
+                        title: '型号',
+                        sortable: false,
+                        align: 'center',
+                        footerFormatter: totalPriceFormatter
+                    }
+                    , {
+                        field: 'service',
+                        title: '操作系统',
+                        sortable: false,
+                        align: 'center',
+                        footerFormatter: totalPriceFormatter
+                    }
+                    , {
+                        field: 'operate',
+                        title: '监控状态',
+                        align: 'center',
+                        events: operateEvents,
+                        formatter: operateFormatter
+                    }
                 ]
             ]
         });
@@ -170,25 +190,44 @@
         return html.join('');
     }
     function operateFormatter(value, row, index) {
+        if (value == 0) {
         return [
-            '<a class="like" href="javascript:void(0)" title="Like">',
-            '<i class="fa fa-heart-o"></i>',
-            '</a>  ',
-            '<a class="remove" href="javascript:void(0)" title="Remove">',
-            '<i class="fa fa-trash"></i>',
-            '</a>'
+        '<!--正常控件input和label的ID必须一致(此处为了添加确定提醒，故意设置成不一致，而采用js去操作空间的checked属性)，但为了区分不同行的ID，所以采用设备ID-->',
+                    '<div class="custom-switch custom-switch-label-yesno">',
+                        //获取表格内的ID和值赋值给前端样式，注意添加空格保持格式。
+                        '<input class="custom-switch-input" value='+value, ' id='+row.id, ' type="checkbox">',
+                        '<label class="custom-switch-btn" for="ADD_ID_HERE" onclick="toButtonYesNo(\'mytable\',this)"></label>',
+                        '<div class="custom-switch-content-checked">',
+                           '正在监控',
+                        '</div>',
+                        '<div class="custom-switch-content-unchecked">',
+                            '停止监控',
+                        '</div>',
+                    '</div>'            
         ].join('');
     }
+    if (value == 1){
+        return[
+        '<!--正常控件input和label的ID必须一致(此处为了添加确定提醒，故意设置成不一致，而采用js去操作空间的checked属性)，但为了区分不同行的ID，所以采用设备ID-->',
+                    '<div class="custom-switch custom-switch-label-yesno">',
+                        //获取表格内的ID和值赋值给前端样式，注意添加空格保持格式。
+                        '<input class="custom-switch-input" value='+value, ' id='+row.id, ' type="checkbox"  checked="checked">',
+                        '<label class="custom-switch-btn" for="ADD_ID_HERE" onclick="toButtonYesNo(\'mytable\',this)" checked="checked"></label>',
+                        '<div class="custom-switch-content-checked">',
+                           ' 正在监控',
+                        '</div>',
+                        '<div class="custom-switch-content-unchecked">',
+                            '停止监控',
+                        '</div>',
+                    '</div>'     ].join('');       
+    }
+    }
     window.operateEvents = {
-        'click .like': function (e, value, row, index) {
-            alert('You click like action, row: ' + JSON.stringify(row));
-        },
-        'click .remove': function (e, value, row, index) {
-            $table.bootstrapTable('remove', {
-                field: 'id',
-                values: [row.id]
-            });
-        }
+        'click .custom-switch': function (e, value, row, index) {
+            //alert('You click like action, row: ' + JSON.stringify(row));      
+        
+}  
+        
     };
     function totalTextFormatter(data) {
         return 'Total';

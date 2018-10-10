@@ -28,81 +28,92 @@
     function initTable() {
         $table.bootstrapTable({
             height: getHeight(),
+            //由于bootstrap 4.0停止使用glyphicon，所以改用fontawesome
+            iconsPrefix: 'fas',
+            icons: {
+                paginationSwitchDown: 'fa-eye',
+                paginationSwitchUp: 'fa-eye-slash',
+                refresh: 'fa-sync',
+                toggle: 'fa-toggle-off',
+                columns: 'fa-columns',
+                detailOpen: 'glyphicon-plus icon-plus',
+                detailClose: 'glyphicon-minus icon-minus'
+            },
             columns: [
                 [
-                //     {
-                //     field: 'state',
-                //     checkbox: true,
-                //     align: 'center',
-                //     valign: 'middle'
-                // },
-                {
-                    field: 'id',
-                    title: 'ID',
-                    sortable: true,
-                    footerFormatter: totalNameFormatter,
-                    align: 'center'
-                }, {
-                    field: 'serviceIP',
-                    title: '业务IP',
-                    sortable: true,
-                    align: 'center',
-                    footerFormatter: totalPriceFormatter
-                }, {
-                    field: 'manageIP',
-                    title: '管理IP',
-                    sortable: true,
-                    align: 'center',
-                    footerFormatter: totalPriceFormatter
-                }, {
-                    field: 'storageIP',
-                    title: '存储IP',
-                    sortable: true,
-                    align: 'center',
-                    footerFormatter: totalPriceFormatter
-                }, {
-                    field: 'clusterName',
-                    title: '集群',
-                    sortable: false,
-                    align: 'center',
-                    footerFormatter: totalPriceFormatter
-                }, {
-                    field: 'countQueryTime',
-                    title: '查询时长',
-                    sortable: false,
-                    align: 'center',
-                    footerFormatter: totalPriceFormatter
-                }, {
-                    field: 'cycleTime',
-                    title: '监测周期',
-                    sortable: false,
-                    align: 'center',
-                    footerFormatter: totalPriceFormatter
-                }, {
-                    field: 'countMonitorTime',
-                    title: '监测时长',
-                    sortable: false,
-                    align: 'center',
-                    footerFormatter: totalPriceFormatter
-                }, {
-                    field: 'countPowerOnTime',
-                    title: '开机时长',
-                    sortable: false,
-                    align: 'center',
-                    footerFormatter: totalPriceFormatter
-                }, {
-                    field: 'countPowerOffTime',
-                    title: '关机时长',
-                    sortable: false,
-                    align: 'center',
-                    footerFormatter: totalPriceFormatter
-                }, {
-                    field: 'countPowerFailTime',
-                    title: '监测失败',
-                    sortable: false,
-                    align: 'center',
-                    footerFormatter: totalPriceFormatter
-                }
+                    //     {
+                    //     field: 'state',
+                    //     checkbox: true,
+                    //     align: 'center',
+                    //     valign: 'middle'
+                    // },
+                    {
+                        field: 'id',
+                        title: 'ID',
+                        sortable: true,
+                        footerFormatter: totalNameFormatter,
+                        align: 'center'
+                    }, {
+                        field: 'serviceIP',
+                        title: '业务IP',
+                        sortable: true,
+                        align: 'center',
+                        footerFormatter: totalPriceFormatter
+                    }, {
+                        field: 'manageIP',
+                        title: '管理IP',
+                        sortable: true,
+                        align: 'center',
+                        footerFormatter: totalPriceFormatter
+                    }, {
+                        field: 'storageIP',
+                        title: '存储IP',
+                        sortable: true,
+                        align: 'center',
+                        footerFormatter: totalPriceFormatter
+                    }, {
+                        field: 'clusterName',
+                        title: '集群',
+                        sortable: false,
+                        align: 'center',
+                        footerFormatter: totalPriceFormatter
+                    }, {
+                        field: 'countQueryTime',
+                        title: '查询时长',
+                        sortable: false,
+                        align: 'center',
+                        footerFormatter: totalPriceFormatter
+                    }, {
+                        field: 'cycleTime',
+                        title: '监测周期',
+                        sortable: false,
+                        align: 'center',
+                        footerFormatter: totalPriceFormatter
+                    }, {
+                        field: 'countMonitorTime',
+                        title: '监测时长',
+                        sortable: false,
+                        align: 'center',
+                        footerFormatter: totalPriceFormatter
+                    }, {
+                        field: 'countPowerOnTime',
+                        title: '开机时长',
+                        sortable: false,
+                        align: 'center',
+                        footerFormatter: totalPriceFormatter
+                    }, {
+                        field: 'countPowerOffTime',
+                        title: '关机时长',
+                        sortable: false,
+                        align: 'center',
+                        footerFormatter: totalPriceFormatter
+                    }, {
+                        field: 'countPowerFailTime',
+                        title: '监测失败',
+                        sortable: false,
+                        align: 'center',
+                        footerFormatter: totalPriceFormatter
+                    }
                     // , {
                     //     field: 'operate',
                     //     title: '删除',

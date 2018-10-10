@@ -2,7 +2,7 @@
 
     <!--  右边主机内容-->
 
-    <nav class="navbar navbar-expand-md bg-secondary navbar-dark">
+    <nav class="navbar navbar-expand-md bg-secondary navbar-dark btn btn-xs"  id="toolbar">
         <a class="navbar-brand" href="#">计费设备</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse"
             aria-expanded="false" aria-label="Toggle navigation">
@@ -16,83 +16,15 @@
                 <li class="nav-item">
                     <a class="nav-link" href="#" id="batchBtn2" onclick="toBatchButtonNo('mytable',this)">取消计费</a>
                 </li>
-            </ul>
-            <form class="form-inline mt-2 mt-md-0">
-                <input class="form-control mr-sm-2" id="searchbox" type="text" placeholder="Search" aria-label="Search">
-                <!-- <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>                      -->
-            </form>
+            </ul>            
         </div>
     </nav>
 
-
-
-    <table id="mytable" data-toggle="table" data-side-pagination="client" data-pagination="true" data-search="false" data-show-refresh="false"
-        data-height="653" data-show-toggle="false" data-show-columns="false" data-detail-view="false" data-detail-formatter="detailFormatter"
-        data-minimum-count-columns="2" data-show-pagination-switch="false" data-pagination="true" data-page-size="10" data-page-list="[10, 25, 50, 100, ALL]"
-        data-show-footer="false" data-sort-name="id" data-sort-order="aesc" data-row-style="rowStyle" data-striped="true" data-ajax="ajaxRequest">
-
-        <thead class="thead-light">
-            <tr>
-                <th>
-                    <input type="checkbox" id="select-all" onclick="selectAll()">
-                </th>
-                <th data-field="id">ID</th>
-                <th data-field="roomNO">机房</th>
-                <th data-field="cabinetNO">机柜</th>
-                <th data-field="bladeBoxNO">刀箱</th>
-                <th data-field="hostName">刀片</th>
-                <th data-field="hostName">主机名</th>
-                <th data-field="serviceIP">业务IP</th>
-                <th data-field="manageIP">管理IP</th>
-                <th data-field="storageIP">存储IP</th>
-                <th data-field="clusterName.clusterName">集群</th>
-                <th data-field="hardware">型号</th>
-                <th data-field="service">操作系统</th>
-                <th data-field="button">是否计费</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for row in obj %}
-            <tr>
-                <td>
-                    <input type="checkbox" name="selected" value="{'ID':{{ row.id }}}" onclick="oneToAll()" />
-                </td>
-                <td>{{ row.id }}</td>
-                <td>{{ row.roomNO }}</td>
-                <td>{{ row.cabinetNO }}</td>
-                <td>{{ row.bladeBoxNO }}</td>
-                <td>{{ row.bladeNO}}</td>
-                <td>{{ row.hostName }}</td>
-                <td>{{ row.serviceIP }}</td>
-                <td>{{ row.manageIP }}</td>
-                <td>{{ row.storageIP }}</td>
-                <td>{{ row.clusterName.clusterName }}</td>
-                <td>{{ row.hardware }}</td>
-                <td>{{ row.service }}</td>
-                <td>
-                    <!--正常控件input和label的ID必须一致(此处为了添加确定提醒，故意设置成不一致，而采用js去操作空间的checked属性)，但为了区分不同行的ID，所以采用设备ID-->
-                    <div class="custom-switch custom-switch-label-yesno">
-                        <input class="custom-switch-input" value="{{row.billingStatus}}" id="{{row.id}}" type="checkbox">
-                        <label class="custom-switch-btn" for="ADD_ID_HERE" onclick="toButtonYesNo('mytable',this)"></label>
-                        <!-- <div class="custom-switch-content-checked">
-                            I'm checked
-                        </div>
-                        <div class="custom-switch-content-unchecked">
-                            I'm unchecked
-                        </div> -->
-                    </div>
-                    <!--下面是自定义按钮-->
-                    <!-- <div class="btn-group" data-toggle="buttons">                           
-                        <button class="btn btn-primary buttonYes" onclick="toButtonYes('mytable',this)">
-                            <input type="radio" name="{{row.id}}" id="{{row.billing}}" autocomplete="off">是
-                        </button>
-                        <button class="btn btn-secondary buttonNo" onclick="toButtonNo('mytable',this)">
-                            <input type="radio" name="{{row.id}}" id="{{row.billing}}" autocomplete="off" >否
-                        </button>
-                    </div> -->
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <table id="mytable" data-toolbar="#toolbar" data-search="true" data-show-refresh="true" data-show-toggle="true"
+    data-show-columns="true" data-detail-view="false" data-detail-formatter="detailFormatter"
+    data-minimum-count-columns="2" data-show-pagination-switch="true" data-pagination="true" data-id-field="id"
+    data-page-list="[15, 25, 50, 100, 'ALL']" data-show-footer="false" data-side-pagination="server" data-url="{% url 'billing_switch_query' %}"
+    data-response-handler="responseHandler" data-striped="true" data-search-time-out="500" data-sortable="true"
+    data-page-size="15" data-row-style="rowStyle">
+</table>            
 </div>

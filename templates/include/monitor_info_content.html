@@ -1,55 +1,6 @@
 <div id="page-content-wrapper">
 
     <!--  右边主机内容-->
-
-
-
-
-
-    <!-- <table id="mytable" data-toggle="table" data-side-pagination="client" data-pagination="true" data-search="false" data-show-refresh="false"
-        data-height="653" data-show-toggle="false" data-show-columns="false" data-detail-view="false" data-detail-formatter="detailFormatter"
-        data-minimum-count-columns="2" data-show-pagination-switch="false" data-pagination="true" data-page-size="10" data-page-list="[10, 25, 50, 100, ALL]"
-        data-show-footer="false" data-sort-name="id" data-sort-order="desc" data-row-style="rowStyle" data-striped="true">
-
-        <thead class="thead-light">
-            <tr>
-                <th>
-                    <input type="checkbox" id="select-all" onclick="selectAll()">
-                </th>
-                <th>ID</th>
-                <th>业务IP</th>
-                <th>管理IP</th>
-                <th>存储IP</th>
-                <th>集群</th>
-                <th>监测周期</th>
-                <th>监测时长</th>
-                <th>开机时长</th>
-                <th>关机时长</th>                
-                <th>监测失败</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for row in obj %}
-            <tr>
-                <td>
-                    <input type="checkbox" name="selected" value="{'ID':{{ row.id }},'manageIP':'{{ row.manageIP}}'}" onclick="oneToAll()" />
-                </td>
-                <td>{{ row.id }}</td>
-                <td>{{ row.serviceIP }}</td>
-                <td>{{ row.manageIP }}</td>
-                <td>{{ row.storageIP }}</td>
-                <td>{{ row.clusterName.clusterName }}</td>
-                <td>{{ row.powerOnTime|date:"Y-m-d H:i:s" }}</td>
-                <td>{{ row.powerOffTime|date:"Y-m-d H:i:s" }}</td>
-                <td>
-                    <a href="/power_history-{{ row.id }}/">{{ row.countPowerOnHour }}:{{ row.countPowerOnMinute }}'</a>
-                </td>
-                <td>{{ row.countPowerOffHour }}:{{ row.countPowerOffMinute }}'</td>                
-                <td>{{ row.countPowerFailHour }}:{{ row.countPowerFailMinute }}'</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table> -->
     <div id="toolbar">
         <div class="form-inline" role="form">
             <div class="form-group">
@@ -70,7 +21,7 @@
         data-show-columns="true" data-detail-view="false" data-detail-formatter="detailFormatter"
         data-minimum-count-columns="2" data-show-pagination-switch="true" data-pagination="true" data-id-field="id"
         data-page-list="[15, 25, 50, 100, 'ALL']" data-show-footer="false" data-side-pagination="server" data-url="{% url 'monitor_info_query' %}"
-        data-response-handler="responseHandler" data-striped="true" data-search-time-out="500" data-sortable="true" data-page-size="15" 
-        data-row-style="rowStyle">
+        data-response-handler="responseHandler" data-striped="true" data-search-time-out="500" data-sortable="true"
+        data-page-size="15" data-row-style="rowStyle">
     </table>
 </div>

@@ -1,60 +1,3 @@
-// //页面初始化函数，改用bootstrap-table自带表格监听函数
-// $(document).ready(function () {
-//     // 初始化内容
-//     $("table tr").each(function () {    // 遍历每一行
-//         var getBilling = $(this).children('td:eq(13)').children().children();  // td:eq(0)选择器表示第一个单元格
-//         //console.log(getBilling);
-//         var getValue = getBilling.val();//.attr("value")和.val()都可以
-//         //console.log(getValue);
-//         if (getValue == 1) {
-//             getBilling.attr('checked', true);
-//         }
-//     });
-// });
-
-//表格监听函数
-
-var $table = $('#mytable');
-$table.on('load-success.bs.table column-switch.bs.table page-change.bs.table search.bs.table', function () {
-    $("table tr").each(function () {    // 遍历每一行
-
-        var getBilling = $(this).children('td:eq(13)').children().children();  // td:eq(0)选择器表示第一个单元格
-        //console.log(getBilling);        
-        var getValue = getBilling.val();//.attr("value")和.val()都可以
-        //console.log(getValue);
-
-        if (getValue == 1) {
-            getBilling.attr('checked', true);
-            getValue = 0
-            //alert(getValue)
-            getBilling.val(0);
-        }
-        else {
-            getBilling.attr('checked', false);
-        }
-    });
-});
-//切换页码函数
-// your custom ajax request here
-function ajaxRequest(params) {
-    // data you need
-    //console.log(params.data);
-    // just use setTimeout
-    //$table.bootstrapTable('destroy').bootstrapTable();
-    //$table.oTableInit();
-    //$table.bootstrapTable('refresh');
-    setTimeout(function () {
-        //console.log("params.data");
-        params.success({
-            total: 100,
-            rows: [{
-                "id": 0,
-                "name": "Item 0",
-                "price": "$0"
-            }]
-        });
-    }, 1000);
-}
 //单个设备切换函数
 function toButtonYesNo(id, e) {
     var getID = e.parentNode.parentNode.parentNode.children[1].innerHTML;
@@ -178,8 +121,9 @@ function toButtonYesNo(id, e) {
 }
 //多个设备设置计费函数
 function toBatchButtonYes(id, e) {
-    var allValue = queryCheckedValue()
-    if (allValue.length == 0) {
+    var rowObject = $("#mytable").bootstrapTable('getSelections');
+    var row = JSON.stringify(rowObject);
+    if (rowObject.length == 0) {
         $.alert({
             title: '提示：',
             content: '请先选择设备！',
@@ -195,12 +139,11 @@ function toBatchButtonYes(id, e) {
     }
     else {
         //    var getIP = e.parentNode.parentNode.children[8].innerHTML;
-        console.log(allValue)
-        strAllValue = allValue.join("-");
-        console.log(strAllValue)
+        console.log(typeof row)
+        console.log(row)
         $.confirm({
             title: '对如下设备设置计费?',
-            content: '设备数量：' + allValue.length,
+            content: '设备数量：' + rowObject.length,
             type: 'green',
             buttons: {
                 ok: {
@@ -217,7 +160,7 @@ function toBatchButtonYes(id, e) {
                             type: "POST",
                             cache: false,
                             data: {
-                                'allValue': strAllValue,
+                                'allValue': row,
                                 'setValue': 1,
                             },
                             beforeSend: function (xhr, settings) {
@@ -278,8 +221,9 @@ function toBatchButtonYes(id, e) {
 }
 //多个设备取消计费函数
 function toBatchButtonNo(id, e) {
-    var allValue = queryCheckedValue()
-    if (allValue.length == 0) {
+    var rowObject = $("#mytable").bootstrapTable('getSelections');
+    var row = JSON.stringify(rowObject);
+    if (rowObject.length == 0) {
         $.alert({
             title: '提示：',
             content: '请先选择设备！',
@@ -295,12 +239,11 @@ function toBatchButtonNo(id, e) {
     }
     else {
         //    var getIP = e.parentNode.parentNode.children[8].innerHTML;
-        console.log(allValue)
-        strAllValue = allValue.join("-");
-        console.log(strAllValue)
+        console.log(typeof row)
+        console.log(row)
         $.confirm({
             title: '对如下设备取消计费?',
-            content: '设备数量：' + allValue.length,
+            content: '设备数量：' + rowObject.length,
             type: 'red',
             buttons: {
                 ok: {
@@ -317,7 +260,7 @@ function toBatchButtonNo(id, e) {
                             type: "POST",
                             cache: false,
                             data: {
-                                'allValue': strAllValue,
+                                'allValue': row,
                                 'setValue': 0,
                             },
                             beforeSend: function (xhr, settings) {

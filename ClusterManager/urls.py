@@ -76,12 +76,18 @@ urlpatterns = [
 
     # for device billing
     url(r'^billing_info/', views.ClassBillingSystem.billingInfo),
+    url(r'^billing_info_query/',
+    views.ClassBillingSystem.billingInfoQuery,
+    name='billing_info_query'),
     url(r'^billing_device/', views.ClassBillingSystem.billingDevice),
     url(r'^billing_price/', views.ClassBillingSystem.billingPrice),
     url(r'^billing_switch/', views.ClassBillingSystem.billingSwitch),
+    url(r'^billing_switch_query/', views.ClassBillingSystem.billingSwitchQuery,
+       name='billing_switch_query'),
     url(r'^batch_billing_add/', views.ClassBillingSystem.batchBillingAdd),
     url(r'^batch_billing_delete/',
         views.ClassBillingSystem.batchBillingDelete),
+        url(r'^billing_time_query/', views.ClassBillingSystem.billingInfoQuery),
 
     #for device monitor
     url(r'^monitor_info/', views.ClassMonitorSystem.monitorInfo),
@@ -91,15 +97,12 @@ urlpatterns = [
     url(r'^monitor_device/', views.ClassMonitorSystem.monitorDevice),
     url(r'^monitor_price/', views.ClassMonitorSystem.monitorPrice),
     url(r'^monitor_switch/', views.ClassMonitorSystem.monitorSwitch),
-    url(r'^monitor_info_switch/',
-        views.ClassMonitorSystem.monitorSwitchQuery,
-        name='monitor_info_query'),
+    url(r'^monitor_switch_query/', views.ClassMonitorSystem.monitorSwitchQuery,
+        name='monitor_switch_query'),
     url(r'^batch_monitor_add/', views.ClassMonitorSystem.batchMonitorAdd),
     url(r'^batch_monitor_pause/', views.ClassMonitorSystem.batchMonitorPause),
-    url(r'^batch_monitor_delete/',
-        views.ClassMonitorSystem.batchMonitorDelete),
+    url(r'^batch_monitor_delete/', views.ClassMonitorSystem.batchMonitorDelete),
     url(r'^monitor_time_query/', views.ClassMonitorSystem.monitorInfoQuery),
-
 
     #for django-excel
     url(r'^django_excel', views.upload, name='uplink'),

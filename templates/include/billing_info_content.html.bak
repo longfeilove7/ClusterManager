@@ -1,0 +1,93 @@
+<div id="page-content-wrapper">
+
+    <!--  右边主机内容-->
+
+    <nav class="navbar navbar-expand-md bg-secondary navbar-dark">
+        <a class="navbar-brand" href="#">账单信息</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse"
+            aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto">
+                <!-- <li class="nav-item">
+                    <a class="nav-link" href="#" id="batchBtn1" onclick="toSetPrice('mytable',this)">批量开机</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="batchBtn2" onclick="toBatchPowerOff('mytable',this)">批量关机</a>
+                </li> -->
+                <!-- Dropdown -->
+                <!-- <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                        启动顺序
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" herf="#">DISK</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" herf="#">PXE</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" herf="#">CDROM</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" herf="#">BIOS</a>
+                        </li>
+                    </ul>
+                </li> -->
+            </ul>
+            <form class="form-inline mt-2 mt-md-0">
+                <input class="form-control mr-sm-2" id="searchbox" type="text" placeholder="Search" aria-label="Search">
+                <!-- <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>                      -->
+            </form>
+        </div>
+    </nav>
+
+
+
+    <table id="mytable" data-toggle="table" data-side-pagination="client" data-pagination="true" data-search="false" data-show-refresh="false"
+        data-height="653" data-show-toggle="false" data-show-columns="false" data-detail-view="false" data-detail-formatter="detailFormatter"
+        data-minimum-count-columns="2" data-show-pagination-switch="false" data-pagination="true" data-page-size="10" data-page-list="[10, 25, 50, 100, ALL]"
+        data-show-footer="false" data-sort-name="id" data-sort-order="desc" data-row-style="rowStyle" data-striped="true">
+
+        <thead class="thead-light">
+            <tr>
+                 <th>
+                    <input type="checkbox" id="select-all" onclick="selectAll()">
+                </th>
+                <th>ID</th>                     
+                <th>业务IP</th>
+                <th>管理IP</th>
+                <th>存储IP</th>
+                <th>集群</th>                              
+                <th>开机时间</th>
+                <th>关机时间</th>
+                <th>单价</th>                
+                <th>累计时长</th>
+                <th>累计费用</th>                                   
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in obj %}
+            <tr>
+                <td>
+                    <input type="checkbox" name="selected" value="{'ID':{{ row.id }},'manageIP':'{{ row.manageIP}}'}" onclick="oneToAll()" />
+                </td>
+                <td>{{ row.id }}</td>            
+                <td>{{ row.serviceIP }}</td>
+                <td>{{ row.manageIP }}</td>
+                <td>{{ row.storageIP }}</td>
+                <td>{{ row.clusterName.clusterName }}</td>                           
+                <td>{{ row.powerOnTime|date:"Y-m-d H:i:s" }}</td>
+                <td>{{ row.powerOffTime|date:"Y-m-d H:i:s" }}</td>
+                <td>5元</td>                
+                <td>
+                    <a href="/power_history-{{ row.id }}/">{{ row.sumRunTimeHour }}:{{ row.sumRunTimeMinute }}'</a>
+                </td>
+                <td>{{ row.sumMoney }}元</td>                         
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

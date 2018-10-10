@@ -29,6 +29,17 @@
     function initTable() {
         $table.bootstrapTable({
             height: getHeight(),
+            //由于bootstrap 4.0停止使用glyphicon，所以改用fontawesome
+            iconsPrefix: 'fas',
+            icons: {
+                paginationSwitchDown: 'fa-eye',
+                paginationSwitchUp: 'fa-eye-slash',
+                refresh: 'fa-sync',
+                toggle: 'fa-toggle-off',
+                columns: 'fa-columns',
+                detailOpen: 'glyphicon-plus icon-plus',
+                detailClose: 'glyphicon-minus icon-minus'
+            },
             columns: [
                 [
                     {

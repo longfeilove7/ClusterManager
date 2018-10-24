@@ -45,6 +45,7 @@ class Host(models.Model):
     powerStatus = models.CharField(max_length=1,default="0")
     monitorStatus = models.CharField(max_length=1,default="0")
     billingStatus = models.CharField(max_length=1,default="0")
+    installStatus = models.CharField(max_length=1,default="0")
 
 
 class HostPowerHistory(models.Model):
@@ -98,6 +99,13 @@ class BillingHistory(models.Model):
     billingStopTime = models.CharField(max_length=32,null=True)
     billingNowTime = models.CharField(max_length=32,null=True)
     billingCount = models.CharField(max_length=32,null=True)
+
+class InstallSystemHistory(models.Model):
+    host = models.ForeignKey(Host,on_delete=models.CASCADE) 
+    installStartTimeHistory = models.DateTimeField(null=True)
+    installEndTimeHistory = models.DateTimeField(null=True)
+    installRunTimeHistory = models.DurationField(null=True)
+    installSystemStatus = models.CharField(max_length=1,default="0")
 
 class Users(models.Model):
     username = models.CharField(max_length=64)

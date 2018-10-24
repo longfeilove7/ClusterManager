@@ -14,6 +14,8 @@
 
 
 <!-- /#page-content-wrapper -->
+<div id="preloader">
+        <div class="loader" id="loader-1"></div>
 </div>
 <!-- /#wrapper -->
 
@@ -85,13 +87,13 @@
                         footerFormatter: totalPriceFormatter
                     }, {
                         field: 'powerOnTime',
-                        title: '开机时间',
+                        title: '最后开机时间',
                         sortable: false,
                         align: 'center',
                         footerFormatter: totalPriceFormatter
                     }, {
                         field: 'powerOffTime',
-                        title: '关机时间',
+                        title: '最后关机时间',
                         sortable: false,
                         align: 'center',
                         footerFormatter: totalPriceFormatter
@@ -102,7 +104,7 @@
                         align: 'center',
                         footerFormatter: totalPriceFormatter
                     }, {
-                        field: 'sumPowerRunTime',
+                        field: 'sumRunTime',
                         title: '累计时长',
                         sortable: false,
                         align: 'center',

@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'HostManager',
     'django_celery_beat',
     'django_celery_results',
+    'rest_framework_swagger',
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,580 @@
+{% extends 'extends/base.html' %}
+{% block baseCss %}
+{% include 'include/css.html' %}
+{% endblock %}
+{% block baseBody %}
+{% include "include/sidebar.html"%}
+<!-- Add your site or application content here -->
+
+
+<!-- /#sidebar-wrapper -->
+<!-- Page Content -->
+{% include 'include/dashboard2_content.html' %}
+
+
+
+<!-- /#page-content-wrapper -->
+<div id="preloader">
+    <div class="loader" id="loader-1"></div>
+</div>
+<!-- /#wrapper -->
+
+{% endblock %}
+{% block baseScript %}
+{% include 'include/js.html' %}
+
+<script type="text/javascript">
+    //以Django方式定义变量
+    var inspect_list_count = {{ inspect_list_count| safe}};
+    var periodicTask_list_count = {{ periodicTask_list_count| safe}};
+    var powerStatus_list_count = {{ powerStatus_list_count| safe}};
+    var otherTask_list_count = {{ otherTask_list_count| safe}};
+    var fping_list_count = {{ fping_list_count| safe}};
+    
+    var A_deviceCount = {{ A_deviceCount| safe }};
+    var B_deviceCount = {{ B_deviceCount| safe }};
+    var C_deviceCount = {{ C_deviceCount| safe }};
+    var N_deviceCount = {{ N_deviceCount| safe }};
+    var taskResult_success_count = {{taskResult_success_count|safe}};
+    var taskResult_fail_count = {{taskResult_fail_count|safe}};
+    function myChartPie() {
+        // 基于准备好的dom，初始化echarts实例
+        // 使用 Canvas 渲染器（默认）
+        //var myChart = echarts.init(document.getElementById('main'), null, {renderer: 'canvas'});
+        //等价于
+        var myChart = echarts.init(document.getElementById('taskPie'));
+        // 使用 SVG 渲染器
+        //var myChart = echarts.init(document.getElementById('main'), null, {renderer: 'svg'});
+
+        // 指定图表的配置项和数据
+        option = {
+            backgroundColor: '#2c343c',
+            title: {
+                text: '计划任务比例',
+                //subtext: '纯属虚构',
+                x: 'right',
+                top: 20,
+                textStyle: {
+                    //fontWeight: 'normal',              //标题颜色
+                    color: '#ccc'
+                },
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+                x: 'center',
+                y: 'bottom',
+                data: ['inspect_list_count', 'powerStatus_list_count', 'fping_list_count', 'otherTask_list_count']
+            },
+            toolbox: {
+                show: false,
+                feature: {
+                    mark: { show: true },
+                    dataView: { show: true, readOnly: false },
+                    magicType: {
+                        show: true,
+                        type: ['pie', 'funnel']
+                    },
+                    restore: { show: true },
+                    saveAsImage: { show: true }
+                }
+            },
+            calculable: true,
+            series: [
+
+                {
+                    name: '面积模式',
+                    type: 'pie',
+                    radius: [30, 110],
+                    center: ['50%', '50%'],
+                    roseType: 'area',
+                    data: [
+                        { value: inspect_list_count, name: '日常巡检' },
+                        { value: powerStatus_list_count, name: '电源监控' },
+                        { value: fping_list_count, name: 'Ping监控' },
+                        { value: otherTask_list_count, name: '其他' }
+                    ]
+                }
+            ]
+        };
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+    }
+    myChartPie()
+
+    function myBar() {
+        // 基于准备好的dom，初始化echarts实例
+        // 使用 Canvas 渲染器（默认）
+        //var myChart = echarts.init(document.getElementById('main'), null, {renderer: 'canvas'});
+        //等价于
+        var myChart = echarts.init(document.getElementById('taskBar'));
+        // 使用 SVG 渲染器
+        //var myChart = echarts.init(document.getElementById('main'), null, {renderer: 'svg'});
+
+        // 指定图表的配置项和数据
+        option = {
+            backgroundColor: '#2c343c',
+            title: {
+                text: '计划任务数量',
+                top: 20,
+                textStyle: {
+                    //fontWeight: 'normal',              //标题颜色
+                    color: '#ccc'
+                },
+                x: "center"    //标题位置，默认居左
+            },
+            xAxis: {
+                type: 'category',
+                data: ['日常巡检', '电源监控', 'Ping监控', '其他'],
+                //设置坐标轴字体颜色和宽度
+                axisLine: {
+                    lineStyle: {
+                        color: '#ccc',
+                        width: 2
+                    }
+                },
+            },
+            yAxis: {
+                type: 'value',
+                //设置坐标轴字体颜色和宽度
+                axisLine: {
+                    lineStyle: {
+                        color: '#ccc',
+                        width: 2
+                    }
+                },
+            },
+            series: [{
+                data: [inspect_list_count, powerStatus_list_count, fping_list_count, otherTask_list_count],
+                type: 'bar'
+            }]
+        };
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+
+
+    }
+    myBar()
+
+    function myGraph() {
+        // 基于准备好的dom，初始化echarts实例
+        // 使用 Canvas 渲染器（默认）
+        //var myChart = echarts.init(document.getElementById('main'), null, {renderer: 'canvas'});
+        //等价于
+        var myChart = echarts.init(document.getElementById('taskGraph'));
+        // 使用 SVG 渲染器
+        //var myChart = echarts.init(document.getElementById('main'), null, {renderer: 'svg'});
+
+        // 指定图表的配置项和数据
+        option = {
+            backgroundColor: '#2c343c',
+            title: {
+                text: '计划任务流程',
+                top: 20,
+                textStyle: {
+                    //fontWeight: 'normal',              //标题颜色
+                    color: '#ccc'
+                },
+                x: "left"    //标题位置，默认居左
+            },
+            tooltip: {},
+            animationDurationUpdate: 1500,
+            animationEasingUpdate: 'quinticInOut',
+            series: [
+                {
+                    type: 'graph',
+                    layout: 'none',
+                    symbolSize: 50,
+                    roam: true,
+                    label: {
+                        normal: {
+                            show: true
+                        }
+                    },
+                    edgeSymbol: ['circle', 'arrow'],
+                    edgeSymbolSize: [4, 10],
+                    edgeLabel: {
+                        normal: {
+                            textStyle: {
+                                fontSize: 20
+                            }
+                        }
+                    },
+                    data: [{
+                        name: '任务',
+                        x: 300,
+                        y: 300
+                    }, {
+                        name: '结果',
+                        x: 800,
+                        y: 300
+                    }, {
+                        name: '周期',
+                        x: 550,
+                        y: 100
+                    }, {
+                        name: '间隔',
+                        x: 550,
+                        y: 500
+                    }],
+                    links: [{
+                        source: '任务',
+                        target: '结果',
+                        symbolSize: [5, 20],
+                        label: {
+                            normal: {
+                                show: true
+                            }
+                        },
+                        lineStyle: {
+                            normal: {
+                                width: 5,
+                                curveness: 0.2
+                            }
+                        }
+                    }, {
+                        source: '任务',
+                        target: '周期'
+                    }, {
+                        source: '任务',
+                        target: '间隔'
+                    }, {
+                        source: '周期',
+                        target: '结果'
+                    }, {
+                        source: '间隔',
+                        target: '结果'
+                    }],
+                    lineStyle: {
+                        normal: {
+                            opacity: 0.9,
+                            width: 2,
+                            curveness: 0
+                        }
+                    }
+                }
+            ]
+        };
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+
+
+    }
+    myGraph()
+
+
+
+    function myPieScatter() {
+        // 基于准备好的dom，初始化echarts实例
+        // 使用 Canvas 渲染器（默认）
+        //var myChart = echarts.init(document.getElementById('main'), null, {renderer: 'canvas'});
+        //等价于
+        var myChart = echarts.init(document.getElementById('myPieScatter'));
+        // 使用 SVG 渲染器
+        //var myChart = echarts.init(document.getElementById('main'), null, {renderer: 'svg'});
+
+        // 指定图表的配置项和数据    
+        option = {
+            backgroundColor: '#2c343c',            
+            title: {
+                text: '任务执行情况',
+                top: 20,
+                textStyle: {
+                    //fontWeight: 'normal',              //标题颜色
+                    color: '#ccc'
+                },
+                x: "right"    //标题位置，默认居左
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },            
+            series: [
+                {
+                    name: '执行结果',
+                    type: 'pie',
+                    radius: '55%',
+                    center: ['50%', '60%'],
+                    data: [
+                        { value: taskResult_success_count, name: '成功' },
+                        { value: taskResult_fail_count, name: '失败' }                        
+                    ],
+                    itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }
+            ]
+        };
+
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+
+
+    }
+    myPieScatter()
+
+    function myPieNest() {
+        // 基于准备好的dom，初始化echarts实例
+        // 使用 Canvas 渲染器（默认）
+        //var myChart = echarts.init(document.getElementById('main'), null, {renderer: 'canvas'});
+        //等价于
+        var myChart = echarts.init(document.getElementById('myPieNest'));
+        // 使用 SVG 渲染器
+        //var myChart = echarts.init(document.getElementById('main'), null, {renderer: 'svg'});
+
+        // 指定图表的配置项和数据 
+        option = {
+            backgroundColor: '#2c343c',
+            title: {
+                text: '设备任务分布图',
+                top: 20,
+                textStyle: {
+                    //fontWeight: 'normal',              //标题颜色
+                    color: '#ccc'
+                },
+                x: "left"    //标题位置，默认居左
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b}: {c} ({d}%)"
+            },
+            series: [
+                {
+                    name: '设备数量',
+                    type: 'pie',
+                    selectedMode: 'single',
+                    radius: [0, '30%'],
+
+                    label: {
+                        normal: {
+                            position: 'inner'
+                        }
+                    },
+                    labelLine: {
+                        normal: {
+                            show: false
+                        }
+                    },
+                    data: [
+                        { value: A_deviceCount, name: 'A机房' },
+                        { value: B_deviceCount, name: 'B机房' },
+                        { value: C_deviceCount, name: 'C机房' },
+                        { value: N_deviceCount, name: '网络机房', selected: true }
+                    ]
+                },
+                {
+                    name: '任务数量',
+                    type: 'pie',
+                    radius: ['40%', '55%'],
+                    label: {
+                        normal: {
+                            formatter: '{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c}  {per|{d}%}  ',
+                            backgroundColor: '#eee',
+                            borderColor: '#aaa',
+                            borderWidth: 1,
+                            borderRadius: 4,
+                            // shadowBlur:3,
+                            // shadowOffsetX: 2,
+                            // shadowOffsetY: 2,
+                            // shadowColor: '#999',
+                            // padding: [0, 7],
+                            rich: {
+                                a: {
+                                    color: '#999',
+                                    lineHeight: 22,
+                                    align: 'center'
+                                },
+                                // abg: {
+                                //     backgroundColor: '#333',
+                                //     width: '100%',
+                                //     align: 'right',
+                                //     height: 22,
+                                //     borderRadius: [4, 4, 0, 0]
+                                // },
+                                hr: {
+                                    borderColor: '#aaa',
+                                    width: '100%',
+                                    borderWidth: 0.5,
+                                    height: 0
+                                },
+                                b: {
+                                    fontSize: 16,
+                                    lineHeight: 33
+                                },
+                                per: {
+                                    color: '#eee',
+                                    backgroundColor: '#334455',
+                                    padding: [2, 4],
+                                    borderRadius: 2
+                                }
+                            }
+                        }
+                    },
+                    data: [
+                        { value: 335, name: 'A机房' },
+                        { value: 310, name: 'B机房' },
+                        { value: 234, name: 'C机房' },
+                        { value: 234, name: '网络机房' }
+                    ]
+                }
+            ]
+        };
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+
+
+    }
+    myPieNest()
+
+    function myDynamicData() {
+        // 基于准备好的dom，初始化echarts实例
+        // 使用 Canvas 渲染器（默认）
+        //var myChart = echarts.init(document.getElementById('main'), null, {renderer: 'canvas'});
+        //等价于
+        var myChart = echarts.init(document.getElementById('taskDynamicData'));
+        // 使用 SVG 渲染器
+        //var myChart = echarts.init(document.getElementById('main'), null, {renderer: 'svg'});
+
+        // 指定图表的配置项和数据
+        option = {
+            backgroundColor: '#2c343c',
+            title: {
+                text: '实时任务执行情况',
+                subtext: '纯属虚构'
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'cross',
+                    label: {
+                        backgroundColor: '#283b56'
+                    }
+                }
+            },
+            legend: {
+                data: ['成功', '失败']
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    dataView: { readOnly: false },
+                    restore: {},
+                    saveAsImage: {}
+                }
+            },
+            dataZoom: {
+                show: false,
+                start: 0,
+                end: 100
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    boundaryGap: true,
+                    data: (function () {
+                        var now = new Date();
+                        var res = [];
+                        var len = 10;
+                        while (len--) {
+                            res.unshift(now.toLocaleTimeString().replace(/^\D*/, ''));
+                            now = new Date(now - 2000);
+                        }
+                        return res;
+                    })()
+                },
+                {
+                    type: 'category',
+                    boundaryGap: true,
+                    data: (function () {
+                        var res = [];
+                        var len = 10;
+                        while (len--) {
+                            res.push(10 - len - 1);
+                        }
+                        return res;
+                    })()
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                    scale: true,
+                    name: '价格',
+                    max: 30,
+                    min: 0,
+                    boundaryGap: [0.2, 0.2]
+                },
+                {
+                    type: 'value',
+                    scale: true,
+                    name: '预购量',
+                    max: 1200,
+                    min: 0,
+                    boundaryGap: [0.2, 0.2]
+                }
+            ],
+            series: [
+                {
+                    name: '预购队列',
+                    type: 'bar',
+                    xAxisIndex: 1,
+                    yAxisIndex: 1,
+                    data: (function () {
+                        var res = [];
+                        var len = 10;
+                        while (len--) {
+                            res.push(Math.round(Math.random() * 1000));
+                        }
+                        return res;
+                    })()
+                },
+                {
+                    name: '最新成交价',
+                    type: 'line',
+                    data: (function () {
+                        var res = [];
+                        var len = 0;
+                        while (len < 10) {
+                            res.push((Math.random() * 10 + 5).toFixed(1) - 0);
+                            len++;
+                        }
+                        return res;
+                    })()
+                }
+            ]
+        };
+
+        count = 11;
+        setInterval(function () {
+            axisData = (new Date()).toLocaleTimeString().replace(/^\D*/, '');
+
+            var data0 = option.series[0].data;
+            var data1 = option.series[1].data;
+            data0.shift();
+            data0.push(Math.round(Math.random() * 1000));
+            data1.shift();
+            data1.push((Math.random() * 10 + 5).toFixed(1) - 0);
+
+            option.xAxis[0].data.shift();
+            option.xAxis[0].data.push(axisData);
+            option.xAxis[1].data.shift();
+            option.xAxis[1].data.push(count++);
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+        }, 2100);
+
+    }
+    //myDynamicData()
+
+
+
+</script>
+{% endblock %}

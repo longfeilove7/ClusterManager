@@ -110,27 +110,7 @@ body {
     margin: 0;
  }
 
-@media(min-width:768px) {
-  #wrapper {
-    padding-left: 0px;
-  }
-  #wrapper.toggled {
-    padding-left: 250px;
-  }
-  #sidebar-wrapper {
-    width: 0px;
-  }
-  #wrapper.toggled #sidebar-wrapper {
-    width: 250px;
-  }
-  #page-content-wrapper {
-    padding: 0px;/*for the subrange top*/
-    position: relative;
-  }
-  #wrapper.toggled #page-content-wrapper {
-    position: relative;
-    margin-right: 0;
-  }  
+
 .navbar-brand{
   color: #fff;
 }
@@ -140,7 +120,7 @@ body {
   padding-right: 0;
 }
    
-}
+
 #toolbar{  
   padding-top: 0px;
   padding-bottom: 0px;

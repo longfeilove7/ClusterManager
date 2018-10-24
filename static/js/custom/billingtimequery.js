@@ -53,7 +53,7 @@ $(document).ready(function () {
 //表格监听刷新按钮函数
 var $table = $('#mytable');
 $table.on('refresh.bs.table', function () {
-    postDateTime();
+    //postDateTime();
 }
 )
 $table.on('load-success.bs.table column-switch.bs.table page-change.bs.table search.bs.table', function () {

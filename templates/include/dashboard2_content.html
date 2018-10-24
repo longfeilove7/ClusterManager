@@ -1,0 +1,102 @@
+<div id="page-content-wrapper" class="page-content-wrapper  pre-scrollable">
+
+    <!--  右边主机内容-->
+
+
+    <div class="row" style="padding-top:20px; padding-left:20px; padding-right:20px;">
+            <div class="col-lg col-md-6 col-xs-12">
+                    <div class="info-box bg-primary">
+                        <div class="icon-box">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <div class="info-box-content">
+                            <h4 class="number">{{periodicTask_list_count}}</h4>
+                            <p class="info-text">总任务数</p>
+                        </div>
+                    </div>
+                </div>
+        <div class="col-lg col-md-6 col-xs-12">
+            <div class="info-box bg-success">
+                <div class="icon-box">
+                    <i class="fab fa-tripadvisor"></i>
+                </div>
+                <div class="info-box-content">
+                    <h4 class="number">{{inspect_list_count}}</h4>
+                    <p class="info-text">日常巡检</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg col-md-6 col-xs-12">
+            <div class="info-box bg-info">
+                <div class="icon-box">
+                    <i class="fa fa-robot"></i>
+                </div>
+                <div class="info-box-content">
+                    <h4 class="number">{{fping_list_count}}</h4>
+                    <p class="info-text">Ping监控</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg col-md-6 col-xs-12">
+            <div class="info-box bg-warning">
+                <div class="icon-box">
+                    <i class="fa fa-robot"></i>
+                </div>
+                <div class="info-box-content">
+                    <h4 class="number">{{powerStatus_list_count}}</h4>
+                    <p class="info-text">电源监控</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg col-md-6 col-xs-12">
+            <div class="info-box bg-danger">
+                <div class="icon-box">
+                    <i class="fa fa-robot"></i>
+                </div>
+                <div class="info-box-content">
+                    <h4 class="number">{{otherTask_list_count}}</h4>
+                    <p class="info-text">其他</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg col-md-6 col-xs-12">
+            <div class="info-box bg-secondary">
+                <div class="icon-box">
+                    <i class="fa fa-binoculars"></i>
+                </div>
+                <div class="info-box-content">
+                    <h4 class="number">{{taskResult_list_count}}</h4>
+                    <p class="info-text">任务结果</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" style="padding-left:20px; padding-right:100px; ">
+        <div class="col-lg-4 col-md-6 col-xs-12">
+            <div id="taskGraph" style="height:300px">
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 col-xs-12">
+            <div id="taskBar" style="height:300px">
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 col-xs-12">
+            <div id="taskPie" style="height:300px">
+            </div>
+        </div>
+    </div>
+
+    <div class="row" style="padding-left:20px;padding-top:20px;padding-bottom: 20px; padding-right:140px; height:400px;">
+        <div class="col-lg-6" id="myPieNest"></div>
+        <div class="col-lg-6" id="myPieScatter"></div>
+    </div>
+    <footer class="content-footer">
+        <div class="footer">
+            <div class="copyright">
+                <span>Copyright © 2018 <b class="text-dark">NEUNN</b>. 东网科技有限公司 <a href="http://www.climbing.top">攀岩者</a></span>
+            </div>
+        </div>
+    </footer>
+</div>

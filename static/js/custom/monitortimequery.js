@@ -53,11 +53,13 @@ $(document).ready(function () {
 //表格监听刷新按钮函数
 var $table = $('#mytable');
 $table.on('refresh.bs.table', function () {
-    postDateTime();
+    //postDateTime();
 }
 )
 $table.on('load-success.bs.table column-switch.bs.table page-change.bs.table search.bs.table', function () {
-
+    // var opt = { url: "/monitor_info_query/?format=json", silent: true, query: { type: 1, level: 2 } }
+    // //$table.bootstrapTable('destroy');
+    // $table.bootstrapTable('refresh', opt);
 })
 //自定义时间监控查询函数
 function toMonitorTimeQuery(id, e) {

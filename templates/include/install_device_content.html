@@ -1,0 +1,32 @@
+<div id="page-content-wrapper">
+
+        <!--  右边主机内容-->
+    
+        <nav class="navbar navbar-expand-md bg-secondary navbar-dark navbar-inverse btn btn-xs"  id="toolbar">
+            <a class="navbar-brand" href="#">安装管理</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="batchBtn1" onclick="toBatchButtonAdd('mytable',this)">加入待装</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="batchBtn2" onclick="toBatchButtonDelete('mytable',this)">移除待装</a>
+                    </li>                    
+                </ul>            
+            </div>
+        </nav>
+        
+    
+    
+            <table id="mytable" data-toolbar="#toolbar" data-search="true" data-show-refresh="true" data-show-toggle="true"
+            data-show-columns="true" data-detail-view="false" data-detail-formatter="detailFormatter"
+            data-minimum-count-columns="2" data-show-pagination-switch="true" data-pagination="true" data-id-field="id"
+            data-page-list="[15, 25, 50, 100, 'ALL']" data-show-footer="false" data-side-pagination="server" data-url="{% url 'install_switch_query' %}"
+            data-response-handler="responseHandler" data-striped="true" data-search-time-out="500" data-sortable="true"
+            data-page-size="15" data-row-style="rowStyle">
+        </table>        
+    </div>

@@ -1,0 +1,35 @@
+.info-box {
+    min-height: 100px;
+    background: #fff;
+    width: 100%;
+    margin-bottom: 20px;
+    padding: 20px;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 5px 20px rgba(0, 0, 0, .05);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, .05)
+}
+
+.info-box .icon-box {
+    float: left;
+    text-align: center;
+    font-size: 38px;
+    line-height: 60px;
+    color: #fff
+}
+
+.info-box .info-box-content {
+    margin-left: 60px
+}
+
+.info-box .info-box-content .number {
+    font-size: 30px;
+    color: #fff;
+    font-weight: 700;
+    margin-bottom: 0
+}
+
+.info-box .info-box-content .info-text {
+    font-size: 14px;
+    color: #fff;
+    margin-bottom: 0
+}

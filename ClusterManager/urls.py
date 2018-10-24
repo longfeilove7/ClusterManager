@@ -19,119 +19,157 @@ Including another URLconf
 """
 # django-cruds-adminlte
 
-from django.conf.urls import url
+from django.conf.urls import url 
 from django.contrib import admin
-from HostManager import views
+#from HostManager import views
+from views import cobbler
+from views import views
+from views import celery
+from views import billing
+from views import monitor
+from views import install
+from views import calculate
+from views import portal
+from views import host
+from views import cluster
+from views import port 
+from views import sign
 from django.conf.urls import include
 #import os, sys, commands
 
 urlpatterns = [
-    url(r'^$', views.ClassSign.signin),
+    url(r'^$', sign.ClassSign.signin),
+    url(r'^swagger/', views.schema_view),
     url(r'^jet/', include('jet.urls', 'jet')),  # Django JET URLS
     url(r'^jet/dashboard/', include(
         'jet.dashboard.urls', 'jet-dashboard')),  # Django JET dashboard URLS
     #  url(r'^admin/', include(admin.site.urls)),
     url(r'^admin/', admin.site.urls),
-    url(r'^sign-up/', views.ClassSign.signup),
-    url(r'^sign-in/', views.ClassSign.signin),
-    url(r'^index/', views.ClassSign.index),
+    url(r'^sign-up/', sign.ClassSign.signup),
+    url(r'^sign-in/', sign.ClassSign.signin),
+
+    #for portal
+    url(r'^index/', portal.ClassPortal.index),
+    url(r'^dashboard1/', portal.ClassPortal.dashboard1),
+    url(r'^dashboard2/', portal.ClassPortal.dashboard2),
 
     # for device url
-    url(r'^host_info/', views.ClassHost.host_info),
-    url(r'^host_edit-(?P<nid>\d+)/', views.ClassHost.host_edit),
-    url(r'^host_del-(?P<nid>\d+)/', views.ClassHost.host_del),
-    url(r'^add_host/', views.ClassHost.add_host),
-    url(r'^add_cluster/', views.ClassCluster.add_cluster),
-    url(r'^cluster_edit-(?P<nid>\d+)/', views.ClassCluster.cluster_edit),
-    url(r'^cluster_del-(?P<nid>\d+)/', views.ClassCluster.cluster_del),
-    url(r'^power_history-(?P<nid>\d+)/', views.ClassHost.power_history),
+    url(r'^host_info/', host.ClassHost.host_info),
+    url(r'^host_edit-(?P<nid>\d+)/', host.ClassHost.host_edit),
+    url(r'^host_del-(?P<nid>\d+)/', host.ClassHost.host_del),
+    url(r'^add_host/', host.ClassHost.add_host),
+    url(r'^add_cluster/', cluster.ClassCluster.add_cluster),
+    url(r'^cluster_edit-(?P<nid>\d+)/', cluster.ClassCluster.cluster_edit),
+    url(r'^cluster_del-(?P<nid>\d+)/', cluster.ClassCluster.cluster_del),
+    url(r'^power_history-(?P<nid>\d+)/', host.ClassHost.power_history),
 
     # for device function
-    url(r'^power_on/', views.ClassCeleryWorker.powerOn),
-    url(r'^power_off/', views.ClassCeleryWorker.powerOff),
-    url(r'^power_cycle/', views.ClassCeleryWorker.powerCycle),
-    url(r'^batch_power_on/', views.ClassCeleryWorker.batchPowerOn),
-    url(r'^batch_power_off/', views.ClassCeleryWorker.batchPowerOff),
-    url(r'^batch_power_cycle/', views.ClassCeleryWorker.batchPowerCycle),
+    url(r'^power_on/', celery.ClassCeleryWorker.powerOn),
+    url(r'^power_off/', celery.ClassCeleryWorker.powerOff),
+    url(r'^power_cycle/', celery.ClassCeleryWorker.powerCycle),
+    url(r'^batch_power_on/', celery.ClassCeleryWorker.batchPowerOn),
+    url(r'^batch_power_off/', celery.ClassCeleryWorker.batchPowerOff),
+    url(r'^batch_power_cycle/', celery.ClassCeleryWorker.batchPowerCycle),
 
     # for task url
-    url(r'^inspect_info/', views.ClassCeleryWorker.inspect_info),
+    url(r'^inspect_info/', celery.ClassCeleryWorker.inspect_info),
     url(r'^task_result/',
-        views.ClassCeleryResult.task_result,
+        celery.ClassCeleryResult.task_result,
         name='task_result'),
     url(r'^task_result_query/',
-        views.ClassCeleryResult.task_result_query,
+        celery.ClassCeleryResult.task_result_query,
         name='task_result_query'),
-    url(r'^solar_schedule/', views.ClassCeleryBeat.solar_schedule),
-    url(r'^periodic_task/', views.ClassCeleryBeat.periodic_task),
-    url(r'^add_periodic/', views.ClassCeleryBeat.add_periodic),
-    url(r'^interval_schedule/', views.ClassCeleryBeat.interval_schedule),
-    url(r'^crontab_schedule/', views.ClassCeleryBeat.crontab_schedule),
-    url(r'^crontab_del-(?P<nid>\d+)/', views.ClassCeleryBeat.crontab_del),
-    url(r'^crontab_edit-(?P<nid>\d+)/', views.ClassCeleryBeat.crontab_edit),
+    url(r'^solar_schedule/', celery.ClassCeleryBeat.solar_schedule),
+    url(r'^periodic_task/', celery.ClassCeleryBeat.periodic_task),
+    url(r'^add_periodic/', celery.ClassCeleryBeat.add_periodic),
+    url(r'^interval_schedule/', celery.ClassCeleryBeat.interval_schedule),
+    url(r'^crontab_schedule/', celery.ClassCeleryBeat.crontab_schedule),
+    url(r'^crontab_del-(?P<nid>\d+)/', celery.ClassCeleryBeat.crontab_del),
+    url(r'^crontab_edit-(?P<nid>\d+)/', celery.ClassCeleryBeat.crontab_edit),
 
     # for task function
-    url(r'^batch_inspect_sdr/', views.ClassCeleryWorker.batchInspectSdr),
-    url(r'^inspect_sdr/', views.ClassCeleryWorker.inspectSdr),
+    url(r'^batch_inspect_sdr/', celery.ClassCeleryWorker.batchInspectSdr),
+    url(r'^inspect_sdr/', celery.ClassCeleryWorker.inspectSdr),
 
     # for device billing
-    url(r'^billing_info/', views.ClassBillingSystem.billingInfo),
+    url(r'^billing_info/', billing.ClassBillingSystem.billingInfo),
     url(r'^billing_info_query/',
-    views.ClassBillingSystem.billingInfoQuery,
-    name='billing_info_query'),
-    url(r'^billing_device/', views.ClassBillingSystem.billingDevice),
-    url(r'^billing_price/', views.ClassBillingSystem.billingPrice),
-    url(r'^billing_switch/', views.ClassBillingSystem.billingSwitch),
-    url(r'^billing_switch_query/', views.ClassBillingSystem.billingSwitchQuery,
-       name='billing_switch_query'),
-    url(r'^batch_billing_add/', views.ClassBillingSystem.batchBillingAdd),
+        billing.ClassBillingSystem.billingInfoQuery,
+        name='billing_info_query'),
+    url(r'^billing_device/', billing.ClassBillingSystem.billingDevice),
+    url(r'^billing_price/', billing.ClassBillingSystem.billingPrice),
+    url(r'^billing_switch/', billing.ClassBillingSystem.billingSwitch),
+    url(r'^billing_switch_query/',
+        billing.ClassBillingSystem.billingSwitchQuery,
+        name='billing_switch_query'),
+    url(r'^batch_billing_add/', billing.ClassBillingSystem.batchBillingAdd),
     url(r'^batch_billing_delete/',
-        views.ClassBillingSystem.batchBillingDelete),
-        url(r'^billing_time_query/', views.ClassBillingSystem.billingInfoQuery),
+        billing.ClassBillingSystem.batchBillingDelete),
+    url(r'^billing_time_query/', billing.ClassBillingSystem.billingInfoQuery),
 
     #for device monitor
-    url(r'^monitor_info/', views.ClassMonitorSystem.monitorInfo),
+    url(r'^monitor_info/', monitor.ClassMonitorSystem.monitorInfo),
     url(r'^monitor_info_query/',
-        views.ClassMonitorSystem.monitorInfoQuery,
+        monitor.ClassMonitorSystem.monitorInfoQuery,
         name='monitor_info_query'),
-    url(r'^monitor_device/', views.ClassMonitorSystem.monitorDevice),
-    url(r'^monitor_price/', views.ClassMonitorSystem.monitorPrice),
-    url(r'^monitor_switch/', views.ClassMonitorSystem.monitorSwitch),
-    url(r'^monitor_switch_query/', views.ClassMonitorSystem.monitorSwitchQuery,
+    url(r'^monitor_device/', monitor.ClassMonitorSystem.monitorDevice),
+    url(r'^monitor_price/', monitor.ClassMonitorSystem.monitorPrice),
+    url(r'^monitor_switch/', monitor.ClassMonitorSystem.monitorSwitch),
+    url(r'^monitor_switch_query/',
+        monitor.ClassMonitorSystem.monitorSwitchQuery,
         name='monitor_switch_query'),
-    url(r'^batch_monitor_add/', views.ClassMonitorSystem.batchMonitorAdd),
-    url(r'^batch_monitor_pause/', views.ClassMonitorSystem.batchMonitorPause),
-    url(r'^batch_monitor_delete/', views.ClassMonitorSystem.batchMonitorDelete),
-    url(r'^monitor_time_query/', views.ClassMonitorSystem.monitorInfoQuery),
+    url(r'^batch_monitor_add/', monitor.ClassMonitorSystem.batchMonitorAdd),
+    url(r'^batch_monitor_pause/', monitor.ClassMonitorSystem.batchMonitorPause),
+    url(r'^batch_monitor_delete/',
+        monitor.ClassMonitorSystem.batchMonitorDelete),
+    url(r'^monitor_time_query/', monitor.ClassMonitorSystem.monitorInfoQuery),
+
+    # for device install os
+        url(r'^install_info/', install.ClassInstallSystem.installInfo),
+                url(r'^install_info/', cobbler.ClassCobbler.cobblerAPI),
+    url(r'^install_info_query/',
+        install.ClassInstallSystem.installInfoQuery,
+        name='install_info_query'),
+        url(r'^installing_switch/', install.ClassInstallSystem.installingSwitch),
+    url(r'^install_device/', install.ClassInstallSystem.installDevice),
+    url(r'^install_switch/', install.ClassInstallSystem.installSwitch),
+    url(r'^install_switch_query/',
+        install.ClassInstallSystem.installSwitchQuery,
+        name='install_switch_query'),
+    url(r'^batch_install_add/', install.ClassInstallSystem.batchInstallAdd),
+    url(r'^batch_install_pause/', install.ClassInstallSystem.batchInstallDelete),
+    url(r'^batch_install_delete/',
+        install.ClassInstallSystem.batchInstallDelete),
+   # url(r'^install_time_query/', views.ClassInstallSystem.installInfoQuery),
 
     #for django-excel
-    url(r'^django_excel', views.upload, name='uplink'),
-    url(r'^download/(.*)', views.download, name="download"),
+    url(r'^django_excel', port.upload, name='uplink'),
+    url(r'^download/(.*)', port.download, name="download"),
     url(r'^download_attachment/(.*)/(.*)',
-        views.download_as_attachment,
+        port.download_as_attachment,
         name="download_attachment"),
-    url(r'^exchange/(.*)', views.exchange, name="exchange"),
-    url(r'^parse/(.*)', views.parse, name="parse"),
-    url(r'^import/', views.import_data, name="import"),
-    url(r'^import_sheet/', views.import_sheet, name="import_sheet"),
-    url(r'^export/(.*)', views.export_data, name="export"),
-    url(r'^handson_view/', views.handson_table, name="handson_view"),
+    url(r'^exchange/(.*)', port.exchange, name="exchange"),
+    url(r'^parse/(.*)', port.parse, name="parse"),
+    url(r'^import/', port.import_data, name="import"),
+    url(r'^import_sheet/', port.import_sheet, name="import_sheet"),
+    url(r'^export/(.*)', port.export_data, name="export"),
+    url(r'^handson_view/', port.handson_table, name="handson_view"),
 
     # handson table view
     url(r'^embedded_handson_view/',
-        views.embed_handson_table,
+        port.embed_handson_table,
         name="embed_handson_view"),
     url(r'^embedded_handson_view_single/',
-        views.embed_handson_table_from_a_single_table,
+        port.embed_handson_table_from_a_single_table,
         name="embed_handson_view"),
     # survey_result
-    url('^survey_result/', views.survey_result, name='survey_result'),
+    url('^survey_result/', port.survey_result, name='survey_result'),
 
     # testing purpose
-    url(r'^import_using_isave/', views.import_data_using_isave_book_as),
+    url(r'^import_using_isave/', port.import_data_using_isave_book_as),
     url(r'^import_sheet_using_isave/',
-        views.import_sheet_using_isave_to_database),
+        port.import_sheet_using_isave_to_database),
     url(r'^import_without_bulk_save/',
-        views.import_without_bulk_save,
+        port.import_without_bulk_save,
         name="import_no_bulk_save")
 ]

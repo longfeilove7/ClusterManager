@@ -1,5 +1,5 @@
 from django.db import models
-
+from macaddress.fields import MACAddressField #use django-macaddress
 # Create your models here.
 
 
@@ -47,6 +47,10 @@ class Host(models.Model):
     billingStatus = models.CharField(max_length=1,default="0")
     installStatus = models.CharField(max_length=1,default="0")
 
+class HostMac(models.Model):
+    host = models.ForeignKey(Host,on_delete=models.CASCADE) 
+    ipmiMac = MACAddressField(null=True, blank=True,unique=True)
+    pxeMac = MACAddressField(null=True, blank=True,unique=True)
 
 class HostPowerHistory(models.Model):
     host = models.ForeignKey(Host,on_delete=models.CASCADE) 

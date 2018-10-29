@@ -77,6 +77,54 @@ class ClassCluster:
 
             return redirect('/add_cluster/')
 
+    def clusterInfoQuery(request):
+            info_list = models.Clusters.objects.all()
+            limit = request.GET.get('limit')  # how many items per page
+            #print("the limit :"+limit)
+            offset = request.GET.get(
+                'offset')  # how many items in total in the DB
+            #print("the offset :",offset)
+            sort_column = request.GET.get('sort')  # which column need to sort
+            info_list_count = len(info_list)
+            print(info_list_count)
+            if not offset:
+                offset = 0
+            if not limit:
+                limit = 10  # 默认是每页20行的内容，与前端默认行数一致
+            pageinator = Paginator(info_list, limit)  # 利用Django的Painator开始做分页
+            page = int(int(offset) / int(limit) + 1)
+            print("the page:", page)
+            info_list_dict = {
+                "total": info_list_count,
+                "rows": []
+            }  # 必须带有rows和total这2个key，total表示总数，rows表示每行的内容
+            for item in pageinator.page(page):
+                    info_list_dict['rows'].append({
+                    "id":
+                    item.id,
+                    "clusterName":
+                    item.clusterName,
+                    "deviceNumber":
+                    item.deviceNumber,
+                    "customerName":
+                    item.customerName,
+                    "contactPerson":
+                    item.contactPerson,
+                    "contactPhone":
+                    item.contactPhone,
+                    "contactEmail":
+                    item.contactEmail,
+                    "contactQQ":
+                    item.contactQQ,
+                    "contactWeicat":
+                    item.contactWeicat                    
+                })
+            info_list_json = json.dumps(info_list_dict)
+            return HttpResponse(
+                info_list_json,
+                content_type="application/json",
+            )
+
     def cluster_edit(request, nid):
         if request.method == 'POST':
             clusterName = request.POST.get('clusterName')

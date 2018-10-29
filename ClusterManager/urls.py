@@ -19,7 +19,7 @@ Including another URLconf
 """
 # django-cruds-adminlte
 
-from django.conf.urls import url 
+from django.conf.urls import url
 from django.contrib import admin
 #from HostManager import views
 from views import cobbler
@@ -32,7 +32,7 @@ from views import calculate
 from views import portal
 from views import host
 from views import cluster
-from views import port 
+from views import port
 from views import sign
 from django.conf.urls import include
 #import os, sys, commands
@@ -55,10 +55,17 @@ urlpatterns = [
 
     # for device url
     url(r'^host_info/', host.ClassHost.host_info),
+    url(r'^host_info_query/',
+        host.ClassHost.hostInfoQuery,
+        name='host_info_query'),
     url(r'^host_edit-(?P<nid>\d+)/', host.ClassHost.host_edit),
     url(r'^host_del-(?P<nid>\d+)/', host.ClassHost.host_del),
     url(r'^add_host/', host.ClassHost.add_host),
-    url(r'^add_cluster/', cluster.ClassCluster.add_cluster),
+    url(r'^add_cluster/', cluster.ClassCluster.add_cluster,
+        name='add_cluster'),
+    url(r'^cluster_info_query/',
+        cluster.ClassCluster.clusterInfoQuery,
+        name='cluster_info_query'),
     url(r'^cluster_edit-(?P<nid>\d+)/', cluster.ClassCluster.cluster_edit),
     url(r'^cluster_del-(?P<nid>\d+)/', cluster.ClassCluster.cluster_del),
     url(r'^power_history-(?P<nid>\d+)/', host.ClassHost.power_history),
@@ -119,28 +126,29 @@ urlpatterns = [
         monitor.ClassMonitorSystem.monitorSwitchQuery,
         name='monitor_switch_query'),
     url(r'^batch_monitor_add/', monitor.ClassMonitorSystem.batchMonitorAdd),
-    url(r'^batch_monitor_pause/', monitor.ClassMonitorSystem.batchMonitorPause),
+    url(r'^batch_monitor_pause/',
+        monitor.ClassMonitorSystem.batchMonitorPause),
     url(r'^batch_monitor_delete/',
         monitor.ClassMonitorSystem.batchMonitorDelete),
     url(r'^monitor_time_query/', monitor.ClassMonitorSystem.monitorInfoQuery),
 
     # for device install os
-        url(r'^install_info/', install.ClassInstallSystem.installInfo),
-                url(r'^install_info/', cobbler.ClassCobbler.cobblerAPI),
+    url(r'^install_info/', install.ClassInstallSystem.installInfo),
     url(r'^install_info_query/',
         install.ClassInstallSystem.installInfoQuery,
         name='install_info_query'),
-        url(r'^installing_switch/', install.ClassInstallSystem.installingSwitch),
+    url(r'^installing_switch/', install.ClassInstallSystem.installingSwitch),
     url(r'^install_device/', install.ClassInstallSystem.installDevice),
     url(r'^install_switch/', install.ClassInstallSystem.installSwitch),
     url(r'^install_switch_query/',
         install.ClassInstallSystem.installSwitchQuery,
         name='install_switch_query'),
     url(r'^batch_install_add/', install.ClassInstallSystem.batchInstallAdd),
-    url(r'^batch_install_pause/', install.ClassInstallSystem.batchInstallDelete),
+    url(r'^batch_install_pause/',
+        install.ClassInstallSystem.batchInstallDelete),
     url(r'^batch_install_delete/',
         install.ClassInstallSystem.batchInstallDelete),
-   # url(r'^install_time_query/', views.ClassInstallSystem.installInfoQuery),
+    # url(r'^install_time_query/', views.ClassInstallSystem.installInfoQuery),
 
     #for django-excel
     url(r'^django_excel', port.upload, name='uplink'),

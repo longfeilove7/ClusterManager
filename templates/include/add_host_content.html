@@ -1,97 +1,24 @@
 <div id="page-content-wrapper">
 
     <!--  右边主机内容-->
-
-    <nav class="navbar navbar-expand-md bg-secondary navbar-dark">
-        <a class="navbar-brand" href="#">数据维护</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse"
-            aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
-                    <a class="nav-link active" href="#" id="btnBatAdd" data-toggle="modal" data-target="#addModalHost">添加主机</a>
-                </li>
-                <!-- <li class="nav-item">
-                            <a class="nav-link" href="#" id="btnBatEdit">批量编辑</a>
-                        </li> -->
-                <li class="nav-item">
-                    <a class="nav-link" href="#" id="btnBatDelete">批量删除</a>
-                </li>
-            </ul>
-            <form class="form-inline mt-2 mt-md-0">
-                <input class="form-control mr-sm-2" id="searchbox" type="text" placeholder="Search" aria-label="Search">
-                <!-- <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>                      -->
-            </form>
+    <div id="toolbar">
+        <div class="form-inline" role="form">
+            &ensp;
+            <button id="btnBatAdd" class="btn btn-xs btn-outline-success my-2 my-sm-0" type="submit" data-toggle="modal"
+                data-target="#addModalHost">添加主机</button>
+            &ensp;
+            <button id="btnBatDelete" class="btn btn-xs btn-outline-success my-2 my-sm-0" type="submit" data-toggle="#btnBatDelete">批量删除</button>
         </div>
-    </nav>
+    </div>
 
-
-
-    <table id="mytable" data-toggle="table" data-side-pagination="client" data-pagination="true" data-search="false" data-show-refresh="false"
-        data-height="653" data-show-toggle="false" data-show-columns="false" data-detail-view="false" data-detail-formatter="detailFormatter"
-        data-minimum-count-columns="2" data-show-pagination-switch="false" data-pagination="true" data-page-size="10" data-page-list="[10, 25, 50, 100, ALL]"
-        data-show-footer="false" data-sort-name="id" data-sort-order="desc" data-row-style="rowStyle" data-striped="true">
-
-        <thead class="thead-light">
-            <tr>
-                <th>
-                    <input type="checkbox" id="select-all" onclick="selectAll()">
-                </th>
-                <th>ID</th>
-                <th class="hidden-xs">机房</th>
-                <th class="visible-xs-block">机柜</th>
-                <th>刀箱</th>
-                <th>刀片</th>
-                <th>主机名</th>
-                <th>业务IP</th>
-                <th>管理IP</th>
-                <th>存储IP</th>
-                <th>集群</th>
-                <th>型号</th>
-                <th>操作系统</th>
-                <th>修改</th>
-                <th>删除</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for row in obj %}
-            <tr>
-                <td>
-                    <input type="checkbox" name="selected" value="{'ID':{{ row.id }}}" onclick="oneToAll()" />
-                </td>
-                <td>{{ row.id }}</td>
-                <td class="hidden-xs">{{ row.roomNO }}</td>
-                <td class="visible-xs-block">{{ row.cabinetNO }}</td>
-                <td>{{ row.bladeBoxNO }}</td>
-                <td>{{ row.bladeNO}}</td>
-                <td>{{ row.hostName }}</td>
-                <td>{{ row.serviceIP }}</td>
-                <td>{{ row.manageIP }}</td>
-                <td>{{ row.storageIP }}</td>
-                <td>{{ row.clusterName.clusterName }}</td>
-                <td>{{ row.hardware }}</td>
-                <td>{{ row.service }}</td>
-                <td>
-                    <button type="button" class="singleButton" id="{{ row.id }}" name="btn" onclick="toEditHost('mytable',this)" data-toggle="modal"
-                        data-target="#editModalHost">
-                        <i class="fa fa-edit fa-4"></i>
-                    </button>
-                </td>
-                <td>
-                    <button type="button" class="singleButton" id="{{ row.id }}" name="btn" onclick="toDeleteHost('mytable',this)" data-toggle="modal"
-                        data-target="#delModalHost">
-                        <i class="fas fa-trash-alt fa-4"></i>
-                    </button>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
+    <table id="mytable" data-toolbar="#toolbar" data-search="true" data-show-refresh="true" data-show-toggle="true"
+        data-show-columns="true" data-detail-view="false" data-detail-formatter="detailFormatter"
+        data-minimum-count-columns="2" data-show-pagination-switch="true" data-pagination="true" data-id-field="id"
+        data-page-list="[15, 25, 50, 100, 'ALL']" data-show-footer="false" data-side-pagination="server" data-url="{% url 'host_info_query' %}"
+        data-response-handler="responseHandler" data-striped="true" data-search-time-out="500" data-sortable="true"
+        data-page-size="15" data-row-style="rowStyle">
     </table>
 </div>
-
-
 
 <!--  添加设备模态对话框-->
 <form role="form" action="/add_host/" method="post">
@@ -170,7 +97,8 @@
                             <input class="form-control" type="text" name="ipmiUser" placeholder="IPMI用户名" required>
                         </div>
                         <div class="col-lg-3 form-group">
-                            <input class="form-control" type="password" name="ipmiPassword" placeholder="IPMI密码" required>
+                            <input class="form-control" type="password" name="ipmiPassword" placeholder="IPMI密码"
+                                required>
                         </div>
 
                     </div>
@@ -277,7 +205,8 @@
                             <input class="form-control" type="text" name="ipmiUser" placeholder="IPMI用户名" required>
                         </div>
                         <div class="col-lg-3 form-group">
-                            <input class="form-control" type="password" name="ipmiPassword" placeholder="IPMI密码" required>
+                            <input class="form-control" type="password" name="ipmiPassword" placeholder="IPMI密码"
+                                required>
                         </div>
                     </div>
 

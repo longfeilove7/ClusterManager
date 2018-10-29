@@ -44,42 +44,98 @@ from views import calculate
 
 #定义全局变量用于存储页面当前用户信息
 GLOBAL_VAR_USER = "0"
+TimeInterval = IntervalSchedule.objects.all()
+TimeCycle = CrontabSchedule.objects.all()
 
 # for celery beat about html
 class ClassCeleryBeat():
     def periodic_task(request):
         global GLOBAL_VAR_USER
+        global TimeInterval
+        global TimeCycle
         user_list = models.Users.objects.filter(
             username=GLOBAL_VAR_USER).first()
         if request.method == 'GET':
             periodic_list = PeriodicTask.objects.all()
             return render(request, 'celery/beat/periodic_task.html', {
                 'periodic_list': periodic_list,
-                'user_list': user_list
+                'user_list': user_list,
+                'TimeInterval':TimeInterval,
+                'TimeCycle':TimeCycle
             })
 
-    def add_periodic(request):
-        if request.method == 'POST':
-            clusterName = request.POST.get('clusterName')
-            deviceNumber = request.POST.get('deviceNumber')
-            customerName = request.POST.get('customerName')
-            contactPerson = request.POST.get('contactPerson')
-            contactPhone = request.POST.get('contactPhone')
-            contactEmail = request.POST.get('contactEmail')
-            contactQQ = request.POST.get('contactQQ')
-            contactWeicat = request.POST.get('contactWeicat')
-            models.Clusters.objects.create(
-                clusterName=clusterName,
-                deviceNumber=deviceNumber,
-                customerName=customerName,
-                contactPerson=contactPerson,
-                contactPhone=contactPhone,
-                contactEmail=contactEmail,
-                contactQQ=contactQQ,
-                contactWeicat=contactWeicat,
-            )
+    #def add_periodic(request):
+        # if request.method == 'POST':
+        #     clusterName = request.POST.get('clusterName')
+        #     deviceNumber = request.POST.get('deviceNumber')
+        #     customerName = request.POST.get('customerName')
+        #     contactPerson = request.POST.get('contactPerson')
+        #     contactPhone = request.POST.get('contactPhone')
+        #     contactEmail = request.POST.get('contactEmail')
+        #     contactQQ = request.POST.get('contactQQ')
+        #     contactWeicat = request.POST.get('contactWeicat')
+        #     models.Clusters.objects.create(
+        #         clusterName=clusterName,
+        #         deviceNumber=deviceNumber,
+        #         customerName=customerName,
+        #         contactPerson=contactPerson,
+        #         contactPhone=contactPhone,
+        #         contactEmail=contactEmail,
+        #         contactQQ=contactQQ,
+        #         contactWeicat=contactWeicat,
+        #     )
 
-            return redirect('/periodic_task/')
+        #     return redirect('/periodic_task/')
+
+    def add_periodic(idName, HostIP, HostUser, HostPassword,CrontabTimeInterval):
+        print("Add Crontab")
+        #定义一个时间间隔
+        schedule, created = IntervalSchedule.objects.get_or_create(
+            every=300,
+            period=IntervalSchedule.SECONDS,
+        )
+        print("start to try...except")
+        #定义一个时间周期
+        # schedule, _ = CrontabSchedule.objects.get_or_create(
+        #     minute='30',
+        #     hour='*',
+        #     day_of_week='*',
+        #     day_of_month='*',
+        #     month_of_year='*',
+        # )
+        #创建一个周期性任务,如果查询到就返回，如果没查询到就向数据库加入新的对象
+        try:
+            print("------------do try----------")
+            task, created = PeriodicTask.objects.get_or_create(
+                #crontab=schedule,
+                name=idName,
+                task='HostManager.Tasks.powerStatus',
+                interval=schedule,  # we created this above.
+                args=json.dumps([idName, ipmiHost, User, Password]),
+                # kwargs=json.dumps({
+                #     'be_careful': True,
+                # }),
+                #expires=datetime.datetime.utcnow() + datetime.timedelta(seconds=30)
+            )
+            if created:
+                task.enabled = True
+                task.save()
+            else:
+                task.enabled = True
+                task.save()
+            return True
+        except:
+            print("------------do except------------")
+            periodicTask = PeriodicTask.objects.get(name=idName)
+            periodicTask.enabled = True  # 设置开启
+            periodicTask.save()
+            return True
+
+        #开启任务
+
+        #PeriodicTask.enabled = True
+        print("----------------------------")
+
 
     def interval_schedule(request):
         global GLOBAL_VAR_USER

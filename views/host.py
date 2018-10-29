@@ -44,6 +44,7 @@ import xmlrpc.client
 #定义全局变量用于存储页面当前用户信息
 GLOBAL_VAR_USER = "0"
 
+
 class ClassHost:
     def host_info(request):
         global GLOBAL_VAR_USER
@@ -56,7 +57,7 @@ class ClassHost:
                 'obj': obj,
                 'cluster_list': cluster_list,
                 'user_list': user_list
-            })    
+            })
 
     def add_host(request):
         global GLOBAL_VAR_USER
@@ -110,6 +111,59 @@ class ClassHost:
             print(roomNO, cabinetNO, bladeBoxNO, bladeNO, hardware, serviceIP,
                   manageIP, storageIP, hostName, service, clusterName)
             return redirect('/add_host/')
+
+    def hostInfoQuery(request):
+        info_list = models.Host.objects.all()
+        limit = request.GET.get('limit')  # how many items per page
+        #print("the limit :"+limit)
+        offset = request.GET.get('offset')  # how many items in total in the DB
+        #print("the offset :",offset)
+        sort_column = request.GET.get('sort')  # which column need to sort
+        info_list_count = len(info_list)
+        print(info_list_count)
+        if not offset:
+            offset = 0
+        if not limit:
+            limit = 10  # 默认是每页20行的内容，与前端默认行数一致
+        pageinator = Paginator(info_list, limit)  # 利用Django的Painator开始做分页
+        page = int(int(offset) / int(limit) + 1)
+        print("the page:", page)
+        info_list_dict = {
+            "total": info_list_count,
+            "rows": []
+        }  # 必须带有rows和total这2个key，total表示总数，rows表示每行的内容
+        for item in pageinator.page(page):
+            info_list_dict['rows'].append({
+                "id":
+                item.id,
+                "roomNO":
+                item.roomNO,
+                "cabinetNO":
+                item.cabinetNO,
+                "bladeBoxNO":
+                item.bladeBoxNO,
+                "bladeNO":
+                item.bladeNO,
+                "hostName":
+                item.hostName,
+                "serviceIP":
+                item.serviceIP,
+                "manageIP":
+                item.manageIP,
+                "storageIP":
+                item.storageIP,
+                "clusterName":
+                item.clusterName.clusterName,
+                "hardware":
+                item.hardware,
+                "service":
+                item.service
+            })
+        info_list_json = json.dumps(info_list_dict)
+        return HttpResponse(
+            info_list_json,
+            content_type="application/json",
+        )
 
     def host_del(request, nid):
         if request.method == 'POST':

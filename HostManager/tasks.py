@@ -208,6 +208,20 @@ def bootdevBios(ipmiHost, ipmiUser, ipmiPassword):
     else:
         return ipmiHost, nowTime, "fail"
 
+#获取管理口网卡MAC
+@shared_task(name='HostManager.Tasks.ipmiMac')
+def ipmiMac(ipmiHost, ipmiUser, ipmiPassword):
+    ipmiMac = "ipmitool -H " + ipmiHost + " -U " + ipmiUser + " -P " + ipmiPassword + " lan print |grep \"MAC Address\"|awk '{print$4}'"
+    print(ipmiMac)
+    ipmiMac = os.popen(ipmiMac)
+    returnRead = ipmiMac.read()
+    print(returnRead)
+
+    nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    if ":" in returnRead:
+        return ipmiHost, nowTime, "success", returnRead
+    else:
+        return ipmiHost, nowTime, "fail", returnRead
 
 #获取SDR信息
 @shared_task(name='HostManager.Tasks.inspectSdr')

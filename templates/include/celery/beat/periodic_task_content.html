@@ -148,19 +148,19 @@
                             <input class="form-control" type="text" name="hostName" placeholder="主机名">
                         </div>
                         <div class="col-lg-3 form-group">
-                            <input class="form-control" type="text" name="serviceIP" placeholder="业务IP" required>
+                            <input class="form-control" type="text" name="serviceIP" placeholder="IP地址" required>
                         </div>
                         <div class="col-lg-3 form-group">
-                            <input class="form-control" type="text" name="manageIP" placeholder="管理IP" required>
+                            <input class="form-control" type="text" name="manageIP" placeholder="用户名" required>
                         </div>
                         <div class="col-lg-3 form-group">
-                            <input class="form-control" type="text" name="storageIP" placeholder="存储IP" required>
+                            <input class="form-control" type="text" name="storageIP" placeholder="密码" required>
                         </div>
 
                     </div>
 
                     <div class="row">
-                        <div class="col-lg-3 form-group">
+                        <!-- <div class="col-lg-3 form-group">
                             <input class="form-control" type="text" name="service" placeholder="操作系统">
                         </div>
                         <div class="col-lg-3 form-group">
@@ -171,18 +171,36 @@
                         </div>
                         <div class="col-lg-3 form-group">
                             <input class="form-control" type="password" name="ipmiPassword" placeholder="IPMI密码" required>
-                        </div>
+                        </div> -->
 
                     </div>
 
                     <div class="row">
                         <div class="col-lg-12 form-group">
-                            <select class="form-control" name="clusterName" required>
+                            <!-- <select class="form-control" name="clusterName" required>
                                 <option value="">选择集群</option>
                                 {% for cluster in cluster_list %}
                                 <option value="{{ cluster.id }}">{{ cluster.clusterName }}</option>
                                 {% endfor %}
-                            </select>
+                            </select> -->
+                            
+                            <select class="form-control" name="clusterName" required>
+                                <option value="">选择时间间隔</option>
+                                {% for TimeInterval in TimeInterval %}
+                                <option value="{{ TimeInterval.id }}">{{ TimeInterval.every}} {{TimeInterval.period}}</option>
+                                {% endfor %}
+                            </select>                    
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12 form-group">                         
+                            <select class="form-control" name="clusterName" required>
+                                <option value="">选择运行周期</option>
+                                {% for TimeCycle in TimeCycle %}
+                                <option value="{{ TimeCycle.id }}">{{TimeCycle.minute}} {{TimeCycle.hour}} {{TimeCycle.day_of_week}} {{TimeCycle.day_of_month}} {{TimeCycle.month_of_year}}</option>
+                                {% endfor %}
+                            </select>                    
                         </div>
                     </div>
 

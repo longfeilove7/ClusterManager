@@ -41,11 +41,41 @@ import xmlrpc.server
 import xmlrpc.client
 # Create your views here.
 
-class ClassCobbler():
-    def cobblerAPI(self,request):
-        server = xmlrpc.client.ServerProxy("http://127.0.0.1/cobbler_api")
+class ClassCobblerAPI():
+    #def __init__(self):
+    server = xmlrpc.client.ServerProxy("http://127.0.0.1/cobbler_api")
+    print("**********************this is cobbler api ************************")
+    def cobblerModifySystem(pxeMAC): 
+        server = ClassCobblerAPI.server       
         print (server.get_distros())
         print (server.get_profiles())
         print (server.get_systems())
         print (server.get_images())
         print (server.get_repos())
+        token = server.login("cobbler","cobbler")
+        system_id = server.new_system(token)
+        
+        server.modify_system(system_id,"name",pxeMAC,token)
+        server.modify_system(system_id,"hostname",pxeMAC,token)
+        server.modify_system(system_id,'modify_interface', {
+                "macaddress-eth0"   : pxeMAC,
+                "ipaddress-eth0"    : "192.168.0.1",
+                "dnsname-eth0"      : "hostname.example.com",
+        }, token)
+        server.modify_system(system_id,"profile","centos7.5-x86_64",token)
+        server.modify_system(system_id,"kernel_options", "foo=bar some=thing", token)
+        server.modify_system(system_id,"ks_meta", "foo=bar some=thing", token)
+
+        server.save_system(system_id, token)
+        server.sync(token)
+
+    def cobblerRemoveSystem(pxeMAC):
+        server = ClassCobblerAPI.server
+        token = server.login("cobbler","cobbler")
+        system_id = server.new_system(token)
+        server = ClassCobblerAPI.server
+        server.remove_system(pxeMAC,token)
+        server.save_system(system_id, token)
+        server.sync(token)
+
+    

@@ -39,10 +39,13 @@ from decimal import *
 #import os, sys, commands
 import xmlrpc.server
 import xmlrpc.client
+from views import cobbler
+from views import mac
 # Create your views here.
 
 #定义全局变量用于存储页面当前用户信息
 GLOBAL_VAR_USER = "0"
+
 
 class ClassInstallSystem():
     #定义查询时间，如果在方法中定义会出现第二次调用方法时变量又重新初始化
@@ -63,17 +66,17 @@ class ClassInstallSystem():
             })
 
     def installInfo(request):
-            global GLOBAL_VAR_USER
-            user_list = models.Users.objects.filter(
-                username=GLOBAL_VAR_USER).first()
-            if request.method == 'GET':
-                obj = models.Host.objects.all()
-                cluster_list = models.Clusters.objects.all()
-                return render(request, 'install_info.html', {
-                    'obj': obj,
-                    'cluster_list': cluster_list,
-                    'user_list': user_list
-                })
+        global GLOBAL_VAR_USER
+        user_list = models.Users.objects.filter(
+            username=GLOBAL_VAR_USER).first()
+        if request.method == 'GET':
+            obj = models.Host.objects.all()
+            cluster_list = models.Clusters.objects.all()
+            return render(request, 'install_info.html', {
+                'obj': obj,
+                'cluster_list': cluster_list,
+                'user_list': user_list
+            })
 
     def installInfoQuery(request):
         #每次request的时候POST提交的数据会丢失，所以采用类变量暂存
@@ -191,7 +194,7 @@ class ClassInstallSystem():
                     "storageIP":
                     item.storageIP,
                     "clusterName":
-                    item.clusterName.clusterName,                    
+                    item.clusterName.clusterName,
                     "countQueryTime":
                     '%s:%s:%s' % (hours, minutes, seconds),
                     "installStartTimeHistory":
@@ -209,13 +212,13 @@ class ClassInstallSystem():
                 info_list_json,
                 content_type="application/json",
             )
-    
+
     def installingSwitch(request):
         """"""
         context = {}
         if request.method == 'POST':
             ipmiID = request.POST.get('ID')
-            print("ipmiID",ipmiID)
+            print("ipmiID", ipmiID)
             setValue = request.POST.get('setValue')
             print("test" + setValue)
             db_dict = models.Host.objects.filter(id=ipmiID).values()[0]
@@ -225,35 +228,50 @@ class ClassInstallSystem():
             print(ipmiPassword)
             ipmiHost = db_dict['manageIP']
             powerOnTime = db_dict['powerOnTime']
-            
-            
+            ipmiMac = tasks.ipmiMac.delay(ipmiHost, ipmiUser,
+                                          ipmiPassword).get()[3]
+            print("the ipmiMac is :",ipmiMac)
+            macDifference = 3
+            pxeMAC = mac.ClassFormatMac.formatMac(ipmiMac,macDifference)
+            print(pxeMAC,"is the pxe mac")
             if setValue == '1':
                 print("111111111111")
-                powerStatus = tasks.powerStatus.delay(ipmiID,ipmiHost, ipmiUser,
-                                         ipmiPassword).get()[3]
+                cobbler.ClassCobblerAPI.cobblerModifySystem(pxeMAC)
+                powerStatus = tasks.powerStatus.delay(
+                    ipmiID, ipmiHost, ipmiUser, ipmiPassword).get()[3]
                 if powerStatus == "on":
                     tasks.bootdevPxe.delay(ipmiHost, ipmiUser,
-                                         ipmiPassword).get()
+                                           ipmiPassword).get()
                     result = tasks.powerCycle.delay(ipmiHost, ipmiUser,
-                                         ipmiPassword).get()
+                                                    ipmiPassword).get()
                 if powerStatus == "off":
+                    tasks.bootdevPxe.delay(ipmiHost, ipmiUser,
+                                           ipmiPassword).get()
                     result = tasks.powerOn.delay(ipmiHost, ipmiUser,
-                                         ipmiPassword).get()
+                                                 ipmiPassword).get()
                 print(powerStatus)
                 models.Host.objects.filter(id=ipmiID).update(
-                    powerOnTime=result[1])              
-                installStartTime = result[1]                
-                models.InstallSystemHistory.objects.all().create(host_id=ipmiID,installStartTimeHistory = installStartTime,
-                    installSystemStatus=setValue, )
-            else:  
+                    powerOnTime=result[1])
+                installStartTime = result[1]
+                models.InstallSystemHistory.objects.all().create(
+                    host_id=ipmiID,
+                    installStartTimeHistory=installStartTime,
+                    installSystemStatus=setValue,
+                )
+            else:
+                cobbler.ClassCobblerAPI.cobblerRemoveSystem(pxeMAC)
                 installStartTime = powerOnTime
-                tasks.bootdevDisk.delay(ipmiHost, ipmiUser,
-                                         ipmiPassword).get()
+                tasks.bootdevDisk.delay(ipmiHost, ipmiUser, ipmiPassword).get()
                 result = tasks.powerCycle.delay(ipmiHost, ipmiUser,
-                                         ipmiPassword).get()              
-                installEndTime = result[1] 
-                models.InstallSystemHistory.objects.filter(host_id=ipmiID,installStartTimeHistory=installStartTime).update(host_id=ipmiID,installEndTimeHistory = installEndTime,
-                    installSystemStatus=setValue, )
+                                                ipmiPassword).get()
+                installEndTime = result[1]
+                models.InstallSystemHistory.objects.filter(
+                    host_id=ipmiID,
+                    installStartTimeHistory=installStartTime).update(
+                        host_id=ipmiID,
+                        installEndTimeHistory=installEndTime,
+                        installSystemStatus=setValue,
+                    )
             data = json.dumps(setValue).encode()
             return HttpResponse(data)
         elif request.method == 'GET':
@@ -264,7 +282,7 @@ class ClassInstallSystem():
 
     def installSwitchQuery(request):
         """"""
-        context = {}       
+        context = {}
         if request.method == 'GET':
             print("***************GET****************")
             limit = request.GET.get('limit')  # how many items per page
@@ -345,7 +363,6 @@ class ClassInstallSystem():
                 results_list_json,
                 content_type="application/json",
             )
-
 
     def installSwitch(request):
         """"""

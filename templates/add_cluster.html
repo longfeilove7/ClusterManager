@@ -1,7 +1,7 @@
 {% extends 'extends/base.html' %}
-{% block baseCss %} 
-{% include 'include/css.html' %} 
-{% endblock %} 
+{% block baseCss %}
+{% include 'include/css.html' %}
+{% endblock %}
 {% block baseBody %}
 
 <!-- Add your site or application content here -->
@@ -13,19 +13,18 @@
 
 <!-- /#page-content-wrapper -->
 <div id="preloader">
-        <div class="loader" id="loader-1"></div>
+    <div class="loader" id="loader-1"></div>
 </div>
 <!-- /#wrapper -->
 
-{% endblock %} 
-{% block baseScript %} 
+{% endblock %}
+{% block baseScript %}
 {% include 'include/js.html' %}
 
-<script>     
+<script>
     /*         编辑集群的模态*/
     function toEditCluster(id, e) {
         /*            获取当前点击事件标签上的id*/
-
         var getID = e.parentNode.parentNode.children[1].innerHTML;
         var getClusterName = e.parentNode.parentNode.children[2].innerHTML;
         var getDeviceNumber = e.parentNode.parentNode.children[3].innerHTML;
@@ -39,12 +38,12 @@
         // document.body.onclick = function (event) { 部分浏览器不支持此方法，改用如上parentNode方式。
         //     var id = event.target.id;
         //     console.log(id);
-        if (getID) { 
+        if (getID) {
             var link = "/cluster_edit-" + getID + '/';
             console.log(link);
             /*set the form action*/
             $('#editFormCluster').attr('action', link)
-            $("#spanId").html(getID);          
+            $("#spanId").html(getID);
             //name selector $("input[name= ' '").val()            
             $("input[name='clusterName']").val(getClusterName);
             $("input[name='deviceNumber']").val(getDeviceNumber);
@@ -54,10 +53,7 @@
             $("input[name='contactEmail']").val(getContactEmail);
             $("input[name='contactQQ']").val(getContactQQ);
             $("input[name='contactWeicat']").val(getContactWeicat);
-            
-
         }
-
     };
 
     /*         删除的模态*/
@@ -77,7 +73,205 @@
             $("#spanId").html(getID);
 
         }
-
     };
+</script>
 
-</script> {% endblock %}
+<script>
+    var $table = $('#mytable'),
+        $remove = $('#remove'),
+        selections = [];
+    function initTable() {
+        $table.bootstrapTable({
+            height: getHeight(),
+            //由于bootstrap 4.0停止使用glyphicon，所以改用fontawesome
+            iconsPrefix: 'fas',
+            icons: {
+                paginationSwitchDown: 'fa-eye',
+                paginationSwitchUp: 'fa-eye-slash',
+                refresh: 'fa-sync',
+                toggle: 'fa-toggle-off',
+                columns: 'fa-columns',
+                detailOpen: 'glyphicon-plus icon-plus',
+                detailClose: 'glyphicon-minus icon-minus'
+            },
+            columns: [
+                [
+                    {
+                        field: 'state',
+                        checkbox: true,
+                        align: 'center',
+                        valign: 'middle'
+                    },
+                    {
+                        field: 'id',
+                        title: 'ID',
+                        sortable: true,
+                        footerFormatter: totalNameFormatter,
+                        align: 'center'
+                    }, {
+                        field: 'clusterName',
+                        title: '集群名称',
+                        sortable: true,
+                        align: 'center',
+                        footerFormatter: totalPriceFormatter
+                    }, {
+                        field: 'deviceNumber',
+                        title: '设备数量',
+                        sortable: true,
+                        align: 'center',
+                        footerFormatter: totalPriceFormatter
+                    }, {
+                        field: 'customerName',
+                        title: '客户名称',
+                        sortable: true,
+                        align: 'center',
+                        footerFormatter: totalPriceFormatter
+                    }, {
+                        field: 'contactPerson',
+                        title: '联系人',
+                        sortable: false,
+                        align: 'center',
+                        footerFormatter: totalPriceFormatter
+                    }, {
+                        field: 'contactPhone',
+                        title: '电话',
+                        sortable: false,
+                        align: 'center',
+                        footerFormatter: totalPriceFormatter
+                    }, {
+                        field: 'contactEmail',
+                        title: '邮件',
+                        sortable: false,
+                        align: 'center',
+                        footerFormatter: totalPriceFormatter
+                    }, {
+                        field: 'contactQQ',
+                        title: 'QQ',
+                        sortable: false,
+                        align: 'center',
+                        footerFormatter: totalPriceFormatter
+                    }, {
+                        field: 'contactWeicat',
+                        title: '微信',
+                        sortable: false,
+                        align: 'center',
+                        footerFormatter: totalPriceFormatter
+                    }
+                    , {
+                        field: 'operate',
+                        title: '操作',
+                        align: 'center',
+                        events: operateEvents,
+                        formatter: operateFormatter
+                    }
+                ]
+            ]
+        });
+        // sometimes footer render error.
+        setTimeout(function () {
+            $table.bootstrapTable('resetView');
+        }, 200);
+        $table.on('check.bs.table uncheck.bs.table ' +
+            'check-all.bs.table uncheck-all.bs.table', function () {
+                $remove.prop('disabled', !$table.bootstrapTable('getSelections').length);
+                // save your data, here just save the current page
+                selections = getIdSelections();
+                // push or splice the selections if you want to save all data selections
+            });
+        //此处有BUG
+        //$table.on('expand-row.bs.table', function (e, index, row, $detail) {
+        //    if (index % 2 == 1) {
+        //        $detail.html('Loading from ajax request...');
+        //        $.get('LICENSE', function (res) {
+        //           $detail.html(res.replace(/\n/g, '<br>'));
+        //        });
+        //    }
+        //});
+        $table.on('all.bs.table', function (e, name, args) {
+            console.log(name, args);
+        });
+        $remove.click(function () {
+            var ids = getIdSelections();
+            $table.bootstrapTable('remove', {
+                field: 'id',
+                values: ids
+            });
+            $remove.prop('disabled', true);
+        });
+        $(window).resize(function () {
+            $table.bootstrapTable('resetView', {
+                height: getHeight()
+            });
+        });
+    }
+    function getIdSelections() {
+        return $.map($table.bootstrapTable('getSelections'), function (row) {
+            return row.id
+        });
+    }
+    function responseHandler(res) {
+        $.each(res.rows, function (i, row) {
+            row.state = $.inArray(row.id, selections) !== -1;
+        });
+        return res;
+    }
+    function detailFormatter(index, row) {
+        var html = [];
+        $.each(row, function (key, value) {
+            html.push('<p><b>' + key + ':</b> ' + value + '</p>');
+        });
+        return html.join('');
+    }
+    function operateFormatter(value, row, index) {
+        return [
+            '<button type="button" class="singleButton" id="{{ row.id }}" name="btn" onclick="toEditCluster(\'mytable\',this)" data-toggle="modal" data-target="#editModalCluster">',
+            '<i class="fa fa-edit fa-4"></i>',
+            '</button>',
+            '<button type="button" class="singleButton" id="{{ row.id }}" name="btn" onclick="toDeleteCluster(\'mytable\',this)" data-toggle="modal" data-target="#delModalCluster">',
+            '<i class="fas fa-trash-alt fa-4"></i>',
+            '</button>'
+        ].join('');
+    }
+    window.operateEvents = {
+        'click .custom-switch': function (e, value, row, index) {
+            //alert('You click like action, row: ' + JSON.stringify(row));      
+        }
+    };
+    function totalTextFormatter(data) {
+        return 'Total';
+    }
+    function totalNameFormatter(data) {
+        return data.length;
+    }
+    function totalPriceFormatter(data) {
+        var total = 0;
+        $.each(data, function (i, row) {
+            total += +(row.price.substring(1));
+        });
+        return '$' + total;
+    }
+    //表格高度=窗口高度-表格上方控件高度
+    function getHeight() {
+        return $(window).height() - $('nav').outerHeight(true);
+    }
+    $(function () {
+        initTable();
+    });
+    //定制表格每行颜色
+    function rowStyle(row, index) {
+        var classes = ['active', 'success', 'info', 'warning', 'danger'];
+        if (index % 2 === 0 && index / 2 < classes.length) {
+            return {
+                classes: classes[index / 2]
+            };
+        }
+        return {};
+    };
+    $(function () {
+        $('#mytable').bootstrapTable(); // init via javascript
+        $(window).resize(function () {
+            $('#mytable').bootstrapTable('resetView');
+        });
+    });
+</script>
+{% endblock %}

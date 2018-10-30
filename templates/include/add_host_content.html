@@ -1,16 +1,23 @@
 <div id="page-content-wrapper">
 
     <!--  右边主机内容-->
-    <div id="toolbar">
-        <div class="form-inline" role="form">
-            &ensp;
-            <button id="btnBatAdd" class="btn btn-xs btn-outline-success my-2 my-sm-0" type="submit" data-toggle="modal"
-                data-target="#addModalHost">添加主机</button>
-            &ensp;
-            <button id="btnBatDelete" class="btn btn-xs btn-outline-success my-2 my-sm-0" type="submit" data-toggle="#btnBatDelete">批量删除</button>
-        </div>
-    </div>
-
+    <nav id="toolbar" class="navbar navbar-expand-md  bg-secondary navbar-dark navbar-inverse btn btn-xs">
+            <a class="navbar-brand" href="#">主机登记</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="batchBtn1" data-toggle="modal" data-target="#addModalHost">添加集群</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="batchBtn2" onclick="toBatchDeleteHost('mytable',this)">批量删除</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
     <table id="mytable" data-toolbar="#toolbar" data-search="true" data-show-refresh="true" data-show-toggle="true"
         data-show-columns="true" data-detail-view="false" data-detail-formatter="detailFormatter"
         data-minimum-count-columns="2" data-show-pagination-switch="true" data-pagination="true" data-id-field="id"
@@ -202,11 +209,10 @@
                             <input class="form-control" type="text" name="hardware" placeholder="硬件型号">
                         </div>
                         <div class="col-lg-3 form-group">
-                            <input class="form-control" type="text" name="ipmiUser" placeholder="IPMI用户名" required>
+                            <input class="form-control" type="text" name="ipmiUser" placeholder="IPMI用户名">
                         </div>
                         <div class="col-lg-3 form-group">
-                            <input class="form-control" type="password" name="ipmiPassword" placeholder="IPMI密码"
-                                required>
+                            <input class="form-control" type="password" name="ipmiPassword" placeholder="IPMI密码">
                         </div>
                     </div>
 
@@ -238,30 +244,30 @@
 
 
 <!--  删除设备的模态-->
-<form method="post" role="form" id="delForm">
+<!--form method="post" role="form" id="delForm">
     {% csrf_token %}
     <div id="delModalHost" class="modal fade">
         <div class="modal-dialog modal-sm">
-            <div class="modal-content">
+            <div class="modal-content"-->
                 <!-- 模态框头部 -->
-                <div class="modal-header">
+                <!--div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel">
                         删除设备
                     </h4>
-                </div>
+                </div-->
 
                 <!-- 模态框主体 -->
-                <div class="modal-body">
+                <!--div class="modal-body">
                     确定要删除ID为[
                     <span id="spanId"></span>]的设备吗?
-                </div>
+                </div-->
 
                 <!-- 模态框底部 -->
-                <div class="modal-footer">
+                <!--div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
                     <button type="submit" class="btn btn-danger">删除</button>
                 </div>
             </div>
         </div>
     </div>
-</form>
+</form-->

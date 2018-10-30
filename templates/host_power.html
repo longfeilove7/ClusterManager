@@ -9,7 +9,7 @@
 
 <!-- /#sidebar-wrapper -->
 <!-- Page Content -->
-{% include 'include/host_info_content.html' %}
+{% include 'include/host_power_content.html' %}
 
 
 
@@ -23,7 +23,6 @@
 {% block baseScript %} 
 {% include 'include/js.html' %} 
 <script src="/static/js/custom/powerbuttonswitch.js"></script>
-<script src="/static/js/custom/bootoption.js"></script>
 <script>
                 var $table = $('#mytable'),
                     $remove = $('#remove'),
@@ -135,35 +134,29 @@
                                     align: 'center',
                                     footerFormatter: totalPriceFormatter
                                 },{
-                                    field: 'powerOnTime',
-                                    title: '开机时间',
-                                    sortable: false,
-                                    align: 'center',
-                                    footerFormatter: totalPriceFormatter
-                                },{
-                                    field: 'powerOnTime',
-                                    title: '状态',
-                                    sortable: false,
-                                    align: 'center',
-                                    footerFormatter: totalPriceFormatter
-                                },{
-                                    field: 'operate',
-                                    title: '远程控制',
+                                    field: 'powerStatus',
+                                    title: '电源状态',
                                     align: 'center',
                                     events: operateEvents,
                                     formatter: operateFormatter1
-                                }, {
+                                },{
                                     field: 'operate',
-                                    title: '电源管理',
+                                    title: 'PING状态',
                                     align: 'center',
                                     events: operateEvents,
                                     formatter: operateFormatter2
-                                }, {
+                                },{
                                     field: 'operate',
-                                    title: '启动项管理',
+                                    title: '运行记录',
                                     align: 'center',
                                     events: operateEvents,
                                     formatter: operateFormatter3
+                                },{
+                                    field: 'operate',
+                                    title: '操作',
+                                    align: 'center',
+                                    events: operateEvents,
+                                    formatter: operateFormatter4
                                 }
                             ]
                         ]
@@ -224,48 +217,40 @@
                     return html.join('');
                 }
                 function operateFormatter1(value, row, index) {
+                    if (value==0){return [
+                      '<font color="#0000FF">关机</font> '
+                    ].join('');}
+                    else if (value==1){
+                        return [
+                        '<font color="#00FF00">开机</font> '
+                    ].join('');
+                    }
+else {
+    return [
+                        '<font color="#FF0000">未知</font> '
+                    ].join('');
+}
+                } 
+                function operateFormatter2(value, row, index) {
                     return [
-                    '<div class="btn-group" data-toggle="buttons">',
-                        '<button type="button" id="btn1" class="singleButton" data-toggle="tooltip" title="SSH连接" name="btn" onclick="toHttp(\'mytable\',this)">',
-                            '<i class="fab fa-linux"></i>',
-                        '</button>',
-                        '<button type="button" id="btn2" class="singleButton" data-toggle="tooltip" title="RDP连接" name="btn" onclick="toRdp(\'mytable\',this)">',
-                            '<i class="fab fa-windows"></i>',
-                        '</button>',
-                        '<button type="button" id="btn3" class="singleButton" data-toggle="tooltip" title="IPMI连接" name="btn" onclick="window.open(\'http://'+row.manageIP+'\')">',
-                            '<i class="fas fa-globe"></i>',
-                        '</button>',
-                    '</div>'
+                    '<a href="/power_history-'+ row.id+'/">'+ row.runTime+'</a>'
                     ].join('');
                 }
                 function operateFormatter3(value, row, index) {
                     return [
-                    '<div class="btn-group" data-toggle="buttons">',
-                        '<button type="button" id="btn1" class="singleButton" data-toggle="tooltip" data-placement="left" title="DISK启动" name="btn" onclick="toBootDisk(\'mytable\',this)">',
-                            '<i class="fas fa-database"></i>',
-                        '</button>',
-                        '<button type="button" id="btn2" class="singleButton" data-toggle="tooltip" data-placement="left" title="PXE启动" name="btn" onclick="toBootPxe(\'mytable\',this)">',
-                            '<i class="fab fa-internet-explorer"></i>',
-                        '</button>',
-                        '<button type="button" id="btn3" class="singleButton" data-toggle="tooltip" data-placement="left" title="CD-ROM启动" name="btn" onclick="toBootCdrom(\'mytable\',this)">',
-                            '<i class="fas fa-compact-disc"></i>',
-                        '</button>',
-                        '<button type="button" id="btn3" class="singleButton" data-toggle="tooltip" data-placement="left" title="BIOS启动" name="btn" onclick="toBootBios(\'mytable\',this)">',
-                            '<i class="fab fa-bitcoin"></i>',
-                        '</button>',
-                    '</div>'
+                    '<a href="/power_history-'+ row.id+'/">'+ row.runTime+'</a>'
                     ].join('');
                 }
-                function operateFormatter2(value, row, index) {
+                function operateFormatter4(value, row, index) {
                     return [
                     '<div class="btn-group" data-toggle="buttons-radio">',
-                        '<button type="button" id="btn1_'+row.id+'" class="singleButton" value="'+row.powerStatus+'" data-toggle="tooltip" title="开机" name="btn" onclick="toPowerOn(\'mytable\',this)">',
+                        '<button type="button" id="btn1_'+ row.id+'" class="singleButton" value="'+row.powerStatus+'" data-toggle="tooltip" title="开机" name="btn" onclick="toPowerOn(\'mytable\',this)">',
                            ' <i class="fa fa-plug"></i>',
                         '</button>',
-                        '<button type="button" id="btn2_'+row.id+'" class="singleButton" value="'+row.powerStatus+'" data-toggle="tooltip" title="关机" name="btn" onclick="toPowerOff(\'mytable\',this)">',
+                        '<button type="button" id="btn2_'+ row.id+'" class="singleButton" value="'+row.powerStatus+'" data-toggle="tooltip" title="关机" name="btn" onclick="toPowerOff(\'mytable\',this)">',
                             '<i class="fa fa-power-off"></i>',
                         '</button>',
-                        '<button type="button" id="btn3_'+row.id+'" class="singleButton" value="'+row.powerStatus+'" data-toggle="tooltip" title="重启" name="btn" onclick="toPowerCycle(\'mytable\',this)">',
+                        '<button type="button" id="btn3_'+ row.id+'" class="singleButton" value="'+row.powerStatus+'" data-toggle="tooltip" title="重启" name="btn" onclick="toPowerCycle(\'mytable\',this)">',
                             '<i class="fa fa-recycle"></i>',
                         '</button>',
                     '</div>'

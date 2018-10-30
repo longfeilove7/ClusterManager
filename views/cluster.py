@@ -78,13 +78,38 @@ class ClassCluster:
             return redirect('/add_cluster/')
 
     def clusterInfoQuery(request):
-            info_list = models.Clusters.objects.all()
+            info_list = models.Clusters.objects.all()            
             limit = request.GET.get('limit')  # how many items per page
             #print("the limit :"+limit)
             offset = request.GET.get(
                 'offset')  # how many items in total in the DB
             #print("the offset :",offset)
             sort_column = request.GET.get('sort')  # which column need to sort
+            search = request.GET.get('search')
+            if sort_column:
+                print("the sort_column :" + sort_column)
+                order = request.GET.get('order')  # ascending or descending
+                print("the order :" + order)
+                if order == "asc":
+                    info_list = models.Clusters.objects.order_by(sort_column)
+                else:
+                    info_list = models.Clusters.objects.order_by("-"+sort_column)
+                print(info_list)            
+            elif search:  #    判断是否有搜索字
+                info_list = models.Clusters.objects.filter(
+                    Q(id__icontains=search)
+                    | Q(clusterName__icontains=search)
+                    | Q(deviceNumber__icontains=search)
+                    | Q(customerName__icontains=search)
+                    | Q(contactPerson__icontains=search)
+                    | Q(contactPhone__icontains=search)
+                    | Q(contactEmail__icontains=search)
+                    | Q(contactQQ__icontains=search)
+                    | Q(contactWeicat__icontains=search)
+                    )
+            else:
+                info_list = models.Clusters.objects.all(
+                )  # must be wirte the line code here
             info_list_count = len(info_list)
             print(info_list_count)
             if not offset:
@@ -148,11 +173,38 @@ class ClassCluster:
             print(clusterName)
             return redirect('/add_cluster/')
 
-    def cluster_del(request, nid):
+    def ClusterDelete(request):
         if request.method == 'POST':
-            obj = models.Host.objects.filter(clusterName_id=nid).first()
+            ipmiID = request.POST.get('allValue')
+            obj = models.Host.objects.filter(clusterName_id=ipmiID).first()
             if obj:
-                return HttpResponse('该主机组已经被使用')
+                dictDelete = [ipmiID, 0]                              
             else:
-                models.Clusters.objects.filter(id=nid).delete()
-                return redirect('/add_cluster/')
+                models.Clusters.objects.filter(id=ipmiID).delete()
+                dictDelete = [ipmiID, 1]               
+            data = json.dumps(dictDelete).encode()
+            return HttpResponse(data)        
+
+    def batchClusterDelete(request):    
+        """"""
+        context = {}
+        if request.method == 'POST':
+            allValue = request.POST.get('allValue')
+            print("the allValue: ", allValue, type(allValue))
+            listAllValue = json.loads(allValue)
+            print("the listAllValue: ", listAllValue, type(listAllValue))
+            listDelete = []
+            for dictAllValue in listAllValue:
+                print(type(dictAllValue))
+                ipmiID = dictAllValue['id']
+                print(ipmiID)
+                obj = models.Host.objects.filter(clusterName_id=ipmiID).first()
+                if obj:
+                    dictDelete = [ipmiID, 0]
+                    listDelete.append(dictDelete)                   
+                else:
+                    models.Clusters.objects.filter(id=ipmiID).delete()
+                    dictDelete = [ipmiID, 1]                
+                    listDelete.append(dictDelete)
+            data = json.dumps(listDelete).encode()
+            return HttpResponse(data)        

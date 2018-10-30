@@ -59,15 +59,41 @@ class ClassHost:
                 'user_list': user_list
             })
 
+    def hostPower(request):
+        global GLOBAL_VAR_USER
+        user_list = models.Users.objects.filter(
+            username=GLOBAL_VAR_USER).first()
+        if request.method == 'GET':
+            return render(request, 'host_power.html', {
+                'user_list': user_list
+            })
+
+
+    def hostBoot(request):
+        global GLOBAL_VAR_USER
+        user_list = models.Users.objects.filter(
+            username=GLOBAL_VAR_USER).first()
+        if request.method == 'GET':
+            return render(request, 'host_boot.html', {
+                'user_list': user_list
+            })
+
+    def hostRemote(request):
+        global GLOBAL_VAR_USER
+        user_list = models.Users.objects.filter(
+            username=GLOBAL_VAR_USER).first()
+        if request.method == 'GET':
+            return render(request, 'host_remote.html', {
+                'user_list': user_list
+            })
+
     def add_host(request):
         global GLOBAL_VAR_USER
         user_list = models.Users.objects.filter(
             username=GLOBAL_VAR_USER).first()
         if request.method == 'GET':
-            obj = models.Host.objects.all()
             cluster_list = models.Clusters.objects.all()
             return render(request, 'add_host.html', {
-                'obj': obj,
                 'cluster_list': cluster_list,
                 'user_list': user_list
             })
@@ -119,6 +145,10 @@ class ClassHost:
         offset = request.GET.get('offset')  # how many items in total in the DB
         #print("the offset :",offset)
         sort_column = request.GET.get('sort')  # which column need to sort
+        if sort_column:
+            print("the sort_column :" + sort_column)
+            order = request.GET.get('order')  # ascending or descending
+            print("the order :" + order)
         info_list_count = len(info_list)
         print(info_list_count)
         if not offset:
@@ -132,7 +162,16 @@ class ClassHost:
             "total": info_list_count,
             "rows": []
         }  # 必须带有rows和total这2个key，total表示总数，rows表示每行的内容
+        users_timezone = pytz.timezone('Asia/Shanghai')
         for item in pageinator.page(page):
+            if item.powerOnTime:
+                    print(item.powerOnTime)
+                    item.powerOnTime = item.powerOnTime.astimezone(
+                        users_timezone).replace(tzinfo=None)
+                    print(item.powerOnTime)
+            if item.powerOffTime:
+                item.powerOffTime = item.powerOffTime.astimezone(users_timezone).replace(tzinfo=None)
+
             info_list_dict['rows'].append({
                 "id":
                 item.id,
@@ -157,7 +196,15 @@ class ClassHost:
                 "hardware":
                 item.hardware,
                 "service":
-                item.service
+                item.service,
+                "powerOnTime":
+                str(item.powerOnTime),
+                "powerOffTime":
+                str(item.powerOffTime),
+                "runTime":
+                str(item.runTime),
+                "powerStatus":
+                item.powerStatus
             })
         info_list_json = json.dumps(info_list_dict)
         return HttpResponse(
@@ -165,10 +212,13 @@ class ClassHost:
             content_type="application/json",
         )
 
-    def host_del(request, nid):
+    def HostDelete(request):
         if request.method == 'POST':
-            models.Host.objects.filter(id=nid).delete()
-            return redirect('/add_host/')
+            ipmiID = request.POST.get('allValue')
+            models.Host.objects.filter(id=ipmiID).delete()
+            dictDelete = [ipmiID, 1]
+            data = json.dumps(dictDelete).encode()
+            return HttpResponse(data)
 
     def host_edit(request, nid):
         global GLOBAL_VAR_USER
@@ -215,6 +265,25 @@ class ClassHost:
             print(roomNO, cabinetNO, bladeBoxNO, bladeNO, hardware, serviceIP,
                   manageIP, storageIP, hostName, service, clusterName)
             return redirect('/add_host/')
+
+    def batchHostDelete(request):
+        """"""
+        context = {}
+        if request.method == 'POST':
+            allValue = request.POST.get('allValue')
+            print("the allValue: ", allValue, type(allValue))
+            listAllValue = json.loads(allValue)
+            print("the listAllValue: ", listAllValue, type(listAllValue))
+            listDelete = []
+            for dictAllValue in listAllValue:
+                print(type(dictAllValue))
+                ipmiID = dictAllValue['id']
+                print(ipmiID)
+                models.Host.objects.filter(id=ipmiID).delete()
+                dictDelete = [ipmiID, 1]
+                listDelete.append(dictDelete)
+            data = json.dumps(listDelete).encode()
+            return HttpResponse(data)
 
     def power_history(request, nid):
         global GLOBAL_VAR_USER

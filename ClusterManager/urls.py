@@ -55,20 +55,27 @@ urlpatterns = [
 
     # for device url
     url(r'^host_info/', host.ClassHost.host_info),
+       url(r'^host_power/', host.ClassHost.hostPower),
+          url(r'^host_boot/', host.ClassHost.hostBoot),
+                 url(r'^host_remote/', host.ClassHost.hostRemote),
     url(r'^host_info_query/',
         host.ClassHost.hostInfoQuery,
         name='host_info_query'),
     url(r'^host_edit-(?P<nid>\d+)/', host.ClassHost.host_edit),
-    url(r'^host_del-(?P<nid>\d+)/', host.ClassHost.host_del),
     url(r'^add_host/', host.ClassHost.add_host),
+    url(r'^host_delete/', host.ClassHost.HostDelete),
+    url(r'^batch_host_delete/', host.ClassHost.batchHostDelete),
+    url(r'^power_history-(?P<nid>\d+)/', host.ClassHost.power_history),
+
+    # for cluster
     url(r'^add_cluster/', cluster.ClassCluster.add_cluster,
         name='add_cluster'),
     url(r'^cluster_info_query/',
         cluster.ClassCluster.clusterInfoQuery,
         name='cluster_info_query'),
     url(r'^cluster_edit-(?P<nid>\d+)/', cluster.ClassCluster.cluster_edit),
-    url(r'^cluster_del-(?P<nid>\d+)/', cluster.ClassCluster.cluster_del),
-    url(r'^power_history-(?P<nid>\d+)/', host.ClassHost.power_history),
+    url(r'^batch_cluster_delete/', cluster.ClassCluster.batchClusterDelete),
+    url(r'^cluster_delete/', cluster.ClassCluster.ClusterDelete),
 
     # for device function
     url(r'^power_on/', celery.ClassCeleryWorker.powerOn),

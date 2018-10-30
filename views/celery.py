@@ -44,15 +44,15 @@ from views import calculate
 
 #定义全局变量用于存储页面当前用户信息
 GLOBAL_VAR_USER = "0"
-TimeInterval = IntervalSchedule.objects.all()
-TimeCycle = CrontabSchedule.objects.all()
+BLOBAL_VAR_TIMEINTERVAL = IntervalSchedule.objects.all()
+BLOBAL_VAR_TIMECYCLE = CrontabSchedule.objects.all()
 
 # for celery beat about html
 class ClassCeleryBeat():
     def periodic_task(request):
         global GLOBAL_VAR_USER
-        global TimeInterval
-        global TimeCycle
+        global BLOBAL_VAR_TIMEINTERVAL
+        global BLOBAL_VAR_TIMECYCLE
         user_list = models.Users.objects.filter(
             username=GLOBAL_VAR_USER).first()
         if request.method == 'GET':
@@ -60,8 +60,8 @@ class ClassCeleryBeat():
             return render(request, 'celery/beat/periodic_task.html', {
                 'periodic_list': periodic_list,
                 'user_list': user_list,
-                'TimeInterval':TimeInterval,
-                'TimeCycle':TimeCycle
+                'TimeInterval':BLOBAL_VAR_TIMEINTERVAL,
+                'TimeCycle':BLOBAL_VAR_TIMECYCLE
             })
 
     #def add_periodic(request):
@@ -87,13 +87,16 @@ class ClassCeleryBeat():
 
         #     return redirect('/periodic_task/')
 
-    def add_periodic(idName, HostIP, HostUser, HostPassword,CrontabTimeInterval):
+    def add_periodic(request):
         print("Add Crontab")
-        #定义一个时间间隔
-        schedule, created = IntervalSchedule.objects.get_or_create(
-            every=300,
+        if CrontabTimeInterval:
+             #定义一个时间间隔
+            schedule, created = IntervalSchedule.objects.get_or_create(
+            every=CrontabTimeInterval,
             period=IntervalSchedule.SECONDS,
-        )
+           )
+
+
         print("start to try...except")
         #定义一个时间周期
         # schedule, _ = CrontabSchedule.objects.get_or_create(

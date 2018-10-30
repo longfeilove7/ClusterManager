@@ -1,0 +1,59 @@
+<div id="page-content-wrapper">
+
+        <!--  右边主机内容-->
+    
+        <nav id="toolbar" class="navbar navbar-expand-md  bg-secondary navbar-dark navbar-inverse btn btn-xs">
+            <a class="navbar-brand" href="#">电源管理</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="batchBtn1" onclick="toBatchPowerOn('mytable',this)">批量开机</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="batchBtn2" onclick="toBatchPowerOff('mytable',this)">批量关机</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="batchBtn2" onclick="toBatchPowerCycle('mytable',this)">批量重启</a>
+                    </li>
+                    <!-- Dropdown -->
+                    <!--li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                            启动顺序
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" herf="#">DISK</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" herf="#">PXE</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" herf="#">CDROM</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" herf="#">BIOS</a>
+                            </li>
+                        </ul>
+                    </li-->
+                </ul>
+                <!--form class="form-inline mt-2 mt-md-0">
+                    <input class="form-control mr-sm-2" id="searchbox" type="text" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>                      
+                </form-->
+            </div>
+        </nav>   
+       
+    
+        <table id="mytable" data-toolbar="#toolbar" data-search="true" data-show-refresh="true" data-show-toggle="true"
+            data-show-columns="true" data-detail-view="false" data-detail-formatter="detailFormatter"
+            data-minimum-count-columns="2" data-show-pagination-switch="true" data-pagination="true" data-id-field="id"
+            data-page-list="[15, 25, 50, 100, 'ALL']" data-show-footer="false" data-side-pagination="server" data-url="{% url 'host_info_query' %}"
+            data-response-handler="responseHandler" data-striped="true" data-search-time-out="500" data-sortable="true"
+            data-page-size="15" data-row-style="rowStyle">
+        </table>
+    </div>    
+    </div>

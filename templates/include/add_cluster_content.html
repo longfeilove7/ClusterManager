@@ -1,16 +1,23 @@
 <div id="page-content-wrapper">
 
     <!--  右边主机内容-->
-
-    <div id="toolbar">
-        <div class="form-inline" role="form">
-            &ensp;
-            <button id="btnBatAdd" class="btn btn-xs btn-outline-success my-2 my-sm-0" type="submit" data-toggle="modal"
-                data-target="#addModalCluster">添加集群</button>
-            &ensp;
-            <button id="btnBatDelete" class="btn btn-xs btn-outline-success my-2 my-sm-0" type="submit" data-toggle="#btnBatDelete">批量删除</button>
+    <nav id="toolbar" class="navbar navbar-expand-md  bg-secondary navbar-dark navbar-inverse btn btn-xs">
+        <a class="navbar-brand" href="#">集群登记</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse"
+            aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="batchBtn1" data-toggle="modal" data-target="#addModalCluster">添加集群</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="batchBtn2" onclick="toBatchDeleteCluster('mytable',this)">批量删除</a>
+                </li>
+            </ul>
         </div>
-    </div>
+    </nav>
 
     <table id="mytable" data-toolbar="#toolbar" data-search="true" data-show-refresh="true" data-show-toggle="true"
         data-show-columns="true" data-detail-view="false" data-detail-formatter="detailFormatter"
@@ -72,7 +79,7 @@
                             <input class="form-control" type="text" name="contactQQ" placeholder="QQ">
                         </div>
                         <div class="col-lg-6 form-group">
-                            <input class="form-control" type="text" name="contactQQ" placeholder="微信">
+                            <input class="form-control" type="text" name="contactWeicat" placeholder="微信">
                         </div>
                     </div>
                 </div>
@@ -152,35 +159,6 @@
                     <button type="submit" class="btn btn-primary">提交</button>
                 </div>
 
-            </div>
-        </div>
-    </div>
-</form>
-
-
-<!--  删除集群的模态-->
-<form method="post" role="form" id="delFormCluster">
-    {% csrf_token %}
-    <div id="delModalCluster" class="modal fade">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <!-- 模态框头部 -->
-                <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel">
-                        删除集群
-                    </h4>
-                </div>
-
-                <!-- 模态框主体 -->
-                <div class="modal-body">
-                    确定要删除ID为[<span id="spanId"></span>]的集群吗?
-                </div>
-
-                <!-- 模态框底部 -->
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
-                    <button type="submit" class="btn btn-danger">删除</button>
-                </div>
             </div>
         </div>
     </div>

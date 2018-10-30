@@ -26,7 +26,8 @@ def powerStatus(self,idName,ipmiHost, ipmiUser, ipmiPassword):
     returnRead = powerStatus.read()
     print(returnRead)
     nowTime = timezone.now()
-    if "on" in returnRead:        
+    if "on" in returnRead: 
+        models.Host.objects.filter(id=idName).update(powerStatus=1, )       
         models.checkPowerOn.objects.create(
                 checkTaskID=self.request.id,
                 checkHost_id=idName,
@@ -36,6 +37,7 @@ def powerStatus(self,idName,ipmiHost, ipmiUser, ipmiPassword):
             )        
         return idName,ipmiHost, nowTime, "on"
     elif "off" in returnRead:
+        models.Host.objects.filter(id=idName).update(powerStatus=0, )
         models.checkPowerOff.objects.create(
                 checkTaskID=self.request.id,
                 checkHost_id=idName,
@@ -45,6 +47,7 @@ def powerStatus(self,idName,ipmiHost, ipmiUser, ipmiPassword):
             )
         return idName,ipmiHost, nowTime, "off"
     else:
+        models.Host.objects.filter(id=idName).update(powerStatus=2, )
         models.checkPowerFail.objects.create(
                 checkTaskID=self.request.id,
                 checkHost_id=idName,

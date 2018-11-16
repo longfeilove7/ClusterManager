@@ -39,51 +39,24 @@ from decimal import *
 #import os, sys, commands
 import xmlrpc.server
 import xmlrpc.client
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
-#定义全局变量用于存储页面当前用户信息
-GLOBAL_VAR_USER = "0"
-
 class ClassPortal():
+    
     def index(request):
-        #声明使用全局变量
-        global GLOBAL_VAR_USER
-        #查询数据库用户名
-        user_list = models.Users.objects.filter(
-            username=GLOBAL_VAR_USER).first()
         #返回index页面
-        return render(request, 'index.html', {'user_list': user_list})
+        return render(request, 'index.html')
 
+    @login_required
     def dashboard1(request):
-        #如果是POST请求
-        if request.method == "POST":
-            #声明调用全局变量
-            global GLOBAL_VAR_USER
-            #通过django的request.POST.get()方法获取user值，并赋值给全局变量
-            GLOBAL_VAR_USER = request.POST.get('user')
-            #通过django的request.POST.get()方法获取pwd值，并赋值给局部变量
-            local_var_password = request.POST.get('pwd')
-            #查询数据库用户名和密码是否匹配
-            user_list = models.Users.objects.filter(
-                username=GLOBAL_VAR_USER, password=local_var_password).first()
-            #如果user_list为非空
-            if user_list:
-                #渲染主页，并返回用户名
-                return render(request, 'index.html', {'user_list': user_list})
-            else:
-                #返回登录页面
-                return render(request, 'sign-in.html')
-        else:
-            #如果是GET请求，返回登录页面
-            return render(request, 'sign-in.html')
+        #返回dashboard1页面
+            return render(request, 'dashboard1.html')
 
 
 #仪表板2
-
+    @login_required
     def dashboard2(request):
-        global GLOBAL_VAR_USER
-        user_list = models.Users.objects.filter(
-            username=GLOBAL_VAR_USER).first()
         if request.method == 'GET':            
             inspect_list_count = PeriodicTask.objects.filter(
                 task='HostManager.Tasks.inspectSdr').count()
@@ -102,8 +75,7 @@ class ClassPortal():
             
             
             return render(
-                request, 'dashboard2.html', {
-                    'user_list': user_list,
+                request, 'dashboard2.html', {                    
                     'inspect_list_count': inspect_list_count,
                     'periodicTask_list_count': periodicTask_list_count,
                     'powerStatus_list_count': powerStatus_list_count,

@@ -1,0 +1,54 @@
+/*编辑按钮图标大小*/
+.fa-edit{
+    font-size:20px;
+    text-align: center;
+    color:yellowgreen;
+}
+/*删除按钮图标大小*/
+.fa-trash-alt{
+    font-size:20px;
+    text-align: center;
+    color:yellowgreen;
+}
+.fa-globe{
+    font-size:20px;
+    text-align: center;
+    color:yellowgreen;
+}
+.fa-windows{
+    font-size:20px;
+    text-align: center;
+    color:yellowgreen;
+}
+.fa-linux{
+    font-size:20px;
+    text-align: center;
+    color:yellowgreen;
+}
+.fa-database{
+    font-size:20px;
+    text-align: center;
+    color:yellowgreen;
+}
+.fa-internet-explorer{
+    font-size:20px;
+    text-align: center;
+    color:yellowgreen;
+}
+.fa-compact-disc{
+    font-size:20px;
+    text-align: center;
+    color:yellowgreen;
+}
+/*BIOS按钮图标大小*/
+.fa-bitcoin{
+    font-size:20px;
+    text-align: center;
+    color:yellowgreen;
+}
+/*高级搜索按钮图标大小*/
+.fa-search-plus{
+    font-size:26px;
+    text-align: center;
+    color:yellowgreen;
+}

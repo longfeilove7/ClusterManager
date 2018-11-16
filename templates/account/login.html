@@ -1,0 +1,45 @@
+{% extends "account/base.html" %}
+{% block baseCss %}
+{% include 'include/css.html' %}
+{% endblock %}
+
+{% load i18n %}
+{% load widget_tweaks %}
+{% load crispy_forms_tags %}
+{% load account socialaccount %}
+
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+
+{% block content %}
+<div class="body-main">
+
+    <form class="form-login" method="POST" action="{% url 'account_login' %}">
+        <div class="text-center">
+            <img class="mb-4" src="/static/fontawesome/svgs/brands/earlybirds.svg" alt="" width="72" height="72">
+            <h1 class="h3 mb-3 font-weight-normal">IT集群自动化管理系统</h1>
+            <p>{% blocktrans %}还没有帐号? 请 <a href="{{ signup_url }}">注册</a>.{% endblocktrans %}</p>
+        </div>
+            {% csrf_token %}
+<!--使用django-crisy-form-->
+            {{ form|crispy }}
+
+            {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+            {% endif %}
+        
+
+        <div class="form-group">
+
+            <div class="text-center">
+                <p>
+                    <a class="button secondaryAction" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+                </p>
+                <button type="submit" class="btn btn-success btn-login">{% trans "Sign In" %}</button>
+                <p class="mt-3 mb-3 text-muted">&copy;2017-2018</p>
+            </div>
+        </div>
+    </form>
+
+
+</div>
+{% endblock %}

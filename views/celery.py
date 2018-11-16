@@ -40,62 +40,66 @@ from decimal import *
 import xmlrpc.server
 import xmlrpc.client
 from views import calculate
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
-#定义全局变量用于存储页面当前用户信息
-GLOBAL_VAR_USER = "0"
-BLOBAL_VAR_TIMEINTERVAL = IntervalSchedule.objects.all()
-BLOBAL_VAR_TIMECYCLE = CrontabSchedule.objects.all()
+#定义全局变量
+
+GLOBAL_VAR_TIMEINTERVAL = IntervalSchedule.objects.all()
+GLOBAL_VAR_TIMECYCLE = CrontabSchedule.objects.all()
+
 
 # for celery beat about html
 class ClassCeleryBeat():
+    @login_required
     def periodic_task(request):
-        global GLOBAL_VAR_USER
-        global BLOBAL_VAR_TIMEINTERVAL
-        global BLOBAL_VAR_TIMECYCLE
-        user_list = models.Users.objects.filter(
-            username=GLOBAL_VAR_USER).first()
+        global GLOBAL_VAR_TIMEINTERVAL
+        global GLOBAL_VAR_TIMECYCLE
         if request.method == 'GET':
             periodic_list = PeriodicTask.objects.all()
-            return render(request, 'celery/beat/periodic_task.html', {
-                'periodic_list': periodic_list,
-                'user_list': user_list,
-                'TimeInterval':BLOBAL_VAR_TIMEINTERVAL,
-                'TimeCycle':BLOBAL_VAR_TIMECYCLE
-            })
+            return render(
+                request, 'celery/beat/periodic_task.html', {
+                    'periodic_list': periodic_list,
+                    'TimeInterval': GLOBAL_VAR_TIMEINTERVAL,
+                    'TimeCycle': GLOBAL_VAR_TIMECYCLE
+                })
 
     #def add_periodic(request):
-        # if request.method == 'POST':
-        #     clusterName = request.POST.get('clusterName')
-        #     deviceNumber = request.POST.get('deviceNumber')
-        #     customerName = request.POST.get('customerName')
-        #     contactPerson = request.POST.get('contactPerson')
-        #     contactPhone = request.POST.get('contactPhone')
-        #     contactEmail = request.POST.get('contactEmail')
-        #     contactQQ = request.POST.get('contactQQ')
-        #     contactWeicat = request.POST.get('contactWeicat')
-        #     models.Clusters.objects.create(
-        #         clusterName=clusterName,
-        #         deviceNumber=deviceNumber,
-        #         customerName=customerName,
-        #         contactPerson=contactPerson,
-        #         contactPhone=contactPhone,
-        #         contactEmail=contactEmail,
-        #         contactQQ=contactQQ,
-        #         contactWeicat=contactWeicat,
-        #     )
+    # if request.method == 'POST':
+    #     clusterName = request.POST.get('clusterName')
+    #     deviceNumber = request.POST.get('deviceNumber')
+    #     customerName = request.POST.get('customerName')
+    #     contactPerson = request.POST.get('contactPerson')
+    #     contactPhone = request.POST.get('contactPhone')
+    #     contactEmail = request.POST.get('contactEmail')
+    #     contactQQ = request.POST.get('contactQQ')
+    #     contactWeicat = request.POST.get('contactWeicat')
+    #     models.Clusters.objects.create(
+    #         clusterName=clusterName,
+    #         deviceNumber=deviceNumber,
+    #         customerName=customerName,
+    #         contactPerson=contactPerson,
+    #         contactPhone=contactPhone,
+    #         contactEmail=contactEmail,
+    #         contactQQ=contactQQ,
+    #         contactWeicat=contactWeicat,
+    #     )
 
-        #     return redirect('/periodic_task/')
-
+    #     return redirect('/periodic_task/')
+    @login_required
     def add_periodic(request):
         print("Add Crontab")
-        if CrontabTimeInterval:
-             #定义一个时间间隔
+        if request.timeinterval:
+            #定义一个时间间隔
             schedule, created = IntervalSchedule.objects.get_or_create(
-            every=CrontabTimeInterval,
-            period=IntervalSchedule.SECONDS,
-           )
-
+                every=request.timeinterval,
+                #period=IntervalSchedule.SECONDS,
+            )
+        elif request.timecycle:
+            #获取时间周期
+            schedule, created = IntervalSchedule.objects.get_or_create(
+                #every=request.timeinterval,
+                period=request.timecycle, )
 
         print("start to try...except")
         #定义一个时间周期
@@ -139,17 +143,12 @@ class ClassCeleryBeat():
         #PeriodicTask.enabled = True
         print("----------------------------")
 
-
+    @login_required
     def interval_schedule(request):
-        global GLOBAL_VAR_USER
-        user_list = models.Users.objects.filter(
-            username=GLOBAL_VAR_USER).first()
         if request.method == 'GET':
             interval_list = IntervalSchedule.objects.all()
-            return render(request, 'celery/beat/interval_schedule.html', {
-                'interval_list': interval_list,
-                'user_list': user_list
-            })
+            return render(request, 'celery/beat/interval_schedule.html',
+                          {'interval_list': interval_list})
         if request.method == 'POST':
             every = request.POST.get('every')
             period = request.POST.get('period')
@@ -159,27 +158,19 @@ class ClassCeleryBeat():
             )
             return redirect('/interval_schedule/')
 
+    @login_required
     def solar_schedule(request):
-        global GLOBAL_VAR_USER
-        user_list = models.Users.objects.filter(
-            username=GLOBAL_VAR_USER).first()
         if request.method == 'GET':
             solar_list = SolarSchedule.objects.all()
-            return render(request, 'celery/beat/solar_schedule.html', {
-                'solar_list': solar_list,
-                'user_list': user_list
-            })
+            return render(request, 'celery/beat/solar_schedule.html',
+                          {'solar_list': solar_list})
 
+    @login_required
     def crontab_schedule(request):
-        global GLOBAL_VAR_USER
-        user_list = models.Users.objects.filter(
-            username=GLOBAL_VAR_USER).first()
         if request.method == 'GET':
             crontab_list = CrontabSchedule.objects.all()
-            return render(request, 'celery/beat/crontab_schedule.html', {
-                'crontab_list': crontab_list,
-                'user_list': user_list
-            })
+            return render(request, 'celery/beat/crontab_schedule.html',
+                          {'crontab_list': crontab_list})
         if request.method == 'POST':
             minute = request.POST.get('minute')
             hour = request.POST.get('hour')
@@ -195,6 +186,7 @@ class ClassCeleryBeat():
             )
             return redirect('/crontab_schedule/')
 
+    @login_required
     def crontab_edit(request, nid):
         if request.method == 'POST':
             minute = request.POST.get('minute')
@@ -211,6 +203,7 @@ class ClassCeleryBeat():
             )
         return redirect('/crontab_schedule/')
 
+    @login_required
     def crontab_del(request, nid):
         if request.method == 'POST':
             print("tessssssss" + nid)
@@ -218,6 +211,7 @@ class ClassCeleryBeat():
             return redirect('/crontab_schedule/')
 
     #创建定时任务
+    @login_required
     def create_PowerStatus(idName, ipmiHost, ipmiUser, ipmiPassword):
         print("start to create_PowerStatus")
         #定义一个时间间隔
@@ -268,6 +262,7 @@ class ClassCeleryBeat():
         print("----------------------------")
 
     #启动任务
+    @login_required
     def enable_task(name):
         try:
             periodicTask = PeriodicTask.objects.get(name=name)
@@ -278,6 +273,7 @@ class ClassCeleryBeat():
             return True
 
     #关闭任务
+    @login_required
     def disable_task(name):
         try:
             periodicTask = PeriodicTask.objects.get(name=name)
@@ -288,6 +284,7 @@ class ClassCeleryBeat():
             return True
 
     #删除任务
+    @login_required
     def delete_task(name):
         try:
             periodicTask = PeriodicTask.objects.get(name=name)
@@ -298,15 +295,12 @@ class ClassCeleryBeat():
 
 
 class ClassCeleryResult:
+    @login_required
     def task_result(request):
-        global GLOBAL_VAR_USER
-        user_list = models.Users.objects.filter(
-            username=GLOBAL_VAR_USER).first()
         if request.method == 'GET':
-            return render(request, 'celery/result/task_result.html', {
-                'user_list': user_list,
-            })
+            return render(request, 'celery/result/task_result.html')
 
+    @login_required
     def task_result_query(request):
         if request.method == 'GET':
             limit = request.GET.get('limit')  # how many items per page
@@ -397,17 +391,14 @@ class ClassCeleryWorker():
         self.powerOnTime = powerOnTime
         self.powerOffTime = powerOffTime
 
+    @login_required
     def inspect_info(request):
-        global GLOBAL_VAR_USER
-        user_list = models.Users.objects.filter(
-            username=GLOBAL_VAR_USER).first()
         if request.method == 'GET':
             obj = models.Host.objects.all()
             cluster_list = models.Clusters.objects.all()
             return render(request, 'celery/worker/inspect_info.html', {
                 'obj': obj,
-                'cluster_list': cluster_list,
-                'user_list': user_list
+                'cluster_list': cluster_list
             })
         if request.method == 'POST':
             roomNO = request.POST.get('roomNO')
@@ -453,6 +444,7 @@ class ClassCeleryWorker():
 #@csrf_protect #为当前函数强制设置防跨站请求伪造功能，即便settings中没有设置全局中间件。
 #@csrf_exempt #取消当前函数防跨站请求伪造功能，即便settings中设置了全局中间件。
 
+    @login_required
     def powerOn(request):
         """"""
         context = {}
@@ -487,6 +479,7 @@ class ClassCeleryWorker():
         else:
             return render(request, 'host_info.html', context)
 
+    @login_required
     def powerOff(request):
         """"""
         context = {}
@@ -525,6 +518,7 @@ class ClassCeleryWorker():
         else:
             return render(request, 'host_info.html', context)
 
+    @login_required
     def powerCycle(request):
         """"""
         context = {}
@@ -562,6 +556,7 @@ class ClassCeleryWorker():
 
 #批量开机函数
 
+    @login_required
     def batchPowerOn(request):
         """"""
         #定义一个字典context
@@ -620,6 +615,7 @@ class ClassCeleryWorker():
         else:
             return render(request, 'host_info.html', context)
 
+    @login_required
     def batchPowerOff(request):
         """"""
         context = {}
@@ -678,6 +674,7 @@ class ClassCeleryWorker():
         else:
             return render(request, 'host_info.html', context)
 
+    @login_required
     def batchPowerCycle(request):
         """"""
         #定义一个字典context
@@ -733,6 +730,7 @@ class ClassCeleryWorker():
         else:
             return render(request, 'host_info.html', context)
 
+    @login_required
     def batchInspectSdr(request):
         """"""
         context = {}
@@ -776,6 +774,7 @@ class ClassCeleryWorker():
         else:
             return render(request, 'inspect_sdr.html', context)
 
+    @login_required
     def inspectSdr(request):
         """"""
         context = {}

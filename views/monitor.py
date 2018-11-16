@@ -39,25 +39,23 @@ from decimal import *
 #import os, sys, commands
 import xmlrpc.server
 import xmlrpc.client
+from django.contrib.auth.decorators import login_required
+
 # Create your views here.
 
-#定义全局变量用于存储页面当前用户信息
-GLOBAL_VAR_USER = "0"
 
 class ClassMonitorSystem():
     #定义查询时间，如果在方法中定义会出现第二次调用方法时变量又重新初始化
     strStartTime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     strEndTime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+    @login_required
     def monitorInfo(request):
         """"""
-        global GLOBAL_VAR_USER
-        user_list = models.Users.objects.filter(
-            username=GLOBAL_VAR_USER).first()
         if request.method == 'GET':
-            return render(request, 'monitor_info.html',
-                          {'user_list': user_list})
+            return render(request, 'monitor_info.html')
 
+    @login_required
     def monitorInfoQuery(request):
         #每次request的时候POST提交的数据会丢失，所以采用类变量暂存
         strStartTime = ClassMonitorSystem.strStartTime
@@ -212,15 +210,13 @@ class ClassMonitorSystem():
                 content_type="application/json",
             )
 
+    @login_required
     def monitorDevice(request):
         """"""
-        global GLOBAL_VAR_USER
-        user_list = models.Users.objects.filter(
-            username=GLOBAL_VAR_USER).first()
         if request.method == 'GET':
-            return render(request, 'monitor_device.html',
-                          {'user_list': user_list})
+            return render(request, 'monitor_device.html')
 
+    @login_required
     def monitorSwitchQuery(request):
         """"""
         context = {}
@@ -307,11 +303,9 @@ class ClassMonitorSystem():
 
 # the monitor price function
 
+    @login_required
     def monitorPrice(request):
         """"""
-        global GLOBAL_VAR_USER
-        user_list = models.Users.objects.filter(
-            username=GLOBAL_VAR_USER).first()
         if request.method == 'GET':
             obj = models.Host.objects.all()
             cluster_list = models.Clusters.objects.all()
@@ -320,12 +314,12 @@ class ClassMonitorSystem():
                 request, 'monitor_price.html', {
                     'obj': obj,
                     'cluster_list': cluster_list,
-                    'user_list': user_list,
                     'monitor_list': monitor_list
                 })
 
 # the monitor switch button function
 
+    @login_required
     def monitorSwitch(request):
         """"""
         context = {}
@@ -363,6 +357,7 @@ class ClassMonitorSystem():
 
 # the batch add monitor button function
 
+    @login_required
     def batchMonitorAdd(request):
         """"""
         context = {}
@@ -404,6 +399,7 @@ class ClassMonitorSystem():
 
 # the batch Pause monitor function
 
+    @login_required
     def batchMonitorPause(request):
         """"""
         context = {}
@@ -442,6 +438,7 @@ class ClassMonitorSystem():
 
 # the batch delete monitor function
 
+    @login_required
     def batchMonitorDelete(request):
         """"""
         context = {}

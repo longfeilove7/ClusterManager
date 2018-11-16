@@ -20,7 +20,12 @@ Including another URLconf
 # django-cruds-adminlte
 
 from django.conf.urls import url
+from django.urls import include
 from django.contrib import admin
+from jet.dashboard.dashboard_modules import google_analytics_views
+from django.views.generic.base import TemplateView
+from django.views.generic.base import RedirectView
+#from django
 #from HostManager import views
 from views import cobbler
 from views import views
@@ -34,38 +39,40 @@ from views import host
 from views import cluster
 from views import port
 from views import sign
-from django.conf.urls import include
 #import os, sys, commands
+admin.autodiscover()
 
 urlpatterns = [
-    url(r'^$', sign.ClassSign.signin),
+    url(r'^$', RedirectView.as_view(url='accounts/login'),name='login'),#URL重定向
+    url(r'^accounts/', include('allauth.urls')),
+    url(r'^accounts/profile/$', TemplateView.as_view(template_name='profile.html')),#模板重定向，只返回页面，不返回数据
     url(r'^swagger/', views.schema_view),
     url(r'^jet/', include('jet.urls', 'jet')),  # Django JET URLS
-    url(r'^jet/dashboard/', include(
-        'jet.dashboard.urls', 'jet-dashboard')),  # Django JET dashboard URLS
-    #  url(r'^admin/', include(admin.site.urls)),
-    url(r'^admin/', admin.site.urls),
-    url(r'^sign-up/', sign.ClassSign.signup),
-    url(r'^sign-in/', sign.ClassSign.signin),
+    url(r'^jet/dashboard/', include('jet.dashboard.urls', 'jet-dashboard')),  # Django JET dashboard URLS
+    #url(r'^admin/', include(('admin.site.urls','admin'), namespace='admin')),
+    url(r'^admin/', admin.site.urls),  
+    #url(r'^sign-up/', sign.ClassSign.signup),
+    #url(r'^sign-in/', sign.ClassSign.signin),
 
     #for portal
-    url(r'^index/', portal.ClassPortal.index),
+    url(r'^index/', portal.ClassPortal.index, name='anonymous'),
     url(r'^dashboard1/', portal.ClassPortal.dashboard1),
     url(r'^dashboard2/', portal.ClassPortal.dashboard2),
 
     # for device url
     url(r'^host_info/', host.ClassHost.host_info),
-       url(r'^host_power/', host.ClassHost.hostPower),
-          url(r'^host_boot/', host.ClassHost.hostBoot),
-                 url(r'^host_remote/', host.ClassHost.hostRemote),
+    url(r'^host_power/', host.ClassHost.hostPower),
+    url(r'^host_boot/', host.ClassHost.hostBoot),
+    url(r'^host_remote/', host.ClassHost.hostRemote),
     url(r'^host_info_query/',
         host.ClassHost.hostInfoQuery,
         name='host_info_query'),
     url(r'^host_edit-(?P<nid>\d+)/', host.ClassHost.host_edit),
-    url(r'^add_host/', host.ClassHost.add_host),
+    url(r'^add_host/', host.ClassHost.addHost),
     url(r'^host_delete/', host.ClassHost.HostDelete),
     url(r'^batch_host_delete/', host.ClassHost.batchHostDelete),
     url(r'^power_history-(?P<nid>\d+)/', host.ClassHost.power_history),
+    url(r'^host_detail-(?P<nid>\d+)/', host.ClassHost.hostDetail),
 
     # for cluster
     url(r'^add_cluster/', cluster.ClassCluster.add_cluster,

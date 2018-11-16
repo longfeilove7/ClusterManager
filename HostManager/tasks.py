@@ -285,6 +285,15 @@ def fping(self):
     result_list.append(dead_list)    
     return result_list
 
+#自定义任务
+@shared_task(bind=True, name='HostManager.Tasks.CustomTask')
+def CustomTask(self,password,username,command,ipaddress,timeinterval,timecycle):
+    CustomTask = "sshpass -p" + password + " ssh " +  username + "@" + ipaddress + " " + command
+    CustomTask = os.popen(CustomTask)
+    returnRead = CustomTask.read()
+    print(returnRead)
+    nowTime = timezone.now()
+
 @shared_task
 def test(arg):
     print('world')

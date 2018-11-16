@@ -2,28 +2,43 @@
 
     <!--  右边主机内容-->
     <nav id="toolbar" class="navbar navbar-expand-md  bg-secondary navbar-dark navbar-inverse btn btn-xs">
-            <a class="navbar-brand" href="#">主机登记</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse"
-                aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarCollapse">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" id="batchBtn1" data-toggle="modal" data-target="#addModalHost">添加集群</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" id="batchBtn2" onclick="toBatchDeleteHost('mytable',this)">批量删除</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
+        <a class="navbar-brand" href="#">设备登记</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse"
+            aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="batchBtn1" data-toggle="modal" data-target="#addModalHost">添加设备</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="batchBtn2" onclick="toBatchDeleteHost('mytable',this)">批量删除</a>
+                </li>
+            </ul>
+            <select id="selectSearchBox" class="selectpicker" data-live-search="true" multiple title="快速搜索"
+                data-selected-text-format="count > 3" data-actions-box="true" onchange="selectOnChang(this)">
+                <optgroup label="机房">
+                    <!--Glyphicons are not included in Bootstrap 4. To use FontAwesome, or another icon library, you'll need to set iconBase to something other than 'glyphicon'. -->
+                    <option value='{"roomNO" : "A机房"}'>A机房</option>
+                    <option value='{"roomNO" : "B机房"}'>B机房</option>
+                    <option value='{"roomNO" : "C机房"}'>C机房</option>
+                    <option value='{"roomNO" : "网络机房"}'>网络机房</option>
+                </optgroup>                
+                <optgroup label="集群">
+                    {% for cluster in cluster_list %}
+                    <option value='{"clusterName_id" : "{{ cluster.clusterName }}"}'>{{ cluster.clusterName }}</option>
+                    {% endfor %}
+                </optgroup>
+            </select>
+        </div>
+    </nav>
     <table id="mytable" data-toolbar="#toolbar" data-search="true" data-show-refresh="true" data-show-toggle="true"
         data-show-columns="true" data-detail-view="false" data-detail-formatter="detailFormatter"
         data-minimum-count-columns="2" data-show-pagination-switch="true" data-pagination="true" data-id-field="id"
         data-page-list="[15, 25, 50, 100, 'ALL']" data-show-footer="false" data-side-pagination="server" data-url="{% url 'host_info_query' %}"
         data-response-handler="responseHandler" data-striped="true" data-search-time-out="500" data-sortable="true"
-        data-page-size="15" data-row-style="rowStyle">
+        data-page-size="15" data-row-style="rowStyle" data-advanced-search="true" data-id-table="advancedTable">
     </table>
 </div>
 
@@ -46,82 +61,82 @@
                 <div class="modal-body">
 
                     {% csrf_token %}
-                    <div class="row">
-                        <div class="col-lg-3 form-group">
-                            <select class="form-control" name="roomNO">
-                                <option value="">机房</option>
-                                <option value="A机房">A机房</option>
-                                <option value="B机房">B机房</option>
-                                <option value="C机房">C机房</option>
-                            </select>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-3 form-group">
+                                <select class="form-control" name="roomNO" data-first-option="false" required>
+                                    <option disabled selected style='display:none;'>选择机房</option>
+                                    <option value="A机房">A机房</option>
+                                    <option value="B机房">B机房</option>
+                                    <option value="C机房">C机房</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-3 form-group">
+                                <input class="form-control" type="text" name="cabinetNO" placeholder="机柜编号">
+                            </div>
+                            <div class="col-lg-3 form-group">
+                                <input class="form-control input-sm" type="text" name="bladeBoxNO" placeholder="刀箱编号">
+                            </div>
+                            <div class="col-lg-3 form-group">
+                                <select class="form-control" name="bladeNO">
+                                    <option disabled selected style='display:none;'>选择刀片</option>
+                                    <option value="01号">01号</option>
+                                    <option value="02号">02号</option>
+                                    <option value="03号">03号</option>
+                                    <option value="04号">04号</option>
+                                    <option value="05号">05号</option>
+                                    <option value="06号">06号</option>
+                                    <option value="07号">07号</option>
+                                    <option value="08号">08号</option>
+                                    <option value="09号">09号</option>
+                                    <option value="10号">10号</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="col-lg-3 form-group">
-                            <input class="form-control" type="text" name="cabinetNO" placeholder="机柜编号">
+                        <div class="row">
+                            <div class="col-lg-3 form-group">
+                                <input class="form-control" type="text" name="hostName" placeholder="主机名">
+                            </div>
+                            <div class="col-lg-3 form-group">
+                                <input class="form-control" type="text" name="serviceIP" placeholder="业务IP" required>
+                            </div>
+                            <div class="col-lg-3 form-group">
+                                <input class="form-control" type="text" name="manageIP" placeholder="管理IP" required>
+                            </div>
+                            <div class="col-lg-3 form-group">
+                                <input class="form-control" type="text" name="storageIP" placeholder="存储IP" required>
+                            </div>
+
                         </div>
-                        <div class="col-lg-3 form-group">
-                            <input class="form-control input-sm" type="text" name="bladeBoxNO" placeholder="刀箱编号">
+
+                        <div class="row">
+                            <div class="col-lg-3 form-group">
+                                <input class="form-control" type="text" name="service" placeholder="操作系统">
+                            </div>
+                            <div class="col-lg-3 form-group">
+                                <input class="form-control" type="text" name="hardware" placeholder="硬件型号">
+                            </div>
+                            <div class="col-lg-3 form-group">
+                                <input class="form-control" type="text" name="ipmiUser" placeholder="IPMI用户名" required>
+                            </div>
+                            <div class="col-lg-3 form-group">
+                                <input class="form-control" type="password" name="ipmiPassword" placeholder="IPMI密码"
+                                    required>
+                            </div>
+
                         </div>
-                        <div class="col-lg-3 form-group">
-                            <select class="form-control" name="bladeNO">
-                                <option value="">刀片</option>
-                                <option value="01号">01号</option>
-                                <option value="02号">02号</option>
-                                <option value="03号">03号</option>
-                                <option value="04号">04号</option>
-                                <option value="05号">05号</option>
-                                <option value="06号">06号</option>
-                                <option value="07号">07号</option>
-                                <option value="08号">08号</option>
-                                <option value="09号">09号</option>
-                                <option value="10号">10号</option>
-                            </select>
+
+                        <div class="row">
+                            <div class="col-lg-12 form-group">
+                                <select class="form-control" name="clusterName" required>
+                                    <option disabled selected style='display:none;'>选择集群</option>
+                                    {% for cluster in cluster_list %}
+                                    <option value="{{ cluster.id }}">{{ cluster.clusterName }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-lg-3 form-group">
-                            <input class="form-control" type="text" name="hostName" placeholder="主机名">
-                        </div>
-                        <div class="col-lg-3 form-group">
-                            <input class="form-control" type="text" name="serviceIP" placeholder="业务IP" required>
-                        </div>
-                        <div class="col-lg-3 form-group">
-                            <input class="form-control" type="text" name="manageIP" placeholder="管理IP" required>
-                        </div>
-                        <div class="col-lg-3 form-group">
-                            <input class="form-control" type="text" name="storageIP" placeholder="存储IP" required>
-                        </div>
-
-                    </div>
-
-                    <div class="row">
-                        <div class="col-lg-3 form-group">
-                            <input class="form-control" type="text" name="service" placeholder="操作系统">
-                        </div>
-                        <div class="col-lg-3 form-group">
-                            <input class="form-control" type="text" name="hardware" placeholder="硬件型号">
-                        </div>
-                        <div class="col-lg-3 form-group">
-                            <input class="form-control" type="text" name="ipmiUser" placeholder="IPMI用户名" required>
-                        </div>
-                        <div class="col-lg-3 form-group">
-                            <input class="form-control" type="password" name="ipmiPassword" placeholder="IPMI密码"
-                                required>
-                        </div>
-
-                    </div>
-
-                    <div class="row">
-                        <div class="col-lg-12 form-group">
-                            <select class="form-control" name="clusterName" required>
-                                <option value="">选择集群</option>
-                                {% for cluster in cluster_list %}
-                                <option value="{{ cluster.id }}">{{ cluster.clusterName }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-
-
                 </div>
 
 
@@ -155,78 +170,79 @@
                 <div class="modal-body">
 
                     {% csrf_token %}
-                    <div class="row">
-                        <div class="col-lg-3 form-group">
-                            <select class="form-control" name="roomNO" id="roomNO">
-                                <option value="">机房</option>
-                                <option value="A机房">A机房</option>
-                                <option value="B机房">B机房</option>
-                                <option value="C机房">C机房</option>
-                            </select>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-3 form-group">
+                                <select class="form-control" name="roomNO" id="roomNO">
+                                    <option disabled selected style='display:none;'>选择机房</option>
+                                    <option value="A机房">A机房</option>
+                                    <option value="B机房">B机房</option>
+                                    <option value="C机房">C机房</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-3 form-group">
+                                <input class="form-control" type="text" name="cabinetNO" placeholder="机柜编号">
+                            </div>
+                            <div class="col-lg-3 form-group">
+                                <input class="form-control input-sm" type="text" name="bladeBoxNO" placeholder="刀箱编号">
+                            </div>
+                            <div class="col-lg-3 form-group">
+                                <select class="form-control" name="bladeNO" id="bladeNO">
+                                    <option disabled selected style='display:none;'>选择刀片</option>
+                                    <option value="01号">01号</option>
+                                    <option value="02号">02号</option>
+                                    <option value="03号">03号</option>
+                                    <option value="04号">04号</option>
+                                    <option value="05号">05号</option>
+                                    <option value="06号">06号</option>
+                                    <option value="07号">07号</option>
+                                    <option value="08号">08号</option>
+                                    <option value="09号">09号</option>
+                                    <option value="10号">10号</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="col-lg-3 form-group">
-                            <input class="form-control" type="text" name="cabinetNO" placeholder="机柜编号">
+                        <div class="row">
+                            <div class="col-lg-3 form-group">
+                                <input class="form-control" type="text" name="hostName" placeholder="主机名">
+                            </div>
+                            <div class="col-lg-3 form-group">
+                                <input class="form-control" type="text" name="serviceIP" placeholder="业务IP" required>
+                            </div>
+                            <div class="col-lg-3 form-group">
+                                <input class="form-control" type="text" name="manageIP" placeholder="管理IP" required>
+                            </div>
+                            <div class="col-lg-3 form-group">
+                                <input class="form-control" type="text" name="storageIP" placeholder="存储IP" required>
+                            </div>
                         </div>
-                        <div class="col-lg-3 form-group">
-                            <input class="form-control input-sm" type="text" name="bladeBoxNO" placeholder="刀箱编号">
-                        </div>
-                        <div class="col-lg-3 form-group">
-                            <select class="form-control" name="bladeNO" id="bladeNO">
-                                <option value="">刀片</option>
-                                <option value="01号">01号</option>
-                                <option value="02号">02号</option>
-                                <option value="03号">03号</option>
-                                <option value="04号">04号</option>
-                                <option value="05号">05号</option>
-                                <option value="06号">06号</option>
-                                <option value="07号">07号</option>
-                                <option value="08号">08号</option>
-                                <option value="09号">09号</option>
-                                <option value="10号">10号</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-3 form-group">
-                            <input class="form-control" type="text" name="hostName" placeholder="主机名">
-                        </div>
-                        <div class="col-lg-3 form-group">
-                            <input class="form-control" type="text" name="serviceIP" placeholder="业务IP" required>
-                        </div>
-                        <div class="col-lg-3 form-group">
-                            <input class="form-control" type="text" name="manageIP" placeholder="管理IP" required>
-                        </div>
-                        <div class="col-lg-3 form-group">
-                            <input class="form-control" type="text" name="storageIP" placeholder="存储IP" required>
-                        </div>
-                    </div>
 
-                    <div class="row">
-                        <div class="col-lg-3 form-group">
-                            <input class="form-control" type="text" name="service" placeholder="操作系统">
+                        <div class="row">
+                            <div class="col-lg-3 form-group">
+                                <input class="form-control" type="text" name="service" placeholder="操作系统">
+                            </div>
+                            <div class="col-lg-3 form-group">
+                                <input class="form-control" type="text" name="hardware" placeholder="硬件型号">
+                            </div>
+                            <div class="col-lg-3 form-group">
+                                <input class="form-control" type="text" name="ipmiUser" placeholder="IPMI用户名">
+                            </div>
+                            <div class="col-lg-3 form-group">
+                                <input class="form-control" type="password" name="ipmiPassword" placeholder="IPMI密码">
+                            </div>
                         </div>
-                        <div class="col-lg-3 form-group">
-                            <input class="form-control" type="text" name="hardware" placeholder="硬件型号">
-                        </div>
-                        <div class="col-lg-3 form-group">
-                            <input class="form-control" type="text" name="ipmiUser" placeholder="IPMI用户名">
-                        </div>
-                        <div class="col-lg-3 form-group">
-                            <input class="form-control" type="password" name="ipmiPassword" placeholder="IPMI密码">
+
+                        <div class="row">
+                            <div class="col-lg-12 form-group">
+                                <select class="form-control" name="clusterName" id="clusterName" required>
+                                    <option disabled selected style='display:none;'>选择集群</option>
+                                    {% for cluster in cluster_list %}
+                                    <option value="{{ cluster.id }}">{{ cluster.clusterName }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
                         </div>
                     </div>
-
-                    <div class="row">
-                        <div class="col-lg-12 form-group">
-                            <select class="form-control" name="clusterName" id="clusterName" required>
-                                <option value="">选择集群</option>
-                                {% for cluster in cluster_list %}
-                                <option value="{{ cluster.id }}">{{ cluster.clusterName }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-
                 </div>
 
 
@@ -249,21 +265,21 @@
     <div id="delModalHost" class="modal fade">
         <div class="modal-dialog modal-sm">
             <div class="modal-content"-->
-                <!-- 模态框头部 -->
-                <!--div class="modal-header">
+<!-- 模态框头部 -->
+<!--div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel">
                         删除设备
                     </h4>
                 </div-->
 
-                <!-- 模态框主体 -->
-                <!--div class="modal-body">
+<!-- 模态框主体 -->
+<!--div class="modal-body">
                     确定要删除ID为[
                     <span id="spanId"></span>]的设备吗?
                 </div-->
 
-                <!-- 模态框底部 -->
-                <!--div class="modal-footer">
+<!-- 模态框底部 -->
+<!--div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
                     <button type="submit" class="btn btn-danger">删除</button>
                 </div>

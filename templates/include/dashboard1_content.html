@@ -1,0 +1,20 @@
+        <div class="container py-5 my-5">
+            <div class="row">
+                <div class="col-lg-8 col-12">
+                    <div id="form-node"></div>
+                </div>
+            </div>
+        </div>
+
+
+    <script src="/static/js/vendor/dialog-master.js"></script>
+    <script src="/static/js/custom/form-template-example.js"></script>
+    <script>
+
+        var sendHandler = function(data) {
+            console.log(data);
+            diaologMaster.showSuccess();
+        }
+        diaologMaster.init("form-node", masterTemplate, sendHandler);
+    </script>
+

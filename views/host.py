@@ -39,64 +39,53 @@ from decimal import *
 #import os, sys, commands
 import xmlrpc.server
 import xmlrpc.client
-# Create your views here.
+from django.contrib.auth.decorators import login_required
 
-#定义全局变量用于存储页面当前用户信息
-GLOBAL_VAR_USER = "0"
+# Create your views here.
 
 
 class ClassHost:
+    @login_required
     def host_info(request):
-        global GLOBAL_VAR_USER
-        user_list = models.Users.objects.filter(
-            username=GLOBAL_VAR_USER).first()
         if request.method == 'GET':
             obj = models.Host.objects.all()
             cluster_list = models.Clusters.objects.all()
             return render(request, 'host_info.html', {
                 'obj': obj,
-                'cluster_list': cluster_list,
-                'user_list': user_list
+                'cluster_list': cluster_list
             })
 
+    @login_required
+    def hostDetail(request, nid):
+        if request.method == 'GET':
+            obj = models.Host.objects.all()
+            cluster_list = models.Clusters.objects.all()
+            return render(request, 'host_detail.html', {
+                'obj': obj,
+                'cluster_list': cluster_list
+            })
+
+    @login_required
     def hostPower(request):
-        global GLOBAL_VAR_USER
-        user_list = models.Users.objects.filter(
-            username=GLOBAL_VAR_USER).first()
         if request.method == 'GET':
-            return render(request, 'host_power.html', {
-                'user_list': user_list
-            })
+            return render(request, 'host_power.html')
 
-
+    @login_required
     def hostBoot(request):
-        global GLOBAL_VAR_USER
-        user_list = models.Users.objects.filter(
-            username=GLOBAL_VAR_USER).first()
         if request.method == 'GET':
-            return render(request, 'host_boot.html', {
-                'user_list': user_list
-            })
+            return render(request, 'host_boot.html')
 
+    @login_required
     def hostRemote(request):
-        global GLOBAL_VAR_USER
-        user_list = models.Users.objects.filter(
-            username=GLOBAL_VAR_USER).first()
         if request.method == 'GET':
-            return render(request, 'host_remote.html', {
-                'user_list': user_list
-            })
+            return render(request, 'host_remote.html')
 
-    def add_host(request):
-        global GLOBAL_VAR_USER
-        user_list = models.Users.objects.filter(
-            username=GLOBAL_VAR_USER).first()
+    @login_required
+    def addHost(request):
         if request.method == 'GET':
             cluster_list = models.Clusters.objects.all()
-            return render(request, 'add_host.html', {
-                'cluster_list': cluster_list,
-                'user_list': user_list
-            })
+            return render(request, 'add_host.html',
+                          {'cluster_list': cluster_list})
         if request.method == 'POST':
             roomNO = request.POST.get('roomNO')
             cabinetNO = request.POST.get('cabinetNO')
@@ -138,80 +127,102 @@ class ClassHost:
                   manageIP, storageIP, hostName, service, clusterName)
             return redirect('/add_host/')
 
+    @login_required
     def hostInfoQuery(request):
-        info_list = models.Host.objects.all()
-        limit = request.GET.get('limit')  # how many items per page
-        #print("the limit :"+limit)
-        offset = request.GET.get('offset')  # how many items in total in the DB
-        #print("the offset :",offset)
-        sort_column = request.GET.get('sort')  # which column need to sort
-        if sort_column:
-            print("the sort_column :" + sort_column)
-            order = request.GET.get('order')  # ascending or descending
-            print("the order :" + order)
-        info_list_count = len(info_list)
-        print(info_list_count)
-        if not offset:
-            offset = 0
-        if not limit:
-            limit = 10  # 默认是每页20行的内容，与前端默认行数一致
-        pageinator = Paginator(info_list, limit)  # 利用Django的Painator开始做分页
-        page = int(int(offset) / int(limit) + 1)
-        print("the page:", page)
-        info_list_dict = {
-            "total": info_list_count,
-            "rows": []
-        }  # 必须带有rows和total这2个key，total表示总数，rows表示每行的内容
-        users_timezone = pytz.timezone('Asia/Shanghai')
-        for item in pageinator.page(page):
-            if item.powerOnTime:
+        if request.method == 'POST':
+            print("****************hostInfoQuery POST********************")
+            advanceSearch = request.POST.get('allValue')
+            print("****", advanceSearch)
+            if advanceSearch:
+                advanceSearch = json.loads(advanceSearch)
+                print("the search is :", advanceSearch, type(advanceSearch))
+                info_list = Q()
+                for item in advanceSearch:
+                    print(item, type(item))
+                    item = json.loads(item)
+                    print(item, type(item))
+                    info_list = models.Host.objects.filter(Q(**item))
+                print("the advance search info_list is :", info_list)
+            data = json.dumps("success").encode()
+            return HttpResponse(data)
+        if request.method == 'GET':
+            print("****************hostInfoQuery GET********************")
+            info_list = models.Host.objects.all()
+            limit = request.GET.get('limit')  # how many items per page
+            #print("the limit :"+limit)
+            offset = request.GET.get(
+                'offset')  # how many items in total in the DB
+            #print("the offset :",offset)
+            sort_column = request.GET.get('sort')  # which column need to sort
+            if sort_column:
+                print("the sort_column :" + sort_column)
+                order = request.GET.get('order')  # ascending or descending
+                print("the order :" + order)
+            info_list_count = len(info_list)
+            print(info_list_count)
+            if not offset:
+                offset = 0
+            if not limit:
+                limit = 10  # 默认是每页20行的内容，与前端默认行数一致
+            pageinator = Paginator(info_list, limit)  # 利用Django的Painator开始做分页
+            page = int(int(offset) / int(limit) + 1)
+            print("the page:", page)
+            info_list_dict = {
+                "total": info_list_count,
+                "rows": []
+            }  # 必须带有rows和total这2个key，total表示总数，rows表示每行的内容
+            users_timezone = pytz.timezone('Asia/Shanghai')
+            for item in pageinator.page(page):
+                if item.powerOnTime:
                     print(item.powerOnTime)
                     item.powerOnTime = item.powerOnTime.astimezone(
                         users_timezone).replace(tzinfo=None)
                     print(item.powerOnTime)
-            if item.powerOffTime:
-                item.powerOffTime = item.powerOffTime.astimezone(users_timezone).replace(tzinfo=None)
+                if item.powerOffTime:
+                    item.powerOffTime = item.powerOffTime.astimezone(
+                        users_timezone).replace(tzinfo=None)
 
-            info_list_dict['rows'].append({
-                "id":
-                item.id,
-                "roomNO":
-                item.roomNO,
-                "cabinetNO":
-                item.cabinetNO,
-                "bladeBoxNO":
-                item.bladeBoxNO,
-                "bladeNO":
-                item.bladeNO,
-                "hostName":
-                item.hostName,
-                "serviceIP":
-                item.serviceIP,
-                "manageIP":
-                item.manageIP,
-                "storageIP":
-                item.storageIP,
-                "clusterName":
-                item.clusterName.clusterName,
-                "hardware":
-                item.hardware,
-                "service":
-                item.service,
-                "powerOnTime":
-                str(item.powerOnTime),
-                "powerOffTime":
-                str(item.powerOffTime),
-                "runTime":
-                str(item.runTime),
-                "powerStatus":
-                item.powerStatus
-            })
-        info_list_json = json.dumps(info_list_dict)
-        return HttpResponse(
-            info_list_json,
-            content_type="application/json",
-        )
+                info_list_dict['rows'].append({
+                    "id":
+                    item.id,
+                    "roomNO":
+                    item.roomNO,
+                    "cabinetNO":
+                    item.cabinetNO,
+                    "bladeBoxNO":
+                    item.bladeBoxNO,
+                    "bladeNO":
+                    item.bladeNO,
+                    "hostName":
+                    item.hostName,
+                    "serviceIP":
+                    item.serviceIP,
+                    "manageIP":
+                    item.manageIP,
+                    "storageIP":
+                    item.storageIP,
+                    "clusterName":
+                    item.clusterName.clusterName,
+                    "hardware":
+                    item.hardware,
+                    "service":
+                    item.service,
+                    "powerOnTime":
+                    str(item.powerOnTime),
+                    "powerOffTime":
+                    str(item.powerOffTime),
+                    "runTime":
+                    str(item.runTime),
+                    "powerStatus":
+                    item.powerStatus
+                })
+            info_list_json = json.dumps(info_list_dict)
+            return HttpResponse(
+                info_list_json,
+                content_type="application/json",
+            )
 
+    @login_required
     def HostDelete(request):
         if request.method == 'POST':
             ipmiID = request.POST.get('allValue')
@@ -220,19 +231,15 @@ class ClassHost:
             data = json.dumps(dictDelete).encode()
             return HttpResponse(data)
 
+    @login_required
     def host_edit(request, nid):
-        global GLOBAL_VAR_USER
-        user_list = models.Users.objects.filter(
-            username=GLOBAL_VAR_USER).first()
         if request.method == 'GET':
             host_obj = models.Host.objects.filter(id=nid)
             cluster_list = models.Clusters.objects.all()
-            return render(
-                request, 'host_edit.html', {
-                    'host_obj': host_obj,
-                    'cluster_list': cluster_list,
-                    'user_list': user_list
-                })
+            return render(request, 'host_edit.html', {
+                'host_obj': host_obj,
+                'cluster_list': cluster_list
+            })
         if request.method == 'POST':
             roomNO = request.POST.get('roomNO')
             cabinetNO = request.POST.get('cabinetNO')
@@ -266,6 +273,7 @@ class ClassHost:
                   manageIP, storageIP, hostName, service, clusterName)
             return redirect('/add_host/')
 
+    @login_required
     def batchHostDelete(request):
         """"""
         context = {}
@@ -285,17 +293,13 @@ class ClassHost:
             data = json.dumps(listDelete).encode()
             return HttpResponse(data)
 
+    @login_required
     def power_history(request, nid):
-        global GLOBAL_VAR_USER
-        user_list = models.Users.objects.filter(
-            username=GLOBAL_VAR_USER).first()
         if request.method == 'GET':
             host_obj = models.Host.objects.filter(id=nid)
             history_list = models.HostPowerHistory.objects.filter(host_id=nid)
             cluster_list = models.Clusters.objects.all()
-            return render(
-                request, 'power_history.html', {
-                    'history_list': history_list,
-                    'user_list': user_list,
-                    'cluster_list': cluster_list
-                })
+            return render(request, 'power_history.html', {
+                'history_list': history_list,
+                'cluster_list': cluster_list
+            })

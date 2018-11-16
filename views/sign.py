@@ -1,6 +1,9 @@
 """
 命名规范：module_name, package_name, ClassName, method_name, ExceptionName, function_name, GLOBAL_VAR_NAME, instance_var_name, function_parameter_name, local_var_name.
 """
+from django.contrib import auth         #导入auth模块
+from django.contrib.auth import authenticate,login,logout
+from django.contrib.auth.models import User
 from rest_framework_swagger.views import get_swagger_view
 from django.db.models import Count, Max, Avg, Min, Sum, F, Q, FloatField
 from django.db import models
@@ -57,15 +60,16 @@ class ClassSign():
             #通过django的request.POST.get()方法获取pwd值，并赋值给局部变量
             local_var_password = request.POST.get('pwd')
             #查询数据库用户名和密码是否匹配
-            user_list = models.Users.objects.filter(
-                username=GLOBAL_VAR_USER, password=local_var_password).first()
-            #如果user_list为非空
-            if user_list:
+            user=authenticate(username=GLOBAL_VAR_USER,password=local_var_password)  # 验证用户名和密码，返回用户对象
+            #如果user为非空
+            if user:
+                login(request,user)         # 用户登陆
                 #渲染主页，并返回用户名
-                return render(request, 'index.html', {'user_list': user_list})
-            else:
+                return render(request, 'index.html', {'user': user})
+            else:                
+                return HttpResponse("用户名或密码错误")
                 #返回登录页面
-                return render(request, 'sign-in.html')
+                #return render(request, 'sign-in.html')
         else:
             #如果是GET请求，返回登录页面
             return render(request, 'sign-in.html')
@@ -80,16 +84,19 @@ class ClassSign():
             GLOBAL_VAR_USER = request.POST.get('user')
             #通过django的request.POST.get()获取密码
             local_var_password = request.POST.get('pwd')
-            #根据用户名和密码创建用户信息
-            models.Users.objects.create(
-                username=GLOBAL_VAR_USER, password=local_var_password)
+            #根据用户名和密码创建用户信息            
+            user=User.objects.create_user(username=GLOBAL_VAR_USER,password=local_var_password)
             #返回注册成功页面
             return render(request, 'sucess.html')
         else:
             #返回用户注册页面
             return render(request, 'sign-up.html')
 
-
+    def signout(request):
+            
+            logout(request)     # 注销用户
+            
+            return redirect("/sign-up/")
 
 
 

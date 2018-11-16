@@ -39,12 +39,8 @@ from decimal import *
 #import os, sys, commands
 import xmlrpc.server
 import xmlrpc.client
+from django.contrib.auth.decorators import login_required
 # Create your views here.
-
-
-
-#定义全局变量用于存储页面当前用户信息
-GLOBAL_VAR_USER = "0"
 
 data = [[1, 2, 3], [4, 5, 6]]
 
@@ -53,7 +49,7 @@ class UploadFileForm(forms.Form):
     file = forms.FileField()
 
 
-# Create your views here.
+@login_required
 def upload(request):
     if request.method == "POST":
         form = UploadFileForm(request.POST, request.FILES)
@@ -130,6 +126,7 @@ def import_data(request):
         })
 
 
+@login_required
 def import_sheet(request):
     if request.method == "POST":
         form = UploadFileForm(request.POST, request.FILES)
@@ -146,6 +143,7 @@ def import_sheet(request):
     return render(request, 'upload_form.html', {'form': form})
 
 
+@login_required
 def exchange(request, file_type):
     form = UploadFileForm(request.POST, request.FILES)
     if form.is_valid():
@@ -155,6 +153,7 @@ def exchange(request, file_type):
         return HttpResponseBadRequest()
 
 
+@login_required
 def parse(request, data_struct_type):
     form = UploadFileForm(request.POST, request.FILES)
     if form.is_valid():
@@ -180,6 +179,7 @@ def handson_table(request):
                                            'handsontable.html')
 
 
+@login_required
 def embed_handson_table(request):
     """
     Renders two table in a handsontable
@@ -193,6 +193,7 @@ def embed_handson_table(request):
                   {'handsontable_content': content.read()})
 
 
+@login_required
 def embed_handson_table_from_a_single_table(request):
     """
     Renders one table in a handsontable
@@ -204,6 +205,7 @@ def embed_handson_table_from_a_single_table(request):
                   {'handsontable_content': content.read()})
 
 
+@login_required
 def survey_result(request):
     question = Question.objects.get(slug='ide')
     query_sets = Choice.objects.filter(question=question)
@@ -227,6 +229,7 @@ def survey_result(request):
     return render(request, 'survey_result.html', dict(svg=svg.read()))
 
 
+@login_required
 def import_sheet_using_isave_to_database(request):
     if request.method == "POST":
         form = UploadFileForm(request.POST, request.FILES)
@@ -241,6 +244,7 @@ def import_sheet_using_isave_to_database(request):
     return render(request, 'upload_form.html', {'form': form})
 
 
+@login_required
 def import_data_using_isave_book_as(request):
     if request.method == "POST":
         form = UploadFileForm(request.POST, request.FILES)
@@ -269,6 +273,7 @@ def import_data_using_isave_book_as(request):
         })
 
 
+@login_required
 def import_without_bulk_save(request):
     if request.method == "POST":
         form = UploadFileForm(request.POST, request.FILES)

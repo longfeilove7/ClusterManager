@@ -41,10 +41,8 @@ import xmlrpc.server
 import xmlrpc.client
 from views import cobbler
 from views import mac
+from django.contrib.auth.decorators import login_required
 # Create your views here.
-
-#定义全局变量用于存储页面当前用户信息
-GLOBAL_VAR_USER = "0"
 
 
 class ClassInstallSystem():
@@ -52,32 +50,27 @@ class ClassInstallSystem():
     strStartTime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     strEndTime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+    @login_required
     def installDevice(request):
-        global GLOBAL_VAR_USER
-        user_list = models.Users.objects.filter(
-            username=GLOBAL_VAR_USER).first()
         if request.method == 'GET':
             obj = models.Host.objects.all()
             cluster_list = models.Clusters.objects.all()
             return render(request, 'install_device.html', {
                 'obj': obj,
-                'cluster_list': cluster_list,
-                'user_list': user_list
+                'cluster_list': cluster_list
             })
 
+    @login_required
     def installInfo(request):
-        global GLOBAL_VAR_USER
-        user_list = models.Users.objects.filter(
-            username=GLOBAL_VAR_USER).first()
         if request.method == 'GET':
             obj = models.Host.objects.all()
             cluster_list = models.Clusters.objects.all()
             return render(request, 'install_info.html', {
                 'obj': obj,
-                'cluster_list': cluster_list,
-                'user_list': user_list
+                'cluster_list': cluster_list
             })
 
+    @login_required
     def installInfoQuery(request):
         #每次request的时候POST提交的数据会丢失，所以采用类变量暂存
         strStartTime = ClassInstallSystem.strStartTime
@@ -213,6 +206,7 @@ class ClassInstallSystem():
                 content_type="application/json",
             )
 
+    @login_required
     def installingSwitch(request):
         """"""
         context = {}
@@ -230,10 +224,10 @@ class ClassInstallSystem():
             powerOnTime = db_dict['powerOnTime']
             ipmiMac = tasks.ipmiMac.delay(ipmiHost, ipmiUser,
                                           ipmiPassword).get()[3]
-            print("the ipmiMac is :",ipmiMac)
+            print("the ipmiMac is :", ipmiMac)
             macDifference = 3
-            pxeMAC = mac.ClassFormatMac.formatMac(ipmiMac,macDifference)
-            print(pxeMAC,"is the pxe mac")
+            pxeMAC = mac.ClassFormatMac.formatMac(ipmiMac, macDifference)
+            print(pxeMAC, "is the pxe mac")
             if setValue == '1':
                 print("111111111111")
                 cobbler.ClassCobblerAPI.cobblerModifySystem(pxeMAC)
@@ -280,6 +274,7 @@ class ClassInstallSystem():
         else:
             return render(request, 'install_info.html', context)
 
+    @login_required
     def installSwitchQuery(request):
         """"""
         context = {}
@@ -364,6 +359,7 @@ class ClassInstallSystem():
                 content_type="application/json",
             )
 
+    @login_required
     def installSwitch(request):
         """"""
         context = {}
@@ -384,6 +380,7 @@ class ClassInstallSystem():
 
 # the batch add install button function
 
+    @login_required
     def batchInstallAdd(request):
         """"""
         context = {}
@@ -420,6 +417,7 @@ class ClassInstallSystem():
 
 # the batch delete install function
 
+    @login_required
     def batchInstallDelete(request):
         """"""
         context = {}

@@ -33,6 +33,7 @@ class Host(models.Model):
     manageIP = models.GenericIPAddressField(null=True)
     storageIP = models.GenericIPAddressField(null=True)
     hardware = models.CharField(max_length=64,null=True)
+    manufacturer = models.CharField(max_length=64,null=True) #制造商
     service = models.CharField(max_length=32,null=True)
     powerOnTime = models.DateTimeField(null=True)
     powerCycleTime = models.DateTimeField(null=True)
@@ -43,6 +44,7 @@ class Host(models.Model):
     ipmiPassword = models.CharField(max_length=64,null=True)
     clusterName = models.ForeignKey(Clusters,on_delete=models.CASCADE)
     powerStatus = models.CharField(max_length=1,default="0")
+    pingStatus = models.CharField(max_length=1,default="0")
     monitorStatus = models.CharField(max_length=1,default="0")
     billingStatus = models.CharField(max_length=1,default="0")
     installStatus = models.CharField(max_length=1,default="0")
@@ -51,6 +53,38 @@ class HostMac(models.Model):
     host = models.ForeignKey(Host,on_delete=models.CASCADE) 
     ipmiMac = MACAddressField(null=True, blank=True,unique=True)
     pxeMac = MACAddressField(null=True, blank=True,unique=True)
+
+class HostPartProperty(models.Model): #配件属性
+    host = models.ForeignKey(Host,on_delete=models.CASCADE)
+    cpuNum = models.IntegerField(null=True) #CPU个数
+    cpuHz = models.CharField(max_length=64,null=True) #CPU主频
+    cpuCore = models.IntegerField(null=True) #CPU总内核个数
+    memory = models.IntegerField(null=True) #内存大小
+    diskCapacity = models.IntegerField(null=True) #硬盘总容量
+    diskNum = models.IntegerField(null=True) #硬盘数量
+    diskRaid = models.CharField(max_length=64,null=True) #RAID类型
+    networkAdapter =  models.IntegerField(null=True) #网卡数量
+
+class HostHumanProperty(models.Model): #人物属性
+    host = models.ForeignKey(Host,on_delete=models.CASCADE)
+    vendor = models.CharField(max_length=32,null=True) #供应商
+    remark = models.CharField(max_length=64,null=True) #备注
+    purpose = models.CharField(max_length=64,null=True) #用途
+    department = models.CharField(max_length=64,null=True) #使用部门
+    principal = models.CharField(max_length=64,null=True) #负责人
+
+class HostTimeProperty(models.Model): #时间属性
+    host = models.ForeignKey(Host,on_delete=models.CASCADE)
+    purchasingDate = models.DateTimeField(null=True) #采购时间
+    acceptanceDate = models.DateTimeField(null=True) #验收时间
+    warrentyPeriod = models.IntegerField(null=True) #保质期(月)
+    warrentyStartDate = models.DateTimeField(null=True) #维保开始时间
+    warrentyEndDate = models.DateTimeField(null=True) #维保结束时间
+    useStartDate = models.DateTimeField(null=True) #申请使用时间
+    useEndDate = models.DateTimeField(null=True) #结束使用时间
+    lifeCycle = models.DateTimeField(null=True) #使用状态
+
+
 
 class HostPowerHistory(models.Model):
     host = models.ForeignKey(Host,on_delete=models.CASCADE) 
@@ -110,10 +144,6 @@ class InstallSystemHistory(models.Model):
     installEndTimeHistory = models.DateTimeField(null=True)
     installRunTimeHistory = models.DurationField(null=True)
     installSystemStatus = models.CharField(max_length=1,default="0")
-
-class Users(models.Model):
-    username = models.CharField(max_length=64)
-    password = models.CharField(max_length=64)
 
 class Question(models.Model):
     question_text = models.CharField(max_length=200)

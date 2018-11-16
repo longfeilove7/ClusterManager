@@ -23,6 +23,14 @@
 {% block baseScript %} 
 {% include 'include/js.html' %}
 <script src="/static/js/custom/operatehost.js"></script>
+    <script>
+
+        var sendHandler = function(data) {
+            console.log(data);
+            diaologMaster.showSuccess();
+        }
+        diaologMaster.init("form-node", masterTemplate, sendHandler);
+    </script>
 <script>
         var $table = $('#mytable'),
             $remove = $('#remove'),

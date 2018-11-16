@@ -39,21 +39,17 @@ from decimal import *
 #import os, sys, commands
 import xmlrpc.server
 import xmlrpc.client
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
-#定义全局变量用于存储页面当前用户信息
-GLOBAL_VAR_USER = "0"
 
 class ClassBillingSystem():
     #定义查询时间，如果在方法中定义会出现第二次调用方法时变量又重新初始化
     strStartTime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     strEndTime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
+    @login_required
     def billingInfo(request):
-        """"""
-        global GLOBAL_VAR_USER
-        user_list = models.Users.objects.filter(
-            username=GLOBAL_VAR_USER).first()
+        """"""        
         if request.method == 'GET':
             #filter the billing value equal 1
             host = models.Host.objects.filter(billingStatus=1)
@@ -72,10 +68,9 @@ class ClassBillingSystem():
             print(test)
             return render(request, 'billing_info.html', {
                 'obj': obj,
-                'cluster_list': cluster_list,
-                'user_list': user_list
+                'cluster_list': cluster_list                
             })
-
+    @login_required
     def billingInfoQuery(request):
         #每次request的时候POST提交的数据会丢失，所以采用类变量暂存
         strStartTime = ClassBillingSystem.strStartTime
@@ -212,27 +207,20 @@ class ClassBillingSystem():
                 info_list_json,
                 content_type="application/json",
             )
-
+    @login_required
     def billingDevice(request):
-        """"""
-        global GLOBAL_VAR_USER
-        user_list = models.Users.objects.filter(
-            username=GLOBAL_VAR_USER).first()
+        """"""       
         if request.method == 'GET':
             obj = models.Host.objects.all()
             cluster_list = models.Clusters.objects.all()
             return render(request, 'billing_device.html', {
                 'obj': obj,
-                'cluster_list': cluster_list,
-                'user_list': user_list
+                'cluster_list': cluster_list
             })
 # the billing price function
-
+    @login_required
     def billingPrice(request):
-        """"""
-        global GLOBAL_VAR_USER
-        user_list = models.Users.objects.filter(
-            username=GLOBAL_VAR_USER).first()
+        """"""       
         if request.method == 'GET':
             obj = models.Host.objects.all()
             cluster_list = models.Clusters.objects.all()
@@ -241,10 +229,9 @@ class ClassBillingSystem():
                 request, 'billing_price.html', {
                     'obj': obj,
                     'cluster_list': cluster_list,
-                    'user_list': user_list,
                     'billing_list': billing_list
                 })
-
+    @login_required
     def billingSwitchQuery(request):
         """"""
         context = {}
@@ -330,7 +317,7 @@ class ClassBillingSystem():
             )
 
 # the billing switch button function
-
+    @login_required
     def billingSwitch(request):
         """"""
         context = {}
@@ -350,7 +337,7 @@ class ClassBillingSystem():
             return render(request, 'billing_device.html', context)
 
 # the batch add billing button function
-
+    @login_required
     def batchBillingAdd(request):
         """"""
         context = {}
@@ -386,7 +373,7 @@ class ClassBillingSystem():
 
 
 # the batch delete billing function
-
+    @login_required
     def batchBillingDelete(request):
         """"""
         context = {}

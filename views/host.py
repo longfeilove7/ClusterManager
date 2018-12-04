@@ -18,7 +18,6 @@ from django_celery_results.models import TaskResult
 from celery import shared_task
 from celery import task
 from HostManager import tasks
-from HostManager import periodic_tasks
 from celery import Celery
 from celery.schedules import crontab
 from celery import app
@@ -50,20 +49,28 @@ class ClassHost:
         if request.method == 'GET':
             obj = models.Host.objects.all()
             cluster_list = models.Clusters.objects.all()
+            room_list = models.Rooms.objects.all()
             return render(request, 'host_info.html', {
                 'obj': obj,
-                'cluster_list': cluster_list
+                'cluster_list': cluster_list,
+                'room_list': room_list
             })
 
     @login_required
     def hostDetail(request, nid):
         if request.method == 'GET':
-            obj = models.Host.objects.all()
+            obj = models.Host.objects.filter(id=nid)
+            history_list = models.HostPowerHistory.objects.filter(host_id=nid)
             cluster_list = models.Clusters.objects.all()
+            room_list = models.Rooms.objects.all()
             return render(request, 'host_detail.html', {
                 'obj': obj,
-                'cluster_list': cluster_list
+                'cluster_list': cluster_list,
+                 'history_list': history_list,
+                 'room_list': room_list
             })
+
+
 
     @login_required
     def hostPower(request):
@@ -84,10 +91,12 @@ class ClassHost:
     def addHost(request):
         if request.method == 'GET':
             cluster_list = models.Clusters.objects.all()
+            room_list = models.Rooms.objects.all()
             return render(request, 'add_host.html',
-                          {'cluster_list': cluster_list})
+                          {'cluster_list': cluster_list,
+                          'room_list': room_list})
         if request.method == 'POST':
-            roomNO = request.POST.get('roomNO')
+            roomName = request.POST.get('roomName')
             cabinetNO = request.POST.get('cabinetNO')
             bladeBoxNO = request.POST.get('bladeBoxNO')
             bladeNO = request.POST.get('bladeNO')
@@ -105,7 +114,7 @@ class ClassHost:
             ipmiUser = request.POST.get('ipmiUser')
             ipmiPassword = request.POST.get('ipmiPassword')
             models.Host.objects.create(
-                roomNO=roomNO,
+                roomName_id=roomName,
                 cabinetNO=cabinetNO,
                 bladeBoxNO=bladeBoxNO,
                 bladeNO=bladeNO,
@@ -123,7 +132,7 @@ class ClassHost:
                 ipmiUser=ipmiUser,
                 ipmiPassword=ipmiPassword,
             )
-            print(roomNO, cabinetNO, bladeBoxNO, bladeNO, hardware, serviceIP,
+            print(roomName, cabinetNO, bladeBoxNO, bladeNO, hardware, serviceIP,
                   manageIP, storageIP, hostName, service, clusterName)
             return redirect('/add_host/')
 
@@ -185,8 +194,8 @@ class ClassHost:
                 info_list_dict['rows'].append({
                     "id":
                     item.id,
-                    "roomNO":
-                    item.roomNO,
+                    "roomName":
+                    item.roomName.roomName,
                     "cabinetNO":
                     item.cabinetNO,
                     "bladeBoxNO":
@@ -236,12 +245,14 @@ class ClassHost:
         if request.method == 'GET':
             host_obj = models.Host.objects.filter(id=nid)
             cluster_list = models.Clusters.objects.all()
+            room_list = models.Rooms.objects.all()
             return render(request, 'host_edit.html', {
                 'host_obj': host_obj,
-                'cluster_list': cluster_list
+                'cluster_list': cluster_list,
+                'room_list': room_list
             })
         if request.method == 'POST':
-            roomNO = request.POST.get('roomNO')
+            roomName = request.POST.get('roomName')
             cabinetNO = request.POST.get('cabinetNO')
             bladeBoxNO = request.POST.get('bladeBoxNO')
             bladeNO = request.POST.get('bladeNO')
@@ -255,7 +266,7 @@ class ClassHost:
             ipmiUser = request.POST.get('ipmiUser')
             ipmiPassword = request.POST.get('ipmiPassword')
             models.Host.objects.filter(id=nid).update(
-                roomNO=roomNO,
+                roomName_id=roomName,
                 cabinetNO=cabinetNO,
                 bladeBoxNO=bladeBoxNO,
                 bladeNO=bladeNO,
@@ -269,7 +280,7 @@ class ClassHost:
                 ipmiUser=ipmiUser,
                 ipmiPassword=ipmiPassword,
             )
-            print(roomNO, cabinetNO, bladeBoxNO, bladeNO, hardware, serviceIP,
+            print(roomName, cabinetNO, bladeBoxNO, bladeNO, hardware, serviceIP,
                   manageIP, storageIP, hostName, service, clusterName)
             return redirect('/add_host/')
 
@@ -299,7 +310,9 @@ class ClassHost:
             host_obj = models.Host.objects.filter(id=nid)
             history_list = models.HostPowerHistory.objects.filter(host_id=nid)
             cluster_list = models.Clusters.objects.all()
+            room_list = models.Clusters.objects.all()
             return render(request, 'power_history.html', {
                 'history_list': history_list,
-                'cluster_list': cluster_list
+                'cluster_list': cluster_list,
+                'room_list': room_list
             })

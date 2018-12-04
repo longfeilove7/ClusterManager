@@ -18,7 +18,6 @@ from django_celery_results.models import TaskResult
 from celery import shared_task
 from celery import task
 from HostManager import tasks
-from HostManager import periodic_tasks
 from celery import Celery
 from celery.schedules import crontab
 from celery import app
@@ -294,7 +293,7 @@ class ClassInstallSystem():
             if search:  #    判断是否有搜索字
                 result_list = models.Host.objects.filter(
                     Q(id__icontains=search)
-                    | Q(roomNO__icontains=search)
+                    | Q(roomName__icontains=search)
                     | Q(cabinetNO__icontains=search)
                     | Q(bladeBoxNO__icontains=search)
                     | Q(bladeNO__icontains=search)
@@ -327,8 +326,8 @@ class ClassInstallSystem():
                 results_list_dict['rows'].append({
                     "id":
                     item.id,
-                    "roomNO":
-                    item.roomNO,
+                    "roomName":
+                    item.roomName.roomName,
                     "cabinetNO":
                     item.cabinetNO,
                     "bladeBoxNO":

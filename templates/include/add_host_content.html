@@ -20,10 +20,9 @@
                 data-selected-text-format="count > 3" data-actions-box="true" onchange="selectOnChang(this)">
                 <optgroup label="机房">
                     <!--Glyphicons are not included in Bootstrap 4. To use FontAwesome, or another icon library, you'll need to set iconBase to something other than 'glyphicon'. -->
-                    <option value='{"roomNO" : "A机房"}'>A机房</option>
-                    <option value='{"roomNO" : "B机房"}'>B机房</option>
-                    <option value='{"roomNO" : "C机房"}'>C机房</option>
-                    <option value='{"roomNO" : "网络机房"}'>网络机房</option>
+                    {% for room in room_list %}
+                    <option value='{"roomName_id" : "{{ room.roomName }}"}'>{{ room.roomName }}</option>
+                    {% endfor %}
                 </optgroup>                
                 <optgroup label="集群">
                     {% for cluster in cluster_list %}
@@ -64,11 +63,11 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-lg-3 form-group">
-                                <select class="form-control" name="roomNO" data-first-option="false" required>
+                                <select class="form-control" name="roomName" data-first-option="false" required>
                                     <option disabled selected style='display:none;'>选择机房</option>
-                                    <option value="A机房">A机房</option>
-                                    <option value="B机房">B机房</option>
-                                    <option value="C机房">C机房</option>
+                                    {% for room in room_list %}
+                                    <option value="{{ room.id }}">{{ room.roomName }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                             <div class="col-lg-3 form-group">
@@ -104,7 +103,7 @@
                                 <input class="form-control" type="text" name="manageIP" placeholder="管理IP" required>
                             </div>
                             <div class="col-lg-3 form-group">
-                                <input class="form-control" type="text" name="storageIP" placeholder="存储IP" required>
+                                <input class="form-control" type="text" name="storageIP" placeholder="存储IP">
                             </div>
 
                         </div>
@@ -173,11 +172,11 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-lg-3 form-group">
-                                <select class="form-control" name="roomNO" id="roomNO">
-                                    <option disabled selected style='display:none;'>选择机房</option>
-                                    <option value="A机房">A机房</option>
-                                    <option value="B机房">B机房</option>
-                                    <option value="C机房">C机房</option>
+                                <select class="form-control" name="roomName" id="roomName">
+                                    <option disabled selected style='display:none;'>选择机房</option>                                    
+                                    {% for room in room_list %}
+                                    <option value="{{ room.id }}">{{ room.roomName }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                             <div class="col-lg-3 form-group">
@@ -213,7 +212,7 @@
                                 <input class="form-control" type="text" name="manageIP" placeholder="管理IP" required>
                             </div>
                             <div class="col-lg-3 form-group">
-                                <input class="form-control" type="text" name="storageIP" placeholder="存储IP" required>
+                                <input class="form-control" type="text" name="storageIP" placeholder="存储IP">
                             </div>
                         </div>
 

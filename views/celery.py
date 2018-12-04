@@ -40,115 +40,185 @@ from decimal import *
 import xmlrpc.server
 import xmlrpc.client
 from views import calculate
-from django.contrib.auth.decorators import login_required
 # Create your views here.
 
-#定义全局变量
-
-GLOBAL_VAR_TIMEINTERVAL = IntervalSchedule.objects.all()
-GLOBAL_VAR_TIMECYCLE = CrontabSchedule.objects.all()
-
+#定义全局变量用于存储页面当前用户信息
+BLOBAL_VAR_TIMEINTERVAL = IntervalSchedule.objects.all()
+BLOBAL_VAR_TIMECYCLE = CrontabSchedule.objects.all()
 
 # for celery beat about html
 class ClassCeleryBeat():
-    @login_required
     def periodic_task(request):
-        global GLOBAL_VAR_TIMEINTERVAL
-        global GLOBAL_VAR_TIMECYCLE
+        global BLOBAL_VAR_TIMEINTERVAL
+        global BLOBAL_VAR_TIMECYCLE
         if request.method == 'GET':
             periodic_list = PeriodicTask.objects.all()
-            return render(
-                request, 'celery/beat/periodic_task.html', {
-                    'periodic_list': periodic_list,
-                    'TimeInterval': GLOBAL_VAR_TIMEINTERVAL,
-                    'TimeCycle': GLOBAL_VAR_TIMECYCLE
-                })
+            return render(request, 'celery/beat/periodic_task.html', {
+                'periodic_list': periodic_list,
+                'TimeInterval':BLOBAL_VAR_TIMEINTERVAL,
+                'TimeCycle':BLOBAL_VAR_TIMECYCLE
+            })
 
     #def add_periodic(request):
-    # if request.method == 'POST':
-    #     clusterName = request.POST.get('clusterName')
-    #     deviceNumber = request.POST.get('deviceNumber')
-    #     customerName = request.POST.get('customerName')
-    #     contactPerson = request.POST.get('contactPerson')
-    #     contactPhone = request.POST.get('contactPhone')
-    #     contactEmail = request.POST.get('contactEmail')
-    #     contactQQ = request.POST.get('contactQQ')
-    #     contactWeicat = request.POST.get('contactWeicat')
-    #     models.Clusters.objects.create(
-    #         clusterName=clusterName,
-    #         deviceNumber=deviceNumber,
-    #         customerName=customerName,
-    #         contactPerson=contactPerson,
-    #         contactPhone=contactPhone,
-    #         contactEmail=contactEmail,
-    #         contactQQ=contactQQ,
-    #         contactWeicat=contactWeicat,
-    #     )
+        # if request.method == 'POST':
+        #     clusterName = request.POST.get('clusterName')
+        #     deviceNumber = request.POST.get('deviceNumber')
+        #     customerName = request.POST.get('customerName')
+        #     contactPerson = request.POST.get('contactPerson')
+        #     contactPhone = request.POST.get('contactPhone')
+        #     contactEmail = request.POST.get('contactEmail')
+        #     contactQQ = request.POST.get('contactQQ')
+        #     contactWeicat = request.POST.get('contactWeicat')
+        #     models.Clusters.objects.create(
+        #         clusterName=clusterName,
+        #         deviceNumber=deviceNumber,
+        #         customerName=customerName,
+        #         contactPerson=contactPerson,
+        #         contactPhone=contactPhone,
+        #         contactEmail=contactEmail,
+        #         contactQQ=contactQQ,
+        #         contactWeicat=contactWeicat,
+        #     )
 
-    #     return redirect('/periodic_task/')
-    @login_required
+        #     return redirect('/periodic_task/')
+
     def add_periodic(request):
         print("Add Crontab")
-        if request.timeinterval:
-            #定义一个时间间隔
-            schedule, created = IntervalSchedule.objects.get_or_create(
-                every=request.timeinterval,
-                #period=IntervalSchedule.SECONDS,
-            )
-        elif request.timecycle:
-            #获取时间周期
-            schedule, created = IntervalSchedule.objects.get_or_create(
-                #every=request.timeinterval,
-                period=request.timecycle, )
+        Name=request.POST.get('name')
+        print(Name)
+        password=request.POST.get('passwd')
+        print(password)
+        usernames=request.POST.get('username')
+        print(usernames)
+        commands=request.POST.get('command')
+        print(commands)
+        IPaddress=request.POST.get('serviceIP')
+        print(IPaddress)
+        timeIntervalID=request.POST.get('timeinterval')
+        print(timeIntervalID)
+        timeCycleID=request.POST.get('timecycle')
+        print(timeCycleID)
+        ClassCeleryBeat.add_periodic1(password,usernames,commands,IPaddress,Name,timeIntervalID,timeCycleID)
+        return redirect('/periodic_task/')
 
-        print("start to try...except")
-        #定义一个时间周期
-        # schedule, _ = CrontabSchedule.objects.get_or_create(
-        #     minute='30',
-        #     hour='*',
-        #     day_of_week='*',
-        #     day_of_month='*',
-        #     month_of_year='*',
-        # )
-        #创建一个周期性任务,如果查询到就返回，如果没查询到就向数据库加入新的对象
-        try:
-            print("------------do try----------")
-            task, created = PeriodicTask.objects.get_or_create(
+    def add_periodic1(password,usernames,commands,IPaddress,Name,timeIntervalID,timeCycleID):
+        if timeIntervalID:
+            db_dict = IntervalSchedule.objects.filter(id=timeIntervalID).values()[0]
+            schedule, created = IntervalSchedule.objects.get_or_create(
+               every=db_dict['every'],
+               period=db_dict['period'],
+           )
+            try:
+                print("------------do try----------")
+                task, created = PeriodicTask.objects.get_or_create(
                 #crontab=schedule,
-                name=idName,
-                task='HostManager.Tasks.powerStatus',
+                name=Name,
+                task='HostManager.Tasks.CustomTask',
                 interval=schedule,  # we created this above.
-                args=json.dumps([idName, ipmiHost, User, Password]),
+                args=json.dumps([password,usernames,commands,IPaddress])
                 # kwargs=json.dumps({
                 #     'be_careful': True,
                 # }),
                 #expires=datetime.datetime.utcnow() + datetime.timedelta(seconds=30)
+                )
+                print("------------do try11111----------")
+                if created:
+                    task.enabled = True
+                    task.save()
+                    print("111111111111111111")
+                else:
+                    task.enabled = True
+                    task.save()
+                    print("2222222222222222")
+                return True
+            except:
+                # print("------------do except------------")
+                # periodicTask = PeriodicTask.objects.get(name=Name)
+                # periodicTask.enabled = True  # 设置开启
+                # periodicTask.save()
+                return True
+        elif timeCycleID:
+            db_dict = CrontabSchedule.objects.filter(id=timeCycleID).values()[0]
+            schedule, created = CrontabSchedule.objects.get_or_create(
+                minute=db_dict['minute'],
+                hour=db_dict['hour'],
+                day_of_week=db_dict['day_of_week'],
+                day_of_month=db_dict['day_of_month'],
+                month_of_year=db_dict['month_of_year'],
             )
-            if created:
-                task.enabled = True
-                task.save()
-            else:
-                task.enabled = True
-                task.save()
-            return True
-        except:
-            print("------------do except------------")
-            periodicTask = PeriodicTask.objects.get(name=idName)
-            periodicTask.enabled = True  # 设置开启
-            periodicTask.save()
-            return True
+            try:
+                print("------------do try----------")
+                task, created = PeriodicTask.objects.get_or_create(
+                crontab=schedule,
+                name=Name,
+                task='HostManager.Tasks.CustomTask',
+                #interval=schedule,  # we created this above.
+                args=json.dumps([password,usernames,commands,IPaddress])
+                # kwargs=json.dumps({
+                #     'be_careful': True,
+                # }),
+                #expires=datetime.datetime.utcnow() + datetime.timedelta(seconds=30)
+                )
+                print("------------do try11111----------")
+                if created:
+                    task.enabled = True
+                    task.save()
+                    print("111111111111111111")
+                else:
+                    task.enabled = True
+                    task.save()
+                    print("2222222222222222")
+                return True
+            except:
+                # print("------------do except------------")
+                # periodicTask = PeriodicTask.objects.get(name=Name)
+                # periodicTask.enabled = True  # 设置开启
+                # periodicTask.save()
+                return True
+        #print("start to try...except")
+        #创建一个周期性任务,如果查询到就返回，如果没查询到就向数据库加入新的对象
+        # try:
+        #     print("------------do try----------")
+        #     task, created = PeriodicTask.objects.get_or_create(
+        #     #crontab=schedule,
+        #     name=Name,
+        #     task='HostManager.Tasks.CustomTask',
+        #     interval=schedule,  # we created this above.
+        #     args=json.dumps(['password','usernames','commands','IPaddress'])
+        #     # kwargs=json.dumps({
+        #     #     'be_careful': True,
+        #     # }),
+        #     #expires=datetime.datetime.utcnow() + datetime.timedelta(seconds=30)
+        #     )
+        #     print("------------do try11111----------")
+        #     if created:
+        #         task.enabled = True
+        #         task.save()
+        #         print("111111111111111111")
+        #     else:
+        #         task.enabled = True
+        #         task.save()
+        #         print("2222222222222222")
+        #     return True
+        # except:
+        #     # print("------------do except------------")
+        #     # periodicTask = PeriodicTask.objects.get(name=Name)
+        #     # periodicTask.enabled = True  # 设置开启
+        #     # periodicTask.save()
+        #     return True
 
         #开启任务
 
         #PeriodicTask.enabled = True
         print("----------------------------")
 
-    @login_required
+
     def interval_schedule(request):
         if request.method == 'GET':
             interval_list = IntervalSchedule.objects.all()
-            return render(request, 'celery/beat/interval_schedule.html',
-                          {'interval_list': interval_list})
+            return render(request, 'celery/beat/interval_schedule.html', {
+                'interval_list': interval_list,
+            })
         if request.method == 'POST':
             every = request.POST.get('every')
             period = request.POST.get('period')
@@ -158,19 +228,19 @@ class ClassCeleryBeat():
             )
             return redirect('/interval_schedule/')
 
-    @login_required
     def solar_schedule(request):
         if request.method == 'GET':
             solar_list = SolarSchedule.objects.all()
-            return render(request, 'celery/beat/solar_schedule.html',
-                          {'solar_list': solar_list})
+            return render(request, 'celery/beat/solar_schedule.html', {
+                'solar_list': solar_list,
+            })
 
-    @login_required
     def crontab_schedule(request):
         if request.method == 'GET':
             crontab_list = CrontabSchedule.objects.all()
-            return render(request, 'celery/beat/crontab_schedule.html',
-                          {'crontab_list': crontab_list})
+            return render(request, 'celery/beat/crontab_schedule.html', {
+                'crontab_list': crontab_list,
+            })
         if request.method == 'POST':
             minute = request.POST.get('minute')
             hour = request.POST.get('hour')
@@ -186,7 +256,6 @@ class ClassCeleryBeat():
             )
             return redirect('/crontab_schedule/')
 
-    @login_required
     def crontab_edit(request, nid):
         if request.method == 'POST':
             minute = request.POST.get('minute')
@@ -203,7 +272,6 @@ class ClassCeleryBeat():
             )
         return redirect('/crontab_schedule/')
 
-    @login_required
     def crontab_del(request, nid):
         if request.method == 'POST':
             print("tessssssss" + nid)
@@ -211,8 +279,7 @@ class ClassCeleryBeat():
             return redirect('/crontab_schedule/')
 
     #创建定时任务
-    @login_required
-    def create_PowerStatus(idName, ipmiHost, ipmiUser, ipmiPassword):
+    def create_PowerStatus(idName):
         print("start to create_PowerStatus")
         #定义一个时间间隔
         schedule, created = IntervalSchedule.objects.get_or_create(
@@ -236,7 +303,7 @@ class ClassCeleryBeat():
                 name=idName,
                 task='HostManager.Tasks.powerStatus',
                 interval=schedule,  # we created this above.
-                args=json.dumps([idName, ipmiHost, ipmiUser, ipmiPassword]),
+                args=json.dumps([idName]),
                 # kwargs=json.dumps({
                 #     'be_careful': True,
                 # }),
@@ -262,7 +329,6 @@ class ClassCeleryBeat():
         print("----------------------------")
 
     #启动任务
-    @login_required
     def enable_task(name):
         try:
             periodicTask = PeriodicTask.objects.get(name=name)
@@ -273,7 +339,6 @@ class ClassCeleryBeat():
             return True
 
     #关闭任务
-    @login_required
     def disable_task(name):
         try:
             periodicTask = PeriodicTask.objects.get(name=name)
@@ -284,7 +349,6 @@ class ClassCeleryBeat():
             return True
 
     #删除任务
-    @login_required
     def delete_task(name):
         try:
             periodicTask = PeriodicTask.objects.get(name=name)
@@ -295,12 +359,11 @@ class ClassCeleryBeat():
 
 
 class ClassCeleryResult:
-    @login_required
     def task_result(request):
         if request.method == 'GET':
-            return render(request, 'celery/result/task_result.html')
+            return render(request, 'celery/result/task_result.html', {
+            })
 
-    @login_required
     def task_result_query(request):
         if request.method == 'GET':
             limit = request.GET.get('limit')  # how many items per page
@@ -391,14 +454,13 @@ class ClassCeleryWorker():
         self.powerOnTime = powerOnTime
         self.powerOffTime = powerOffTime
 
-    @login_required
     def inspect_info(request):
         if request.method == 'GET':
             obj = models.Host.objects.all()
             cluster_list = models.Clusters.objects.all()
             return render(request, 'celery/worker/inspect_info.html', {
                 'obj': obj,
-                'cluster_list': cluster_list
+                'cluster_list': cluster_list,
             })
         if request.method == 'POST':
             roomNO = request.POST.get('roomNO')
@@ -444,7 +506,6 @@ class ClassCeleryWorker():
 #@csrf_protect #为当前函数强制设置防跨站请求伪造功能，即便settings中没有设置全局中间件。
 #@csrf_exempt #取消当前函数防跨站请求伪造功能，即便settings中设置了全局中间件。
 
-    @login_required
     def powerOn(request):
         """"""
         context = {}
@@ -479,7 +540,6 @@ class ClassCeleryWorker():
         else:
             return render(request, 'host_info.html', context)
 
-    @login_required
     def powerOff(request):
         """"""
         context = {}
@@ -518,7 +578,6 @@ class ClassCeleryWorker():
         else:
             return render(request, 'host_info.html', context)
 
-    @login_required
     def powerCycle(request):
         """"""
         context = {}
@@ -556,7 +615,6 @@ class ClassCeleryWorker():
 
 #批量开机函数
 
-    @login_required
     def batchPowerOn(request):
         """"""
         #定义一个字典context
@@ -615,7 +673,6 @@ class ClassCeleryWorker():
         else:
             return render(request, 'host_info.html', context)
 
-    @login_required
     def batchPowerOff(request):
         """"""
         context = {}
@@ -674,7 +731,6 @@ class ClassCeleryWorker():
         else:
             return render(request, 'host_info.html', context)
 
-    @login_required
     def batchPowerCycle(request):
         """"""
         #定义一个字典context
@@ -730,7 +786,6 @@ class ClassCeleryWorker():
         else:
             return render(request, 'host_info.html', context)
 
-    @login_required
     def batchInspectSdr(request):
         """"""
         context = {}
@@ -774,7 +829,6 @@ class ClassCeleryWorker():
         else:
             return render(request, 'inspect_sdr.html', context)
 
-    @login_required
     def inspectSdr(request):
         """"""
         context = {}

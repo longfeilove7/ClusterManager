@@ -18,7 +18,6 @@ from django_celery_results.models import TaskResult
 from celery import shared_task
 from celery import task
 from HostManager import tasks
-from HostManager import periodic_tasks
 from celery import Celery
 from celery.schedules import crontab
 from celery import app
@@ -53,9 +52,17 @@ class ClassBillingSystem():
         if request.method == 'GET':
             #filter the billing value equal 1
             host = models.Host.objects.filter(billingStatus=1)
+            # print(host[0].clusterName_id)
+            cid = host[0].clusterName_id
+            bil_pric = models.Billing.objects.filter(clusterName_id=cid)
+            # print(bil_pric[0].billingPrice)
             #obj =  host.annotate(countPowerOnHour=5*Count("checkpoweron")/60).annotate(countPowerOffHour=5*Count("checkpoweroff")/60).annotate(countPowerFailHour=5*Count("checkpowerfail")/60).annotate(countPowerOnMinute=5*Count("checkpoweron")%60).annotate(countPowerOffMinute=5*Count("checkpoweroff")%60).annotate(countPowerFailMinute=5*Count("checkpowerfail")%60)
             #设置每台机器1小时的租用价格
-            price = str(5)
+            price = str(bil_pric[0].billingPrice)
+            # price = str(12.8)
+            # clsname = host.clusterName
+            # billing_list = models.Billing.objects.get(clusterName=clsname)
+            # price = billing_list.
             obj = models.Host.objects.raw(
                 "select id,ifnull(sumRunTimeHour,0) as sumRunTimeHour,ifnull(sumRunTimeMinute,0) as sumRunTimeMinute,ifnull((sumRunTimeHour*"
                 + price + "+sumRunTimeMinute/60*" + price +
@@ -68,7 +75,8 @@ class ClassBillingSystem():
             print(test)
             return render(request, 'billing_info.html', {
                 'obj': obj,
-                'cluster_list': cluster_list                
+                'cluster_list': cluster_list
+                # 'billing_list': billing_list
             })
     @login_required
     def billingInfoQuery(request):
@@ -123,9 +131,18 @@ class ClassBillingSystem():
             hours = str(int(hours)).zfill(2)
             minutes = str(int(minutes)).zfill(2)
             seconds = str(int(seconds)).zfill(2)
-            price = str(5)
+            host = models.Host.objects.filter(billingStatus=1)
+            cid = host[0].clusterName_id
+            bil_pric = models.Billing.objects.filter(clusterName_id=cid)
+            # print(bil_pric[0].billingPrice)
+            #obj =  host.annotate(countPowerOnHour=5*Count("checkpoweron")/60).annotate(countPowerOffHour=5*Count("checkpoweroff")/60).annotate(countPowerFailHour=5*Count("checkpowerfail")/60).annotate(countPowerOnMinute=5*Count("checkpoweron")%60).annotate(countPowerOffMinute=5*Count("checkpoweroff")%60).annotate(countPowerFailMinute=5*Count("checkpowerfail")%60)
+            #设置每台机器1小时的租用价格
+            price = str(bil_pric[0].billingPrice)
+
+            # price = str(12.8)
             #mysql 取书整floor(number),除法取整，x div y ,除法取余数, x mod y,四舍五入，round
-            query = "select id,ifnull(sumRunTimeHour,0) as sumRunTimeHour,ifnull(sumRunTimeMinute,0) as sumRunTimeMinute,ifnull((sumRunTimeHour*" + price + "+sumRunTimeMinute/60*" + price + "),0) as sumMoney  from (select * from (SELECT * FROM hostmanager_host WHERE billingstatus=1) as a left join (SELECT host_id,sum(runtimehistory)/1000000/60 div 3600  as sumRunTimeHour,round((sum(runtimehistory)/1000000/60 mod 60))  as sumRunTimeMinute FROM hostmanager_hostpowerhistory WHERE powerOnTimeHistory>'" + strStartTime + "' AND powerOffTimeHistory<'" + strEndTime + "' group by host_id) as b on a.id=b.host_id) as temp"
+            query = "SELECT id,ifnull(sumRunTime,0) AS sumRunTime,ifnull(sumMoney,0) AS sumMoney FROM (SELECT * FROM (SELECT * FROM hostmanager_host WHERE billingStatus=1) AS a LEFT JOIN (select host_id ,sum(runTimeHistory)/1000000/3600 as sumRunTime,sum(runTimeHistory)/1000000/3600*"+price+" as sumMoney FROM hostmanager_hostpowerhistory WHERE powerOnTimeHistory>'" + strStartTime + "' AND powerOffTimeHistory<'" + strEndTime + "' group by host_id) AS b ON a.id=b.host_id) AS TEMP"
+            #print(query,"1111111111111111111111111111111111111111111111111111")
             limit = request.GET.get('limit')  # how many items per page
             #print("the limit :"+limit)
             offset = request.GET.get(
@@ -136,11 +153,12 @@ class ClassBillingSystem():
                 print("the sort_column :" + sort_column)
                 order = request.GET.get('order')  # ascending or descending
                 print("the order :" + order)
-                query = "select id,ifnull(sumRunTimeHour,0) as sumRunTimeHour,ifnull(sumRunTimeMinute,0) as sumRunTimeMinute,ifnull((sumRunTimeHour*" + price + "+sumRunTimeMinute/60*" + price + "),0) as sumMoney  from (select * from (SELECT * FROM hostmanager_host WHERE billingstatus=1) as a left join (SELECT host_id,sum(runtimehistory)/1000000/60 div 3600  as sumRunTimeHour,round((sum(runtimehistory)/1000000/60 mod 60))  as sumRunTimeMinute FROM hostmanager_hostpowerhistory WHERE powerOnTimeHistory<'" + strStartTime + "' AND powerOffTimeHistory>'" + strEndTime + "' group by host_id) as b on a.id=b.host_id) as temp ORDER BY " + sort_column + " " + order
+                query = "SELECT id,ifnull(sumRunTime,0) AS sumRunTime,ifnull(sumMoney,0) AS sumMoney FROM (SELECT * FROM (SELECT * FROM hostmanager_host WHERE billingStatus=1) AS a LEFT JOIN (select host_id ,sum(runTimeHistory)/1000000/3600 as sumRunTime,sum(runTimeHistory)/1000000/3600*"+price+" as sumMoney FROM hostmanager_hostpowerhistory WHERE powerOnTimeHistory>'" + strStartTime + "' AND powerOffTimeHistory<'" + strEndTime + "' group by host_id) AS b ON a.id=b.host_id) AS TEMP ORDER BY " + sort_column + " " + order
                 info_list = models.Host.objects.raw(query)
             search = request.GET.get('search')
             if search:  #    判断是否有搜索字
-                query = "select id,ifnull(sumRunTimeHour,0) as sumRunTimeHour,ifnull(sumRunTimeMinute,0) as sumRunTimeMinute,ifnull((sumRunTimeHour*" + price + "+sumRunTimeMinute/60*" + price + "),0) as sumMoney  from (select * from (SELECT * FROM hostmanager_host WHERE billingstatus=1 AND id like \'" + "%%" + search + "%%\'" + " OR manageIP like " + "\'%%" + search + "%%\'" + " OR serviceIP like " + "\'%%" + search + "%%\'" + " OR storageIP like " + "\'%%" + search + "%%" + "\' ) as a left join (SELECT host_id,sum(runtimehistory)/1000000/60 div 3600  as sumRunTimeHour,round((sum(runtimehistory)/1000000/60 mod 60))  as sumRunTimeMinute FROM hostmanager_hostpowerhistory WHERE powerOnTimeHistory<'" + strStartTime + "' AND powerOffTimeHistory>'" + strEndTime + "' group by host_id) as b on a.id=b.host_id) as temp"
+                query = "SELECT id,ifnull(sumRunTime,0) AS sumRunTime,ifnull(sumMoney,0) AS sumMoney FROM (SELECT * FROM (SELECT * FROM hostmanager_host WHERE billingStatus=1 AND id like \'" + "%%" + search + "%%\'" + " OR manageIP like " + "\'%%" + search + "%%\'" + " OR serviceIP like " + "\'%%" + search + "%%\'" + " OR storageIP like " + "\'%%" + search + "%%" + "\' ) AS a LEFT JOIN (select host_id ,sum(runTimeHistory)/1000000/3600 as sumRunTime,sum(runTimeHistory)/1000000/3600*"+price+" as sumMoney FROM hostmanager_hostpowerhistory WHERE powerOnTimeHistory>'" + strStartTime + "' AND powerOffTimeHistory<'" + strEndTime + "' group by host_id) AS b ON a.id=b.host_id) AS TEMP"
+
                 print("the search :" + search, type(search))
                 info_list = models.Host.objects.raw(query)
             else:
@@ -188,7 +206,7 @@ class ClassBillingSystem():
                     "clusterName":
                     item.clusterName.clusterName,
                     "price":
-                    "5元/小时",
+                    price,
                     "countQueryTime":
                     '%s:%s:%s' % (hours, minutes, seconds),
                     "powerOnTime":
@@ -196,10 +214,9 @@ class ClassBillingSystem():
                     "powerOffTime":
                     str(item.powerOffTime),
                     "sumRunTime":
-                    '%s:%s:00' % (str(item.sumRunTimeHour).zfill(2),
-                                  str(item.sumRunTimeMinute).zfill(2)),
+                    str((item.sumRunTime).quantize(Decimal('0.00'))),
                     "sumMoney":
-                    str((item.sumMoney).quantize(Decimal('0.0')))
+                    str((item.sumMoney).quantize(Decimal('0.00')))
                 })
             info_list_json = json.dumps(info_list_dict)
             print("the info_list_json:", type(info_list_json))
@@ -219,6 +236,7 @@ class ClassBillingSystem():
             })
 # the billing price function
     @login_required
+#     @property
     def billingPrice(request):
         """"""       
         if request.method == 'GET':
@@ -231,6 +249,43 @@ class ClassBillingSystem():
                     'cluster_list': cluster_list,
                     'billing_list': billing_list
                 })
+    #添加单价
+    # @property
+    def addprice(request):
+        new_cluster = request.POST.get("clusterName")
+        # new_deviceNumber = request.POST.get("deviceNumber")
+        new_billingNumber = request.POST.get("billingNumber")
+        new_billingPrice = request.POST.get("billingPrice")
+        # newcls = Clusters()
+        # newcls.clusterName =
+        models.Billing.objects.create(
+            # clusterName = new_cluster,
+            billingNumber = new_billingNumber,
+            clusterName_id = new_cluster,
+            billingPrice = new_billingPrice
+        )
+        return redirect('/billing_price/')
+    def editbill(request,nid):
+        clusterid = request.POST.get("clusterid")
+        new_cluster = request.POST.get("clusterName")
+        new_billingNumber = request.POST.get("billingNumber")
+        new_billingPrice = request.POST.get("billingPrice")
+        models.Billing.objects.filter(id=nid).update(
+            billingPrice = new_billingPrice,
+            billingNumber = new_billingNumber
+        )
+        return redirect('/billing_price/')
+
+    def delbill(request,nid):
+        # del_clsid = request.POST.get("spanID")
+        print(nid)
+        if nid:
+            del_obj = models.Billing.objects.get(id=nid)
+            del_obj.delete()
+        return redirect('/billing_price/')
+        # pass
+
+
     @login_required
     def billingSwitchQuery(request):
         """"""
@@ -251,7 +306,7 @@ class ClassBillingSystem():
             if search:  #    判断是否有搜索字
                 result_list = models.Host.objects.filter(
                     Q(id__icontains=search)
-                    | Q(roomNO__icontains=search)
+                    | Q(roomName__icontains=search)
                     | Q(cabinetNO__icontains=search)
                     | Q(bladeBoxNO__icontains=search)
                     | Q(bladeNO__icontains=search)
@@ -284,8 +339,8 @@ class ClassBillingSystem():
                 results_list_dict['rows'].append({
                     "id":
                     item.id,
-                    "roomNO":
-                    item.roomNO,
+                    "roomName":
+                    item.roomName.roomName,
                     "cabinetNO":
                     item.cabinetNO,
                     "bladeBoxNO":
@@ -406,3 +461,4 @@ class ClassBillingSystem():
             return ()
         else:
             return render(request, 'billing_device.html', context)
+

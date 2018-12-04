@@ -18,7 +18,6 @@ from django_celery_results.models import TaskResult
 from celery import shared_task
 from celery import task
 from HostManager import tasks
-from HostManager import periodic_tasks
 from celery import Celery
 from celery.schedules import crontab
 from celery import app
@@ -68,10 +67,10 @@ class ClassPortal():
             otherTask_list_count = periodicTask_list_count - powerStatus_list_count - fping_list_count
             taskResult_success_count = TaskResult.objects.filter(status = 'SUCCESS').count()
             taskResult_fail_count = TaskResult.objects.filter(status = 'FAIL').count()
-            A_deviceCount = models.Host.objects.filter(roomNO = 'A机房').count()
-            B_deviceCount = models.Host.objects.filter(roomNO = 'B机房').count()
-            C_deviceCount = models.Host.objects.filter(roomNO = 'C机房').count()
-            N_deviceCount = models.Host.objects.filter(roomNO = 'N机房').count()
+            A_deviceCount = models.Host.objects.filter(roomName_id = '1').count()
+            B_deviceCount = models.Host.objects.filter(roomName_id = '2').count()
+            C_deviceCount = models.Host.objects.filter(roomName_id = '3').count()
+            N_deviceCount = models.Host.objects.filter(roomName_id = '4').count()
             
             
             return render(

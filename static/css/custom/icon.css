@@ -1,3 +1,7 @@
+.fa-earlybirds{
+    font-size:25px;
+    text-align: center;    
+}
 /*编辑按钮图标大小*/
 .fa-edit{
     font-size:20px;
@@ -52,3 +56,19 @@
     text-align: center;
     color:yellowgreen;
 }
+.fa-location-arrow{
+    font-size:20px;
+    text-align: center;
+    color:yellowgreen;
+}
+.fa-angle-double-right{
+    font-size:20px;
+    text-align: center;
+    color:yellowgreen;
+}
+.fa-lightbulb{    
+    font-size:20px;
+    text-align: center;
+    color:yellowgreen;
+}
+

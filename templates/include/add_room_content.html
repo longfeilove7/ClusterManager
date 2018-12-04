@@ -1,0 +1,131 @@
+<div id="page-content-wrapper">
+
+    <!--  右边主机内容-->
+    <nav id="toolbar" class="navbar navbar-expand-md  bg-secondary navbar-dark navbar-inverse btn btn-xs">
+        <a class="navbar-brand" href="#">房间登记</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse"
+            aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="batchBtn1" data-toggle="modal" data-target="#addModalRoom">添加房间</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="batchBtn2" onclick="toBatchDeleteRoom('mytable',this)">批量删除</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <table id="mytable" data-toolbar="#toolbar" data-search="true" data-show-refresh="true" data-show-toggle="true"
+        data-show-columns="true" data-detail-view="false" data-detail-formatter="detailFormatter"
+        data-minimum-count-columns="2" data-show-pagination-switch="true" data-pagination="true" data-id-field="id"
+        data-page-list="[15, 25, 50, 100, 'ALL']" data-show-footer="false" data-side-pagination="server" data-url="{% url 'room_info_query' %}"
+        data-response-handler="responseHandler" data-striped="true" data-search-time-out="500" data-sortable="true"
+        data-page-size="15" data-row-style="rowStyle">
+    </table>
+</div>
+
+<!--  添加房间模态对话框-->
+<form role="form" action="/add_room/" method="post">
+    <!-- 模态框 -->
+    <div class="modal fade" id="addModalRoom">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <!-- 模态框头部 -->
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">
+                        添加房间
+                    </h4>
+                </div>
+
+                <!-- 模态框主体 -->
+
+                <div class="modal-body">
+
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-lg-6 form-group">
+                            <input class="form-control" type="text" name="roomName" placeholder="房间名称" required>
+                        </div>
+                        <div class="col-lg-6 form-group">
+                            <input class="form-control" type="text" name="cabinetNumber" placeholder="机柜数量">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6 form-group">
+                            <input class="form-control input-sm" type="text" name="floor" placeholder="楼层">
+                        </div>
+                        <div class="col-lg-6 form-group">
+                            <input class="form-control" type="text" name="roomArea" placeholder="面积">
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <!-- 模态框底部 -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="submit" class="btn btn-primary">提交</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</form>
+
+<!--  修改房间模态对话框-->
+<form role="form" method="post" id="editFormRoom">
+    <!-- 模态框 -->
+    <div class="modal fade" id="editModalRoom">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <!-- 模态框头部 -->
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">
+                        修改房间
+                    </h4>
+                </div>
+
+                <!-- 模态框主体 -->
+
+                <div class="modal-body">
+
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-lg-6 form-group">
+                            <input class="form-control" type="text" name="roomName" placeholder="房间名称" required>
+                        </div>
+                        <div class="col-lg-6 form-group">
+                            <input class="form-control" type="text" name="cabinetNumber" placeholder="机柜数量">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6 form-group">
+                            <input class="form-control input-sm" type="text" name="floor" placeholder="楼层">
+                        </div>
+                        <div class="col-lg-6 form-group">
+                            <input class="form-control" type="text" name="roomArea" placeholder="面积">
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <!-- 模态框底部 -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="submit" class="btn btn-primary">提交</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</form>

@@ -6,13 +6,6 @@
 function toPowerOn(id, e) {
     var getID = e.parentNode.parentNode.parentNode.children[1].innerHTML;
     var getIP = e.parentNode.parentNode.parentNode.children[8].innerHTML;
-    var getPowerOn = $("#btn1_" + getID);
-    //console.log(getPowerOn)
-    var getPowerOff = $("#btn2_" + getID);
-    //console.log(getPowerOff)
-    var getPowerCycle = $("#btn3_" + getID);
-    //console.log(getPowerCycle)
-
     $.confirm({
         title: '对如下设备开机?',
         content: '设备IP：' + getIP,
@@ -60,14 +53,10 @@ function toPowerOn(id, e) {
                                     }
                                 })
                             }
-                            else {
-                                e.parentNode.parentNode.parentNode.children[13].innerHTML = data[1]
-                                getPowerOn.attr('disabled', true);
-                                getPowerOff.attr('disabled', false);
-                                getPowerCycle.attr('disabled', false);
-                                getPowerOn.children().css('color', 'grey');
-                                getPowerOff.children().css('color', 'red');
-                                getPowerCycle.children().css('color', 'yellowgreen');
+                            else {                                
+                                var opt = { url: "/host_info_query/?format=json", silent: true, query: { type: 1, level: 2 } }
+                                //$table.bootstrapTable('destroy');
+                                $table.bootstrapTable('refresh', opt);
                             }
                         },
                         error: function (request, info, e) {
@@ -99,13 +88,6 @@ function toPowerOn(id, e) {
 function toPowerOff(id, e) {
     var getID = e.parentNode.parentNode.parentNode.children[1].innerHTML;
     var getIP = e.parentNode.parentNode.parentNode.children[8].innerHTML;
-    var getPowerOn = $("#btn1_" + getID);
-    //console.log(getPowerOn)
-    var getPowerOff = $("#btn2_" + getID);
-    //console.log(getPowerOff)
-    var getPowerCycle = $("#btn3_" + getID);
-    //console.log(getPowerCycle)
-
     $.confirm({
         title: '对如下设备关机?',
         content: '设备IP：' + getIP,
@@ -151,14 +133,9 @@ function toPowerOff(id, e) {
                                 })
                             }
                             else {
-                                e.parentNode.parentNode.parentNode.children[14].innerHTML = data[1]
-                                e.parentNode.parentNode.parentNode.children[16].innerHTML = '<a href="/power_history-' + getID + '/">' + data[3] + '</a>'
-                                getPowerOn.attr('disabled', false);
-                                getPowerOff.attr('disabled', true);
-                                getPowerCycle.attr('disabled', true);
-                                getPowerOn.children().css('color', 'green');
-                                getPowerOff.children().css('color', 'grey');
-                                getPowerCycle.children().css('color', 'grey');
+                                var opt = { url: "/host_info_query/?format=json", silent: true, query: { type: 1, level: 2 } }
+                                //$table.bootstrapTable('destroy');
+                                $table.bootstrapTable('refresh', opt);
                             }
                             console.log(data)
                             //alert(data[1])
@@ -271,8 +248,9 @@ function toPowerCycle(id, e) {
  * @return Array
  */
 function toBatchPowerOn(id, e) {
-    var allValue = queryCheckedValue()
-    if (allValue.length == 0) {
+    var rowObject = $("#mytable").bootstrapTable('getSelections');
+    var row = JSON.stringify(rowObject);
+    if (rowObject.length == 0) {
         $.alert({
             title: '提示：',
             content: '请先选择设备！',
@@ -287,13 +265,9 @@ function toBatchPowerOn(id, e) {
         })
     }
     else {
-        //    var getIP = e.parentNode.parentNode.children[8].innerHTML;
-        console.log(allValue)
-        strAllValue = allValue.join("-");
-        console.log(strAllValue)
         $.confirm({
             title: '对如下设备开机?',
-            content: '设备数量：' + allValue.length,
+            content: '设备数量：' + rowObject.length,
             type: 'green',
             buttons: {
                 ok: {
@@ -310,7 +284,7 @@ function toBatchPowerOn(id, e) {
                             type: "POST",
                             cache: false,
                             data: {
-                                'allValue': strAllValue
+                                'allValue': row
                             },
                             beforeSend: function (xhr, settings) {
                                 //此处调用刚刚加入的js方法
@@ -327,12 +301,6 @@ function toBatchPowerOn(id, e) {
                                     newdata = data[i];
                                     console.log(newdata);
                                     getID = newdata[0];
-                                    var getPowerOn = $("#btn1_" + getID);
-                                    //console.log(getPowerOn)
-                                    var getPowerOff = $("#btn2_" + getID);
-                                    //console.log(getPowerOff)
-                                    var getPowerCycle = $("#btn3_" + getID);
-                                    //console.log(getPowerCycle)
                                     var index = 0;
                                     // from the ID to get the rowID
                                     $("table tr").each(function (i) {
@@ -360,13 +328,9 @@ function toBatchPowerOn(id, e) {
                                         })
                                     }
                                     else {
-                                        mytable.rows[rowID].cells[13].innerHTML = newdata[2];
-                                        getPowerOn.attr('disabled', true);
-                                        getPowerOff.attr('disabled', false);
-                                        getPowerCycle.attr('disabled', false);
-                                        getPowerOn.children().css('color', 'grey');
-                                        getPowerOff.children().css('color', 'red');
-                                        getPowerCycle.children().css('color', 'yellowgreen');
+                                        var opt = { url: "/host_info_query/?format=json", silent: true, query: { type: 1, level: 2 } }
+                                        //$table.bootstrapTable('destroy');
+                                        $table.bootstrapTable('refresh', opt);
                                     }
                                 }
                                 //alert(data[1])
@@ -402,8 +366,9 @@ function toBatchPowerOn(id, e) {
  * @return Array
  */
 function toBatchPowerOff(id, e) {
-    var allValue = queryCheckedValue()
-    if (allValue.length == 0) {
+    var rowObject = $("#mytable").bootstrapTable('getSelections');
+    var row = JSON.stringify(rowObject);
+    if (rowObject.length == 0) {
         $.alert({
             title: '提示：',
             content: '请先选择设备！',
@@ -418,13 +383,9 @@ function toBatchPowerOff(id, e) {
         })
     }
     else {
-        //    var getIP = e.parentNode.parentNode.children[8].innerHTML;
-        console.log(allValue)
-        strAllValue = allValue.join("-");
-        console.log(strAllValue)
         $.confirm({
             title: '对如下设备开机?',
-            content: '设备数量：' + allValue.length,
+            content: '设备数量：' + rowObject.length,
             type: 'green',
             buttons: {
                 ok: {
@@ -441,7 +402,7 @@ function toBatchPowerOff(id, e) {
                             type: "POST",
                             cache: false,
                             data: {
-                                'allValue': strAllValue
+                                'allValue': row
                             },
                             beforeSend: function (xhr, settings) {
                                 //此处调用刚刚加入的js方法
@@ -458,12 +419,6 @@ function toBatchPowerOff(id, e) {
                                     newdata = data[i];
                                     console.log(newdata);
                                     getID = newdata[0];
-                                    var getPowerOn = $("#btn1_" + getID);
-                                    //console.log(getPowerOn)
-                                    var getPowerOff = $("#btn2_" + getID);
-                                    //console.log(getPowerOff)
-                                    var getPowerCycle = $("#btn3_" + getID);
-                                    //console.log(getPowerCycle)
                                     var index = 0;
                                     // from the ID to get the rowID
                                     $("table tr").each(function (i) {
@@ -492,14 +447,9 @@ function toBatchPowerOff(id, e) {
 
                                     }
                                     else {
-                                        mytable.rows[rowID].cells[14].innerHTML = newdata[2];
-                                        mytable.rows[rowID].cells[16].innerHTML = '<a href="/power_history-' + getID + '/">' + newdata[4] + '</a>';
-                                        getPowerOn.attr('disabled', false);
-                                        getPowerOff.attr('disabled', true);
-                                        getPowerCycle.attr('disabled', true);
-                                        getPowerOn.children().css('color', 'green');
-                                        getPowerOff.children().css('color', 'grey');
-                                        getPowerCycle.children().css('color', 'grey');
+                                        var opt = { url: "/host_info_query/?format=json", silent: true, query: { type: 1, level: 2 } }
+                                        //$table.bootstrapTable('destroy');
+                                        $table.bootstrapTable('refresh', opt);
                                     }
                                 }
                                 //alert(data[1])
@@ -532,8 +482,9 @@ function toBatchPowerOff(id, e) {
  * @return Array
  */
 function toBatchPowerCycle(id, e) {
-    var allValue = queryCheckedValue()
-    if (allValue.length == 0) {
+    var rowObject = $("#mytable").bootstrapTable('getSelections');
+    var row = JSON.stringify(rowObject);
+    if (rowObject.length == 0) {
         $.alert({
             title: '提示：',
             content: '请先选择设备！',
@@ -548,13 +499,10 @@ function toBatchPowerCycle(id, e) {
         })
     }
     else {
-        //    var getIP = e.parentNode.parentNode.children[8].innerHTML;
-        console.log(allValue)
-        strAllValue = allValue.join("-");
-        console.log(strAllValue)
+
         $.confirm({
             title: '对如下设备重启?',
-            content: '设备数量：' + allValue.length,
+            content: '设备数量：' + rowObject.length,
             type: 'green',
             buttons: {
                 ok: {
@@ -571,7 +519,7 @@ function toBatchPowerCycle(id, e) {
                             type: "POST",
                             cache: false,
                             data: {
-                                'allValue': strAllValue
+                                'allValue': row
                             },
                             beforeSend: function (xhr, settings) {
                                 //此处调用刚刚加入的js方法
@@ -644,8 +592,9 @@ function toBatchPowerCycle(id, e) {
 * @return Array
 */
 function toBatchInspectSdr(id, e) {
-    var allValue = queryCheckedValue()
-    if (allValue.length == 0) {
+    var rowObject = $("#mytable").bootstrapTable('getSelections');
+    var row = JSON.stringify(rowObject);
+    if (rowObject.length == 0) {
         $.alert({
             title: '提示：',
             content: '请先选择设备！',
@@ -660,10 +609,6 @@ function toBatchInspectSdr(id, e) {
         })
     }
     else {
-        //    var getIP = e.parentNode.parentNode.children[8].innerHTML;
-        console.log(allValue)
-        strAllValue = allValue.join("-");
-        console.log(strAllValue)
         $.confirm({
             title: '对如下设备巡检?',
             content: '设备数量：' + allValue.length,
@@ -683,7 +628,7 @@ function toBatchInspectSdr(id, e) {
                             type: "POST",
                             cache: false,
                             data: {
-                                'allValue': strAllValue
+                                'allValue': row
                             },
                             beforeSend: function (xhr, settings) {
                                 //此处调用刚刚加入的js方法

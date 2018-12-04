@@ -37,6 +37,7 @@ from views import calculate
 from views import portal
 from views import host
 from views import cluster
+from views import room
 from views import port
 from views import sign
 #import os, sys, commands
@@ -84,6 +85,16 @@ urlpatterns = [
     url(r'^batch_cluster_delete/', cluster.ClassCluster.batchClusterDelete),
     url(r'^cluster_delete/', cluster.ClassCluster.ClusterDelete),
 
+        # for room
+    url(r'^add_room/', room.ClassRoom.addRoom,
+        name='add_room'),
+    url(r'^room_info_query/',
+        room.ClassRoom.roomInfoQuery,
+        name='room_info_query'),
+    url(r'^room_edit-(?P<nid>\d+)/', room.ClassRoom.roomEdit),
+    url(r'^batch_room_delete/', room.ClassRoom.batchRoomDelete),
+    url(r'^room_delete/', room.ClassRoom.roomDelete),
+
     # for device function
     url(r'^power_on/', celery.ClassCeleryWorker.powerOn),
     url(r'^power_off/', celery.ClassCeleryWorker.powerOff),
@@ -114,6 +125,10 @@ urlpatterns = [
 
     # for device billing
     url(r'^billing_info/', billing.ClassBillingSystem.billingInfo),
+    url(r'^add_price/', billing.ClassBillingSystem.addprice),
+    url(r'^bill_edit-(?P<nid>\d+)/', billing.ClassBillingSystem.editbill),
+    url(r'^bill_del-(?P<nid>\d+)/',billing.ClassBillingSystem.delbill),
+
     url(r'^billing_info_query/',
         billing.ClassBillingSystem.billingInfoQuery,
         name='billing_info_query'),

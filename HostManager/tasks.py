@@ -20,8 +20,12 @@ from django_celery_results.models import TaskResult
 
 #查询电源状态,通过bind=true，给任务增加self参数，获得任务ID:self.request.id
 @shared_task(bind=True, name='HostManager.Tasks.powerStatus')
-def powerStatus(self,idName,ipmiHost, ipmiUser, ipmiPassword):
-    powerStatus = "ipmitool -H " + ipmiHost + " -U " + ipmiUser + " -P " + ipmiPassword + " power status"
+def powerStatus(self,idName):
+    db_dict = models.Host.objects.filter(id=idName).values()[0]
+    ipmiUser = db_dict['ipmiUser']
+    ipmiHost = db_dict['manageIP']
+    ipmiPassword = db_dict['ipmiPassword']
+    powerStatus = "ipmitool -H " + ipmiHost + " -I lanplus -U " + ipmiUser + " -P " + ipmiPassword + " power status"
     powerStatus = os.popen(powerStatus)
     returnRead = powerStatus.read()
     print(returnRead)
@@ -61,7 +65,7 @@ def powerStatus(self,idName,ipmiHost, ipmiUser, ipmiPassword):
 #电源上电开机
 @shared_task(name='HostManager.Tasks.powerOn')
 def powerOn(ipmiHost, ipmiUser, ipmiPassword):
-    powerOn = "ipmitool -H " + ipmiHost + " -U " + ipmiUser + " -P " + ipmiPassword + " power on"
+    powerOn = "ipmitool -H " + ipmiHost + " -I lanplus -U " + ipmiUser + " -P " + ipmiPassword + " power on"
     powerOn = os.popen(powerOn)
     returnRead = powerOn.read()
     print(returnRead)
@@ -75,7 +79,7 @@ def powerOn(ipmiHost, ipmiUser, ipmiPassword):
 #电源下电硬关机
 @shared_task(name='HostManager.Tasks.powerOff')
 def powerOff(ipmiHost, ipmiUser, ipmiPassword):
-    powerOff = "ipmitool -H " + ipmiHost + " -U " + ipmiUser + " -P " + ipmiPassword + " power off"
+    powerOff = "ipmitool -H " + ipmiHost + " -I lanplus -U " + ipmiUser + " -P " + ipmiPassword + " power off"
     powerOff = os.popen(powerOff)
     returnRead = powerOff.read()
     print(returnRead)
@@ -89,7 +93,7 @@ def powerOff(ipmiHost, ipmiUser, ipmiPassword):
 #电源硬重起
 @shared_task(name='HostManager.Tasks.powerCycle')
 def powerCycle(ipmiHost, ipmiUser, ipmiPassword):
-    powerCycle = "ipmitool -H " + ipmiHost + " -U " + ipmiUser + " -P " + ipmiPassword + " power cycle"
+    powerCycle = "ipmitool -H " + ipmiHost + " -I lanplus -U " + ipmiUser + " -P " + ipmiPassword + " power cycle"
     powerCycle = os.popen(powerCycle)
     returnRead = powerCycle.read()
     print(returnRead)
@@ -103,7 +107,7 @@ def powerCycle(ipmiHost, ipmiUser, ipmiPassword):
 #电源软重起
 @shared_task(name='HostManager.Tasks.powerReset')
 def powerReset(ipmiHost, ipmiUser, ipmiPassword):
-    powerReset = "ipmitool -H " + ipmiHost + " -U " + ipmiUser + " -P " + ipmiPassword + " power reset"
+    powerReset = "ipmitool -H " + ipmiHost + " -I lanplus -U " + ipmiUser + " -P " + ipmiPassword + " power reset"
     powerReset = os.popen(powerReset)
     returnRead = powerReset.read()
     print(returnRead)
@@ -117,7 +121,7 @@ def powerReset(ipmiHost, ipmiUser, ipmiPassword):
 #电源软关机
 @shared_task(name='HostManager.Tasks.powerSoft')
 def powerSoft(ipmiHost, ipmiUser, ipmiPassword):
-    powerSoft = "ipmitool -H " + ipmiHost + " -U " + ipmiUser + " -P " + ipmiPassword + " power soft"
+    powerSoft = "ipmitool -H " + ipmiHost + " -I lanplus -U " + ipmiUser + " -P " + ipmiPassword + " power soft"
     powerSoft = os.popen(powerSoft)
     returnRead = powerSoft.read()
     print(returnRead)
@@ -131,7 +135,7 @@ def powerSoft(ipmiHost, ipmiUser, ipmiPassword):
 #设置PXE启动
 @shared_task(name='HostManager.Tasks.bootdevPxe')
 def bootdevPxe(ipmiHost, ipmiUser, ipmiPassword):
-    bootdevPxe = "ipmitool -H " + ipmiHost + " -U " + ipmiUser + " -P " + ipmiPassword + " chassis bootdev pxe"
+    bootdevPxe = "ipmitool -H " + ipmiHost + " -I lanplus -U " + ipmiUser + " -P " + ipmiPassword + " chassis bootdev pxe"
     bootdevPxe = os.popen(bootdevPxe)
     returnRead = bootdevPxe.read()
     print(returnRead)
@@ -145,7 +149,7 @@ def bootdevPxe(ipmiHost, ipmiUser, ipmiPassword):
 #设置磁盘启动
 @shared_task(name='HostManager.Tasks.bootdevDisk')
 def bootdevDisk(ipmiHost, ipmiUser, ipmiPassword):
-    bootdevDisk = "ipmitool -H " + ipmiHost + " -U " + ipmiUser + " -P " + ipmiPassword + " chassis bootdev disk"
+    bootdevDisk = "ipmitool -H " + ipmiHost + " -I lanplus -U " + ipmiUser + " -P " + ipmiPassword + " chassis bootdev disk"
     bootdevDisk = os.popen(bootdevDisk)
     returnRead = bootdevDisk.read()
     print(returnRead)
@@ -159,7 +163,7 @@ def bootdevDisk(ipmiHost, ipmiUser, ipmiPassword):
 #设置安全模式启动
 @shared_task(name='HostManager.Tasks.bootdevSafe')
 def bootdevSafe(ipmiHost, ipmiUser, ipmiPassword):
-    bootdevSafe = "ipmitool -H " + ipmiHost + " -U " + ipmiUser + " -P " + ipmiPassword + " chassis bootdev safe"
+    bootdevSafe = "ipmitool -H " + ipmiHost + " -I lanplus -U " + ipmiUser + " -P " + ipmiPassword + " chassis bootdev safe"
     bootdevSafe = os.popen(bootdevSafe)
     returnRead = bootdevSafe.read()
     print(returnRead)
@@ -173,7 +177,7 @@ def bootdevSafe(ipmiHost, ipmiUser, ipmiPassword):
 #设置诊断启动
 @shared_task(name='HostManager.Tasks.bootdevDiag')
 def bootdevDiag(ipmiHost, ipmiUser, ipmiPassword):
-    bootdevDiag = "ipmitool -H " + ipmiHost + " -U " + ipmiUser + " -P " + ipmiPassword + " chassis bootdev diag"
+    bootdevDiag = "ipmitool -H " + ipmiHost + " -I lanplus -U " + ipmiUser + " -P " + ipmiPassword + " chassis bootdev diag"
     bootdevDiag = os.popen(bootdevDiag)
     returnRead = bootdevDiag.read()
     print(returnRead)
@@ -187,7 +191,7 @@ def bootdevDiag(ipmiHost, ipmiUser, ipmiPassword):
 #设置CD-ROM启动
 @shared_task(name='HostManager.Tasks.bootdevCdrom')
 def bootdevCdrom(ipmiHost, ipmiUser, ipmiPassword):
-    bootdevCdrom = "ipmitool -H " + ipmiHost + " -U " + ipmiUser + " -P " + ipmiPassword + " chassis bootdev cdrom"
+    bootdevCdrom = "ipmitool -H " + ipmiHost + " -I lanplus -U " + ipmiUser + " -P " + ipmiPassword + " chassis bootdev cdrom"
     bootdevCdrom = os.popen(bootdevCdrom)
     returnRead = bootdevCdrom.read()
     print(returnRead)
@@ -201,7 +205,7 @@ def bootdevCdrom(ipmiHost, ipmiUser, ipmiPassword):
 #设置BIOS启动
 @shared_task(name='HostManager.Tasks.bootdevBios')
 def bootdevBios(ipmiHost, ipmiUser, ipmiPassword):
-    bootdevBios = "ipmitool -H " + ipmiHost + " -U " + ipmiUser + " -P " + ipmiPassword + " chassis bootdev bios"
+    bootdevBios = "ipmitool -H " + ipmiHost + " -I lanplus -U " + ipmiUser + " -P " + ipmiPassword + " chassis bootdev bios"
     bootdevBios = os.popen(bootdevBios)
     returnRead = bootdevBios.read()
     print(returnRead)
@@ -214,7 +218,7 @@ def bootdevBios(ipmiHost, ipmiUser, ipmiPassword):
 #获取管理口网卡MAC
 @shared_task(name='HostManager.Tasks.ipmiMac')
 def ipmiMac(ipmiHost, ipmiUser, ipmiPassword):
-    ipmiMac = "ipmitool -H " + ipmiHost + " -U " + ipmiUser + " -P " + ipmiPassword + " lan print |grep \"MAC Address\"|awk '{print$4}'"
+    ipmiMac = "ipmitool -H " + ipmiHost + " -I lanplus -U " + ipmiUser + " -P " + ipmiPassword + " lan print |grep \"MAC Address\"|awk '{print$4}'"
     print(ipmiMac)
     ipmiMac = os.popen(ipmiMac)
     returnRead = ipmiMac.read()
@@ -232,7 +236,7 @@ def inspectSdr(ipmiHost, ipmiUser, ipmiPassword):
     nowTime = datetime.datetime.now()
     print(type(nowTime))
     inspectTime = nowTime.strftime('%Y-%m-%d-%H-%M-%S')
-    inspectSdr = "ipmitool -H " + ipmiHost + " -U " + ipmiUser + " -P " + ipmiPassword + " sdr  >>" + "inspect/" + inspectTime + ".csv"
+    inspectSdr = "ipmitool -H " + ipmiHost + " -I lanplus -U " + ipmiUser + " -P " + ipmiPassword + " sdr  >>" + "inspect/" + inspectTime + ".csv"
     inspectTitle = "echo IPMI:" + ipmiHost + "  Time:" + inspectTime + ">>" + "inspect/" + inspectTime + ".csv"
     os.popen(inspectTitle)
     inspectSdr = os.popen(inspectSdr)
@@ -287,12 +291,13 @@ def fping(self):
 
 #自定义任务
 @shared_task(bind=True, name='HostManager.Tasks.CustomTask')
-def CustomTask(self,password,username,command,ipaddress,timeinterval,timecycle):
+def CustomTask(self,password,username,command,ipaddress):
     CustomTask = "sshpass -p" + password + " ssh " +  username + "@" + ipaddress + " " + command
     CustomTask = os.popen(CustomTask)
     returnRead = CustomTask.read()
     print(returnRead)
     nowTime = timezone.now()
+    return returnRead,nowTime,"CustomTask"
 
 @shared_task
 def test(arg):

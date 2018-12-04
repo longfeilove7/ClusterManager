@@ -1,21 +1,501 @@
-<div class="container">
-        <h2>选项卡下拉菜单</h2>
-        <ul class="nav nav-tabs">
-          <li class="nav-item">
-            <a class="nav-link active" href="#">Active</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Dropdown</a>
-            <div class="dropdown-menu">
-              <a class="dropdown-item" href="#">Link 1</a>
-              <a class="dropdown-item" href="#">Link 2</a>
-              <a class="dropdown-item" href="#">Link 3</a></div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link disabled" href="#">Disabled</a>
-          </li>
-        </ul>
+{% for row in obj %}
+<div id="page-content-wrapper" class="container-fluid  pre-scrollable">
+  <div class="row">
+    <div class="col-md-12">
+      &nbsp;
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card card-default">
+        <div class="card-body ">
+          <div class="d-flex">
+            <img src="/static/img/logos/sugon.png" title="sugon-ipmi" class="device-icon-header pull-left">
+            <h4>ID:</h4>
+            <h4 id="getID">{{ row.id }}</h4>
+            <div>&nbsp;&nbsp;</div>
+            <div class="btn-group" data-toggle="buttons">
+              <button type="button" id="telnet" class="singleButton" data-toggle="tooltip" title="Telnet连接" value="{{ row.serviceIP }}"
+                onclick="window.open('telnet://{{ row.serviceIP }}','_self')">
+                <i class="fas fa-angle-double-right"></i>
+              </button>
+              <button type="button" id="ssh" class="singleButton" data-toggle="tooltip" title="SSH连接" value="{{ row.serviceIP }}"
+                onclick="window.open('ssh://{{ row.manageIP }}','_self')">
+                <i class="fab fa-linux"></i>
+              </button>
+              <button type="button" id="rdp" class="singleButton" data-toggle="tooltip" title="RDP连接" value="{{ row.serviceIP }}"
+                onclick="toRdp('mytable',this)">
+                <i class="fab fa-windows"></i>
+              </button>
+              <button type="button" id="vnc" class="singleButton" data-toggle="tooltip" title="VNC连接" value="{{ row.serviceIP }}"
+                onclick="toVnc('mytable',this)">
+                <i class="fas fa-location-arrow"></i>
+              </button>
+              <button type="button" id="ipmi" class="singleButton" data-toggle="tooltip" title="IPMI连接" value="{{ row.manageIP }}"
+                onclick="window.open('http://{{ row.manageIP }}')">
+                <i class="fas fa-globe"></i>
+              </button>
+            </div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+            <div class="btn-group" data-toggle="buttons">
+              <button type="button" id="disk" class="singleButton" data-toggle="tooltip" title="DISK启动" name="btn"
+                onclick="toBootDisk('mytable',this)">
+                <i class="fas fa-database"></i>
+              </button>
+              <button type="button" id="pxe" class="singleButton" data-toggle="tooltip" title="PXE启动" name="btn"
+                onclick="toBootPxe('mytable',this)">
+                <i class="fab fa-internet-explorer"></i>
+              </button>
+              <button type="button" id="cdrom" class="singleButton" data-toggle="tooltip" title="CD-ROM启动" name="btn"
+                onclick="toBootCdrom('mytable',this)">
+                <i class="fas fa-compact-disc"></i>
+              </button>
+              <button type="button" id="bios" class="singleButton" data-toggle="tooltip" title="BIOS启动" name="btn"
+                onclick="toBootBios('mytable',this)">
+                <i class="fab fa-bitcoin"></i>
+              </button>
+            </div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+            <div class="btn-group" data-toggle="buttons-radio">
+              <button type="button" id="powerOn" class="singleButton" value="{{ row.powerStatus }}" data-toggle="tooltip"
+                title="开机" name="btn" onclick="toPowerOn('mytable',this)">
+                <i class="fa fa-plug"></i>
+              </button>
+              <button type="button" id="powerOff" class="singleButton" value="{{ row.powerStatus }}" data-toggle="tooltip"
+                title="关机" name="btn" onclick="toPowerOff('mytable',this)">
+                <i class="fa fa-power-off"></i>
+              </button>
+              <button type="button" id="powerCycle" class="singleButton" value="{{ row.powerStatus }}" data-toggle="tooltip"
+                title="重启" name="btn" onclick="toPowerCycle('mytable',this)">
+                <i class="fa fa-recycle"></i>
+              </button>
+            </div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+            <button type="button" id="powerStatus" class="singleButton" value="{{ row.powerStatus }}" data-toggle="tooltip"
+              title="电源状态" name="btn">
+              <i class="fas fa-lightbulb"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          &nbsp;
+        </div>
+      </div>
+      <!-- Nav tabs -->
+      <ul id="myTab" class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" data-toggle="tab" href="#home">预览</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="tab" href="#menu1">性能信息</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="tab" href="#menu2">资产信息</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="tab" href="#menu3">运行记录</a>
+        </li>
+      </ul>
+      <!-- Tab panes -->
+      <div class="tab-content">
+        <div id="home" class="container-fluid tab-pane active"><br>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="card card-default card-condensed">
+                      <div class="card-header"><i class="fa fa-id-card fa-lg icon-theme" aria-hidden="true"></i>
+                        <strong>系统信息</strong></div>
+                      <div class="card-body">
+                        <table class="table table-hover table-condensed table-striped">
+                          <tbody>
+                            <tr>
+                              <td>主机名</td>
+                              <td>{{ row.hostName }}</td>
+                            </tr>
+                            <tr>
+                              <td>硬件型号</td>
+                              <td>{{ row.hardware}}</td>
+                            </tr>
+                            <tr>
+                              <td>操作系统</td>
+                              <td>{{ row.service }} </td>
+                            </tr>
+                            <tr>
+                              <td>业务IP</td>
+                              <td>{{ row.serviceIP}} </td>
+                            </tr>
+                            <tr>
+                              <td>管理IP</td>
+                              <td>{{ row.manageIP}} </td>
+                            </tr>
+                            <tr>
+                              <td>存储IP</td>
+                              <td>{{ row.storageIP}} </td>
+                            </tr>
+                            <tr>
+                              <td>集群</td>
+                              <td>{{ row.clusterName.clusterName}} </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="card-footer"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="card card-default card-condensed">
+                      <div class="card-header"><i class="fas fa-map-marked-alt fa-lg icon-theme" aria-hidden="true"></i>
+                        <strong>位置信息</strong></div>
+                      <div class="card-body">
+                        <table class="table table-hover table-condensed table-striped">
+                          <tbody>
+                            <tr>
+                              <td>机房</td>
+                              <td>{{ row.roomNO }} </td>
+                            </tr>
+                            <tr>
+                              <td>机柜</td>
+                              <td>{{ row.cabinetNO}}</td>
+                            </tr>
+                            <tr>
+                              <td>刀箱</td>
+                              <td>{{ row.bladeBoxNO}} </td>
+                            </tr>
+                            <tr>
+                              <td>刀片</td>
+                              <td>{{row.bladeNO}} </td>
+                            </tr>
+                            <tr>
+                              <td>U位</td>
+                              <td>22-25 </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="card-footer"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div id="menu1" class="container-fluid tab-pane fade"><br>
+
+          
+
+        </div>
+        <div id="menu2" class="container-fluid tab-pane fade"><br>
+
+          <div class="row">
+            <div class="col-md-3">
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="card card-default card-condensed">
+                      <div class="card-header"><i class="fa fa-id-card fa-lg icon-theme" aria-hidden="true"></i>
+                        <strong>身份信息</strong></div>
+                      <div class="card-body">
+                        <table class="table table-hover table-condensed table-striped">
+                          <tbody>
+                            <tr>
+                              <td>序列号</td>
+                              <td>123456789</td>
+                            </tr>
+                            <tr>
+                              <td>资产编号</td>
+                              <td>NUNN456</td>
+                            </tr>
+                            <tr>
+                              <td>备注</td>
+                              <td>123</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="card-footer"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="card card-default card-condensed">
+                      <div class="card-header"><i class="fa fa-truck fa-lg icon-theme" aria-hidden="true"></i>
+                        <strong>生产信息</strong></div>
+                      <div class="card-body">
+                        <table class="table table-hover table-condensed table-striped">
+                          <tbody>
+                            <tr>
+                              <td>制造商</td>
+                              <td>曙光</td>
+                            </tr>
+                            <tr>
+                              <td>型号</td>
+                              <td>TC4600</td>
+                            </tr>
+                            <tr>
+                              <td>出厂时间</td>
+                              <td>2014.10.1</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="card-footer"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="card card-default card-condensed">
+                      <div class="card-header"><i class="fas fa-shipping-fast fa-lg icon-theme" aria-hidden="true"></i>
+                        <strong>采购信息</strong></div>
+                      <div class="card-body">
+                        <table class="table table-hover table-condensed table-striped">
+                          <tbody>
+                            <tr>
+                              <td>供应商</td>
+                              <td>东软</td>
+                            </tr>
+                            <tr>
+                              <td>采购时间</td>
+                              <td>2014.11.2</td>
+                            </tr>
+                            <tr>
+                              <td>验收时间</td>
+                              <td>2014.11.30</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="card-footer"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="card card-default card-condensed">
+                      <div class="card-header"><i class="fas fa-ambulance fa-lg icon-theme" aria-hidden="true"></i>
+                        <strong>维保信息</strong></div>
+                        <div class="card-body">
+                      <table class="table table-hover table-condensed table-striped">
+                        <tbody>
+                          <tr>
+                            <td>服务商</td>
+                            <td>东软</td>
+                          </tr>
+                          <!-- <tr>
+                            <td>保修周期</td>
+                            <td>24个月</td>
+                          </tr>
+                          <tr>
+                            <td>保修手段</td>
+                            <td>上门</td>
+                          </tr> -->
+                          <tr>
+                            <td>开始时间</td>
+                            <td>2014.11.2</td>
+                          </tr>
+                          <tr>
+                            <td>结束时间</td>
+                            <td>2014.11.30</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="card-footer"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mt-4">
+            <div class="col-md-3">
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="card card-default card-condensed">
+                      <div class="card-header"><i class="fas fa-microchip fa-lg icon-theme" aria-hidden="true"></i>
+                        <strong>CPU</strong></div>
+                      <div class="card-body">
+                        <table class="table table-hover table-condensed table-striped">
+                          <tbody>
+                            <tr>
+                              <td>主频</td>
+                              <td>2.2G</td>
+                            </tr>
+                            <tr>
+                              <td>物理个数</td>
+                              <td>4</td>
+                            </tr>
+                            <tr>
+                              <td>核心总数</td>
+                              <td>32</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="card-footer"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="card card-default card-condensed">
+                      <div class="card-header"><i class="fas fa-memory fa-lg icon-theme" aria-hidden="true"></i>
+                        <strong>内存</strong></div>
+                      <div class="card-body">
+                        <table class="table table-hover table-condensed table-striped">
+                          <tbody>
+                            <tr>
+                              <td>内存总数</td>
+                              <td>4</td>
+                            </tr>
+                            <tr>
+                              <td>频率</td>
+                              <td>1677</td>
+                            </tr>
+                            <tr>
+                              <td>物理个数</td>
+                              <td>4</td>
+                            </tr>
+                            <tr>
+                              <td>插槽个数</td>
+                              <td>32</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="card-footer"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="card card-default card-condensed">
+                      <div class="card-header"><i class="fas fa-hdd fa-lg icon-theme" aria-hidden="true"></i>
+                        <strong>硬盘</strong></div>
+                      <div class="card-body">
+                        <table class="table table-hover table-condensed table-striped">
+                          <tbody>
+                            <tr>
+                              <td>主频</td>
+                              <td>2.2G</td>
+                            </tr>
+                            <tr>
+                              <td>物理个数</td>
+                              <td>4</td>
+                            </tr>
+                            <tr>
+                              <td>核心总数</td>
+                              <td>32</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="card-footer"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="card card-default card-condensed">
+                      <div class="card-header"><i class="fas fa-network-wired fa-lg icon-theme" aria-hidden="true"></i>
+                        <strong>网卡信息</strong></div>
+                      <div class="card-body">
+                        <table class="table table-hover table-condensed table-striped">
+                          <tbody>
+                            <tr>
+                              <td>网卡个数</td>
+                              <td>4</td>
+                            </tr>
+                            <tr>
+                              <td>速率</td>
+                              <td>1000</td>
+                            </tr>
+                            <tr>
+                              <td>接口类型</td>
+                              <td>RJ45</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="card-footer"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div>            
+
+        </div>
+        {% endfor %}
+        <div id="menu3" class="container-fluid tab-pane fade"><br>
+          <table id="mytable" class="table table-striped table-hover table-sm" data-toggle="table" data-side-pagination="client"
+            data-pagination="true" data-search="false" data-show-refresh="false" data-show-toggle="false"
+            data-show-columns="false" data-detail-view="false" data-detail-formatter="detailFormatter"
+            data-minimum-count-columns="2" data-show-pagination-switch="false" data-pagination="true" data-id-field="ID"
+            data-sort-name="ID" data-sort-order="desc" data-page-list="[10, 25, 50, 100, ALL]" data-page-size=10
+            data-show-footer="false">
+            <thead>
+              <!-- class="thead-light"设备表头颜色-->
+              <tr>
+                <th data-sortable="true">ID</th>
+                <th>主机ID</th>
+                <th class="hidden-xs">开机记录</th>
+                <th class="visible-xs-block">关机记录</th>
+                <th>重起次数</th>
+                <th>运行时长</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in history_list %}
+              <tr>
+                <td>{{ row.id }}</td>
+                <td>{{ row.host_id }}</td>
+                <td class="hidden-xs">{{ row.powerOnTimeHistory}}</td>
+                <td>{{ row.powerOffTimeHistory}}</td>
+                <td>{{ row.powerCycleTimes }}</td>
+                <td>{{ row.runTimeHistory }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>

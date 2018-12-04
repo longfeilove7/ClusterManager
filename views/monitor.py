@@ -18,7 +18,6 @@ from django_celery_results.models import TaskResult
 from celery import shared_task
 from celery import task
 from HostManager import tasks
-from HostManager import periodic_tasks
 from celery import Celery
 from celery.schedules import crontab
 from celery import app
@@ -40,7 +39,7 @@ from decimal import *
 import xmlrpc.server
 import xmlrpc.client
 from django.contrib.auth.decorators import login_required
-
+from views import celery
 # Create your views here.
 
 
@@ -236,7 +235,7 @@ class ClassMonitorSystem():
             if search:  #    判断是否有搜索字
                 result_list = models.Host.objects.filter(
                     Q(id__icontains=search)
-                    | Q(roomNO__icontains=search)
+                    | Q(roomName__icontains=search)
                     | Q(cabinetNO__icontains=search)
                     | Q(bladeBoxNO__icontains=search)
                     | Q(bladeNO__icontains=search)
@@ -269,8 +268,8 @@ class ClassMonitorSystem():
                 results_list_dict['rows'].append({
                     "id":
                     item.id,
-                    "roomNO":
-                    item.roomNO,
+                    "roomName":
+                    item.roomName.roomName,
                     "cabinetNO":
                     item.cabinetNO,
                     "bladeBoxNO":
@@ -342,18 +341,17 @@ class ClassMonitorSystem():
             # print(countRunTimeHistory)
             #if the setValue equal 1 then to set beat
             if setValue == "1":
-                ClassCeleryBeat.create_PowerStatus(idName, ipmiHost, ipmiUser,
-                                                   ipmiPassword)
+                celery.ClassCeleryBeat.create_PowerStatus(idName)
                 #ClassCeleryBeat.enable_task(idName)
             #if the setValue equal 0 then to stop beat
             elif setValue == "0":
-                ClassCeleryBeat.disable_task(idName)
+                celery.ClassCeleryBeat.disable_task(idName)
             return HttpResponse(data)
         elif request.method == 'GET':
             print(request.GET)
             return ()
         else:
-            return render(request, 'monitor_device.html', context)
+            return render(request, 'monitor_device.html')
 
 # the batch add monitor button function
 
@@ -387,8 +385,7 @@ class ClassMonitorSystem():
                 ipmiUser = db_dict['ipmiUser']
                 ipmiHost = db_dict['manageIP']
                 ipmiPassword = db_dict['ipmiPassword']
-                ClassCeleryBeat.create_PowerStatus(idName, ipmiHost, ipmiUser,
-                                                   ipmiPassword)
+                celery.ClassCeleryBeat.create_PowerStatus(idName)
             data = json.dumps(listMonitor).encode()
             return HttpResponse(data)
         elif request.method == 'GET':
@@ -426,7 +423,7 @@ class ClassMonitorSystem():
                 print(db_dict)
                 listMonitor.append(dictMonitor)
                 idName = ipmiID
-                ClassCeleryBeat.disable_task(idName)
+                celery.ClassCeleryBeat.disable_task(idName)
             data = json.dumps(listMonitor).encode()
             return HttpResponse(data)
         elif request.method == 'GET':
@@ -465,7 +462,7 @@ class ClassMonitorSystem():
                 print(db_dict)
                 listMonitor.append(dictMonitor)
                 idName = ipmiID
-                ClassCeleryBeat.delete_task(idName)
+                celery.ClassCeleryBeat.delete_task(idName)
             data = json.dumps(listMonitor).encode()
             return HttpResponse(data)
         elif request.method == 'GET':

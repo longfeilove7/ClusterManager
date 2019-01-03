@@ -110,8 +110,8 @@ WSGI_APPLICATION = 'ClusterManager.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ClusterManager',
-        'HOST': '192.168.18.163',
+        'NAME': 'clustermanager',
+        'HOST': '127.0.0.1',
         'PORT': '3306',
         'USER': 'root',
         'PASSWORD': 'neunn',
@@ -145,19 +145,16 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'zh-Hans'  #default language
 
-TIME_ZONE = 'Asia/Shanghai'
-
+#TIME_ZONE = 'Asia/Shanghai'
+#配置成上海时区导致django-celery-beat不能正常工作，每天凌晨3点到12点不发送任务
+TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_L10N = True
 
 USE_TZ = True
 
-#在Django的配置文件settings.py中，有两个配置参数是跟时间与时区有关的，分别是TIME_ZONE和USE_TZ
-#如果USE_TZ设置为True时，Django会使用系统默认设置的时区，即America/Chicago，此时的TIME_ZONE不管有没有设置都不起作用。
-#如果USE_TZ 设置为False，而TIME_ZONE设置为None，则Django还是会使用默认的America/Chicago时间。
-# 若TIME_ZONE设置为其它时区的话，则还要分情况，如果是Windows系统，则TIME_ZONE设置是没用的，Django会使用本机的时间。
-# 如果为其他系统，则使用该时区的时间，入设置USE_TZ = False, TIME_ZONE = 'Asia/Shanghai', 则使用上海的UTC时间。
+
 
 LANGUAGES = (
     ('en', ('English')),
@@ -255,7 +252,9 @@ JET_SIDE_MENU_ITEMS = [
         ]
     },
 ]
-
+CELERY_ENABLE_UTC = True
+#CELERY_TIMEZONE = 'UTC'
+CELERY_TIMEZONE = TIME_ZONE
 CELERY_BROKER_URL = 'pyamqp://guest@localhost//'
 #CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672'
 CELERY_RESULT_BACKEND = 'django-db'
@@ -319,7 +318,7 @@ DEFAULT_FROM_EMAIL = '277784408@qq.com'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 #SESSION AGE
-SESSION_COOKIE_AGE = 60*30 #30分钟
+SESSION_COOKIE_AGE = 60*60 #60分钟
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False #浏览器关闭是否过期
 SESSION_SAVE_EVERY_REQUEST = True
 

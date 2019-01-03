@@ -46,6 +46,22 @@ import xmlrpc.client
 #定义全局变量用于存储页面当前用户信息
 GLOBAL_VAR_USER = "0"
 
+
+
+#获取IP
+def UserIP(request):
+    '''
+    获取用户IP
+    '''
+
+    ip = ''
+    if 'HTTP_X_FORWARDED_FOR' in request.META:
+        ip = request.META['HTTP_X_FORWARDED_FOR']
+    else:
+        ip = request.META['REMOTE_ADDR']
+    return ip
+
+
 #系统登录类ClassSign
 #系统登录函数signin
 class ClassSign():
@@ -63,9 +79,14 @@ class ClassSign():
             #如果user为非空
             if user:
                 login(request,user)         # 用户登陆
+
+                #记录事件
+                audit.objects.create(username=user,actioip=UserIP(request),content="用户登录")
+
                 #渲染主页，并返回用户名
                 return render(request, 'index.html', {'user': user})
-            else:                
+            else:
+                audit.objects.create(username=user, actioip=UserIP(request), content="登录失败")
                 return HttpResponse("用户名或密码错误")
                 #返回登录页面
                 #return render(request, 'sign-in.html')
@@ -86,6 +107,7 @@ class ClassSign():
             #根据用户名和密码创建用户信息            
             user=User.objects.create_user(username=GLOBAL_VAR_USER,password=local_var_password)
             #返回注册成功页面
+            audit.objects.create(username=user, actioip=UserIP(request), content="注册成功")
             return render(request, 'sucess.html')
         else:
             #返回用户注册页面
@@ -94,6 +116,7 @@ class ClassSign():
     def signout(request):
             
             logout(request)     # 注销用户
+            audit.objects.create(username=user, actioip=UserIP(request), content="注销成功")
             
             return redirect("/sign-up/")
 

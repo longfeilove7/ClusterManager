@@ -1,5 +1,7 @@
 from django.db import models
 from macaddress.fields import MACAddressField #use django-macaddress
+
+
 # Create your models here.
 
 
@@ -176,4 +178,9 @@ class Choice(models.Model):
 
     def __str__(self):
         return self.choice_text
+
+class audit(models.Model):
+    username = models.CharField(max_length=32,null=True)
+    actionip = models.CharField(max_length=32,null=True)
+    content = models.CharField(max_length=32,null=True)
 

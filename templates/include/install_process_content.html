@@ -1,0 +1,29 @@
+<div id="page-content-wrapper">
+
+    <!--  右边主机内容-->
+    <div id="toolbar">
+        <div class="form-inline" role="form">
+            <div class="form-group">
+                <span>&thinsp;从:&thinsp;</span>
+                <input class="form-control w70" id="startDateTime" placeholder="开始时间">
+            </div>
+            <div class="form-group">
+                <span>&thinsp;到:&thinsp;</span>
+                <input class="form-control" id="endDateTime" placeholder="结束时间">
+            </div>
+            &ensp;
+            <button id="refresh" class="btn btn-xs btn-outline-success my-2 my-sm-0" type="submit" data-toggle="tooltip"
+                title="点击查询" onclick="toMonitorTimeQuery('mytable',this)">查询</button>
+                &ensp;
+                <button id="refresh" class="btn btn-xs btn-outline-success my-2 my-sm-0" type="submit" data-toggle="tooltip"
+                title="点击查询" onclick="toMonitorTimeQuery('mytable',this)">开始安装</button>
+        </div>
+    </div>
+    <table id="mytable" data-toolbar="#toolbar" data-search="true" data-show-refresh="true" data-show-toggle="true"
+        data-show-columns="true" data-detail-view="false" data-detail-formatter="detailFormatter"
+        data-minimum-count-columns="2" data-show-pagination-switch="true" data-pagination="true" data-id-field="id"
+        data-page-list="[15, 25, 50, 100, 'ALL']" data-show-footer="false" data-side-pagination="server" data-url="{% url 'install_info_query' %}"
+        data-response-handler="responseHandler" data-striped="true" data-search-time-out="500" data-sortable="true"
+        data-page-size="15" data-row-style="rowStyle">
+    </table>
+</div>

@@ -44,23 +44,27 @@ class ClassCountCalculate():
     def runTimeCalculate(ipmiID, powerOnTime, powerOffTime):
         """"""
         db_dict = models.Host.objects.filter(id=ipmiID).values()[0]
-        db_tuple = models.Host.objects.filter().values_list()[0]
+        db_tuple = models.Host.objects.filter(id=ipmiID).values_list()[0]
         print(db_dict)
         print(db_tuple)
-        print(db_dict['powerOnTime'])
-        print(db_dict['powerOffTime'])
-        print(powerOffTime)
+        print("db_dict['powerOnTime']",db_dict['powerOnTime'])
+        print("db_dict['powerOnTime']",db_dict['powerOffTime'])
+        print("powerOffTime",powerOffTime,type(powerOffTime))
+        print("powerOnTime",powerOnTime,type(powerOnTime))
         #offset-naive是不含时区的类型，而offset-aware是有时区类型
+        UTC_FORMAT = "%Y-%m-%dT%H:%M:%S.%fZ"
         runTime = datetime.datetime.strptime(
-            powerOffTime, '%Y-%m-%d %H:%M:%S'
-        ) - db_dict['powerOnTime'].replace(tzinfo=None) - datetime.timedelta(
-            days=0,
-            seconds=0,
-            microseconds=0,
-            milliseconds=0,
-            minutes=0,
-            hours=8,
-            weeks=0)
+            powerOffTime, UTC_FORMAT
+        ) - db_dict['powerOnTime'].replace(tzinfo=None) 
+        #datetime.timedelta(
+            # days=0,
+            # seconds=0,
+            # microseconds=0,
+            # milliseconds=0,
+            # minutes=0,
+            # hours=8,
+            # weeks=0)
+      
         print(runTime)
         models.Host.objects.filter(id=ipmiID).update(runTime=runTime)
         models.HostPowerHistory.objects.filter(

@@ -40,6 +40,7 @@ import xmlrpc.server
 import xmlrpc.client
 from django.contrib.auth.decorators import login_required
 from views import celery
+
 # Create your views here.
 
 
@@ -65,10 +66,24 @@ class ClassMonitorSystem():
             strStartTime = request.POST.get('startDateTime')
             strEndTime = request.POST.get('endDateTime')
             #将字符串时间转成时间格式
-            startTime = datetime.datetime.strptime(strStartTime,
-                                                   '%Y-%m-%d %H:%M:%S')
-            endTime = datetime.datetime.strptime(strEndTime,
-                                                 '%Y-%m-%d %H:%M:%S')
+            startTime = datetime.datetime.strptime(
+                strStartTime, '%Y-%m-%d %H:%M:%S') - datetime.timedelta(
+                    days=0,
+                    seconds=0,
+                    microseconds=0,
+                    milliseconds=0,
+                    minutes=0,
+                    hours=8,
+                    weeks=0)
+            endTime = datetime.datetime.strptime(
+                strEndTime, '%Y-%m-%d %H:%M:%S') - datetime.timedelta(
+                    days=0,
+                    seconds=0,
+                    microseconds=0,
+                    milliseconds=0,
+                    minutes=0,
+                    hours=8,
+                    weeks=0)
             print("the startTime", startTime, type(startTime))
             #设置时区
             users_timezone = pytz.timezone('Asia/Shanghai')

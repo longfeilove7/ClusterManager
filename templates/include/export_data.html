@@ -1,0 +1,60 @@
+<div id="page-content-wrapper">
+
+  <!--  右边主机内容-->
+  <nav class="navbar navbar-expand-md bg-secondary navbar-dark">
+    <a class="navbar-brand" href="#">导出数据</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+            aria-controls="navbarCollapse"
+            aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+
+    </div>
+  </nav>
+
+<form role="form" action="/dump_data/" method="post">
+<!-- Split button -->
+  {% csrf_token %}
+ <div class="bs-tooltip-right" >
+    <div class="btn-group">
+      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">机房 <span class="caret"></span></button>
+      <ul class="dropdown-menu">
+        <li><a href="#" name="">导出全部</a></li>
+
+      </ul>
+    </div><!-- /btn-group -->
+    <div class="btn-group">
+      <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">操作系统<span class="caret"></span></button>
+      <ul class="dropdown-menu">
+        <li><a href="#" name="">导出全部</a></li>
+
+      </ul>
+    </div><!-- /btn-group -->
+    <div class="btn-group">
+      <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">集群名称 <span class="caret"></span></button>
+      <ul class="dropdown-menu">
+        <li><a href="#" name="">导出全部</a></li>
+      </ul>
+    </div><!-- /btn-group -->
+    <div class="btn-group">
+      <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">客户名称 <span class="caret"></span></button>
+      <ul class="dropdown-menu">
+        <li><a href="#" name="">导出全部</a></li>
+      </ul>
+    </div><!-- /btn-group -->
+    <div  class="btn-group right ">
+     <button class="btn btn-primary" type="submit" onclick="getExportExcels()">导出</button>
+    </div><!-- /btn-group -->
+  </div>
+</div>
+</form>
+
+
+
+<script type="text/javascript">
+function getExportExcels(){
+        var post_url = '/export/';
+        location.replace(post_url);
+}
+</script>

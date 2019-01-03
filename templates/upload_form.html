@@ -3,20 +3,24 @@
     <title>{{title}}</title>
 </head>
 <body>
-    <h1>{{header}}</h1>
+    <div class="container">
+        <div class="row">
 
-    {% if form.errors %}
-        <p style="color: red;">
-            Please correct the error{{ form.errors|pluralize }} below.
-        </p>
-    {% endif %}
+            <div class="col-md-8 col-md-offset-2">
+                <div><h1 style="text-align: left">{{what}}</h1></div>
+                <div><a href="/download/"> <i class="fa fa-download"> 下载模板</i> </a></div>
+                <form method="post" enctype="multipart/form-data" action="{% url 'import' %}"
+                      class="table table-bordered form-horizontal">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <input type="submit" value="提交"/>
+                </form>
 
-    <form action="" enctype="multipart/form-data"  method="post">
-        <table>
-            {{ form.as_table }}
-        </table>
-        {% csrf_token %}
-        <input type="submit" value="Submit">
-    </form>
+            </div>
+
+        </div>
+    </div>
+
+
 </body>
 </html>

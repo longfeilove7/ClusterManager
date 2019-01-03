@@ -7,8 +7,9 @@ from django.db import models
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect
 from django.shortcuts import HttpResponse
-from django.http import HttpRequest, HttpResponseBadRequest
+from django.http import HttpRequest, HttpResponseBadRequest,request
 from HostManager import models
+from HostManager.models import audit
 from django_celery_beat.models import PeriodicTask
 from django_celery_beat.models import PeriodicTasks
 from django_celery_beat.models import CrontabSchedule
@@ -39,13 +40,30 @@ from decimal import *
 import xmlrpc.server
 import xmlrpc.client
 from django.contrib.auth.decorators import login_required
+from django.contrib import auth
+
 # Create your views here.
 
+def UserIP(request):
+    '''
+    获取用户IP
+    '''
+
+    ip = ''
+
+
+    if 'HTTP_X_FORWARDED_FOR' in request.META:
+        ip = request.META['HTTP_X_FORWARDED_FOR']
+    else:
+        ip = request.META['REMOTE_ADDR']
+
+    return ip
 
 class ClassBillingSystem():
     #定义查询时间，如果在方法中定义会出现第二次调用方法时变量又重新初始化
     strStartTime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     strEndTime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
     @login_required
     def billingInfo(request):
         """"""        
@@ -251,7 +269,11 @@ class ClassBillingSystem():
                 })
     #添加单价
     # @property
+    @login_required
     def addprice(request):
+        user = request.user.username
+
+
         new_cluster = request.POST.get("clusterName")
         # new_deviceNumber = request.POST.get("deviceNumber")
         new_billingNumber = request.POST.get("billingNumber")
@@ -264,24 +286,28 @@ class ClassBillingSystem():
             clusterName_id = new_cluster,
             billingPrice = new_billingPrice
         )
+        audit.objects.create(username=user, actionip=UserIP(request), content="添加单价")
         return redirect('/billing_price/')
+    #修改单价
+    @login_required
     def editbill(request,nid):
-        clusterid = request.POST.get("clusterid")
-        new_cluster = request.POST.get("clusterName")
         new_billingNumber = request.POST.get("billingNumber")
         new_billingPrice = request.POST.get("billingPrice")
-        models.Billing.objects.filter(id=nid).update(
-            billingPrice = new_billingPrice,
-            billingNumber = new_billingNumber
-        )
+        billpric = models.Billing.objects.get(id=nid)
+        billpric.billingPrice = new_billingPrice
+        billpric.billingNumber = new_billingNumber
+        billpric.save()
         return redirect('/billing_price/')
-
+    #删除单价
+    @login_required
     def delbill(request,nid):
         # del_clsid = request.POST.get("spanID")
-        print(nid)
+        # print(nid)
+        user = request.user.username
         if nid:
             del_obj = models.Billing.objects.get(id=nid)
             del_obj.delete()
+        audit.objects.create(username=user, actionip=UserIP(request), content="删除单价")
         return redirect('/billing_price/')
         # pass
 

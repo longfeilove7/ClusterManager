@@ -1,0 +1,41 @@
+<div id="page-content-wrapper">
+
+  <!--  右边主机内容-->
+  <nav class="navbar navbar-expand-md bg-secondary navbar-dark">
+    <a class="navbar-brand" href="#">事件详情</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+            aria-controls="navbarCollapse"
+            aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+
+    </div>
+  </nav>
+
+<table id="mytable" class="table table-striped table-hover table-sm" data-toggle="table">
+    <thead class="thead-light">
+    <tr>
+
+      <th>id</th>
+      <th>用户名</th>
+      <th>IP地址</th>
+      <th>事件内容</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for row in eventlist %}
+    <tr>
+
+      <td>{{ row.id }}</td>
+      <td>{{ row.username }}</td>
+      <!--<td>{{ row.deviceNumber }}</td>-->
+      <td>{{ row.actionip }}</td>
+      <td>{{ row.content }}</td>
+
+
+
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>

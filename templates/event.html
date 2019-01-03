@@ -1,0 +1,25 @@
+{% extends 'extends/base.html' %}
+{% block baseCss %}
+{% include 'include/css.html' %}
+{% endblock %}
+{% block baseBody %}
+
+<!-- Add your site or application content here -->
+{% include "include/sidebar.html"%}
+
+<!-- /#sidebar-wrapper -->
+<!-- Page Content -->
+{% include 'include/event_content.html' %}
+
+<!-- /#page-content-wrapper -->
+<div id="preloader">
+        <div class="loader" id="loader-1"></div>
+</div>
+
+
+{% endblock %}
+{% block baseScript %}
+{% include 'include/js.html' %}
+
+
+{% endblock %}

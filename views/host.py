@@ -183,14 +183,16 @@ class ClassHost:
             users_timezone = pytz.timezone('Asia/Shanghai')
             for item in pageinator.page(page):
                 if item.powerOnTime:
-                    print(item.powerOnTime)
+                    print("powerOnTime",item.powerOnTime)
                     item.powerOnTime = item.powerOnTime.astimezone(
-                        users_timezone).replace(tzinfo=None)
-                    print(item.powerOnTime)
+                        users_timezone).replace(tzinfo=None).strftime('%Y-%m-%d %H:%M:%S')
+                    print("powerOnTime",type(item.powerOnTime))
+                    print("powerOnTime",item.powerOnTime)
                 if item.powerOffTime:
                     item.powerOffTime = item.powerOffTime.astimezone(
-                        users_timezone).replace(tzinfo=None)
-
+                        users_timezone).replace(tzinfo=None).strftime('%Y-%m-%d %H:%M:%S')
+                    print("powerOffTime",item.powerOffTime,type(item.powerOffTime))
+                
                 info_list_dict['rows'].append({
                     "id":
                     item.id,

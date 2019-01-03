@@ -41,6 +41,7 @@ import xmlrpc.client
 from views import cobbler
 from views import mac
 from django.contrib.auth.decorators import login_required
+
 # Create your views here.
 
 
@@ -230,8 +231,7 @@ class ClassInstallSystem():
             if setValue == '1':
                 print("111111111111")
                 cobbler.ClassCobblerAPI.cobblerModifySystem(pxeMAC)
-                powerStatus = tasks.powerStatus.delay(
-                    ipmiID, ipmiHost, ipmiUser, ipmiPassword).get()[3]
+                powerStatus = tasks.powerStatus.delay(ipmiID).get()[3]
                 if powerStatus == "on":
                     tasks.bootdevPxe.delay(ipmiHost, ipmiUser,
                                            ipmiPassword).get()
@@ -250,7 +250,7 @@ class ClassInstallSystem():
                     host_id=ipmiID,
                     installStartTimeHistory=installStartTime,
                     installSystemStatus=setValue,
-                )
+                    installSystemResult=setValue)
             else:
                 cobbler.ClassCobblerAPI.cobblerRemoveSystem(pxeMAC)
                 installStartTime = powerOnTime
@@ -264,7 +264,7 @@ class ClassInstallSystem():
                         host_id=ipmiID,
                         installEndTimeHistory=installEndTime,
                         installSystemStatus=setValue,
-                    )
+                        installSystemResult=setValue)
             data = json.dumps(setValue).encode()
             return HttpResponse(data)
         elif request.method == 'GET':
@@ -449,3 +449,33 @@ class ClassInstallSystem():
             return ()
         else:
             return render(request, 'install_device.html', context)
+
+    @login_required
+    def installProcess(request):
+        if request.method == 'GET':
+            obj = models.Host.objects.all()
+            cluster_list = models.Clusters.objects.all()
+            return render(request, 'install_process.html', {
+                'obj': obj,
+                'cluster_list': cluster_list
+            })
+
+    @login_required
+    def installSuccess(request):
+        if request.method == 'GET':
+            obj = models.Host.objects.all()
+            cluster_list = models.Clusters.objects.all()
+            return render(request, 'install_success.html', {
+                'obj': obj,
+                'cluster_list': cluster_list
+            })
+
+    @login_required
+    def installFail(request):
+        if request.method == 'GET':
+            obj = models.Host.objects.all()
+            cluster_list = models.Clusters.objects.all()
+            return render(request, 'install_fail.html', {
+                'obj': obj,
+                'cluster_list': cluster_list
+            })

@@ -69,7 +69,7 @@ def powerOn(ipmiHost, ipmiUser, ipmiPassword):
     powerOn = os.popen(powerOn)
     returnRead = powerOn.read()
     print(returnRead)
-    nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    nowTime = timezone.now()
     if "Up/On" in returnRead:
         return ipmiHost, nowTime, "success"
     else:
@@ -83,7 +83,7 @@ def powerOff(ipmiHost, ipmiUser, ipmiPassword):
     powerOff = os.popen(powerOff)
     returnRead = powerOff.read()
     print(returnRead)
-    nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    nowTime = timezone.now()
     if "Down/Off" in returnRead:
         return ipmiHost, nowTime, "success"
     else:
@@ -97,7 +97,7 @@ def powerCycle(ipmiHost, ipmiUser, ipmiPassword):
     powerCycle = os.popen(powerCycle)
     returnRead = powerCycle.read()
     print(returnRead)
-    nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    nowTime = timezone.now()
     if "Cycle" in returnRead:
         return ipmiHost, nowTime, "success"
     else:
@@ -111,7 +111,7 @@ def powerReset(ipmiHost, ipmiUser, ipmiPassword):
     powerReset = os.popen(powerReset)
     returnRead = powerReset.read()
     print(returnRead)
-    nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    nowTime = timezone.now()
     if "Down/Off" in returnRead:
         return ipmiHost, nowTime, "success"
     else:
@@ -125,7 +125,7 @@ def powerSoft(ipmiHost, ipmiUser, ipmiPassword):
     powerSoft = os.popen(powerSoft)
     returnRead = powerSoft.read()
     print(returnRead)
-    nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    nowTime = timezone.now()
     if "Down/Off" in returnRead:
         return ipmiHost, nowTime, "success"
     else:
@@ -139,7 +139,7 @@ def bootdevPxe(ipmiHost, ipmiUser, ipmiPassword):
     bootdevPxe = os.popen(bootdevPxe)
     returnRead = bootdevPxe.read()
     print(returnRead)
-    nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    nowTime = timezone.now()
     if "Down/Off" in returnRead:
         return ipmiHost, nowTime, "success"
     else:
@@ -153,7 +153,7 @@ def bootdevDisk(ipmiHost, ipmiUser, ipmiPassword):
     bootdevDisk = os.popen(bootdevDisk)
     returnRead = bootdevDisk.read()
     print(returnRead)
-    nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    nowTime = timezone.now()
     if "Down/Off" in returnRead:
         return ipmiHost, nowTime, "success"
     else:
@@ -167,7 +167,7 @@ def bootdevSafe(ipmiHost, ipmiUser, ipmiPassword):
     bootdevSafe = os.popen(bootdevSafe)
     returnRead = bootdevSafe.read()
     print(returnRead)
-    nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    nowTime = timezone.now()
     if "Down/Off" in returnRead:
         return ipmiHost, nowTime, "success"
     else:
@@ -181,7 +181,7 @@ def bootdevDiag(ipmiHost, ipmiUser, ipmiPassword):
     bootdevDiag = os.popen(bootdevDiag)
     returnRead = bootdevDiag.read()
     print(returnRead)
-    nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    nowTime = timezone.now()
     if "Down/Off" in returnRead:
         return ipmiHost, nowTime, "success"
     else:
@@ -195,7 +195,7 @@ def bootdevCdrom(ipmiHost, ipmiUser, ipmiPassword):
     bootdevCdrom = os.popen(bootdevCdrom)
     returnRead = bootdevCdrom.read()
     print(returnRead)
-    nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    nowTime = timezone.now()
     if "Down/Off" in returnRead:
         return ipmiHost, nowTime, "success"
     else:
@@ -209,7 +209,7 @@ def bootdevBios(ipmiHost, ipmiUser, ipmiPassword):
     bootdevBios = os.popen(bootdevBios)
     returnRead = bootdevBios.read()
     print(returnRead)
-    nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    nowTime = timezone.now()
     if "Down/Off" in returnRead:
         return ipmiHost, nowTime, "success"
     else:
@@ -224,7 +224,7 @@ def ipmiMac(ipmiHost, ipmiUser, ipmiPassword):
     returnRead = ipmiMac.read()
     print(returnRead)
 
-    nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    nowTime = timezone.now()
     if ":" in returnRead:
         return ipmiHost, nowTime, "success", returnRead
     else:
@@ -242,7 +242,7 @@ def inspectSdr(ipmiHost, ipmiUser, ipmiPassword):
     inspectSdr = os.popen(inspectSdr)
     returnRead = inspectSdr.read()
     print(returnRead)
-    nowTime = nowTime.strftime('%Y-%m-%d %H:%M:%S')
+    nowTime = timezone.now()
     if "Unable" not in returnRead:
         return ipmiHost, nowTime, "success"
     else:
@@ -270,7 +270,7 @@ def fping(self):
     # print(returnRead)
     # print(type(returnRead))
     # print("*********************************")
-    nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    nowTime = timezone.now()
     returnRead_list = returnRead.split('\n')
     # print(returnRead_list)    
     for key in returnRead_list:       
@@ -292,7 +292,7 @@ def fping(self):
 #自定义任务
 @shared_task(bind=True, name='HostManager.Tasks.CustomTask')
 def CustomTask(self,password,username,command,ipaddress):
-    CustomTask = "sshpass -p" + password + " ssh " +  username + "@" + ipaddress + " " + command
+    CustomTask = "sshpass -p " + password + " ssh " +  username + "@" + ipaddress + " " + command
     CustomTask = os.popen(CustomTask)
     returnRead = CustomTask.read()
     print(returnRead)

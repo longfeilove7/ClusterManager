@@ -40,6 +40,7 @@ from views import cluster
 from views import room
 from views import port
 from views import sign
+from views import event
 #import os, sys, commands
 admin.autodiscover()
 
@@ -102,6 +103,9 @@ urlpatterns = [
     url(r'^batch_power_on/', celery.ClassCeleryWorker.batchPowerOn),
     url(r'^batch_power_off/', celery.ClassCeleryWorker.batchPowerOff),
     url(r'^batch_power_cycle/', celery.ClassCeleryWorker.batchPowerCycle),
+
+    #for event
+    url(r'^event/',event.eventlog.event),
 
     # for task url
     url(r'^inspect_info/', celery.ClassCeleryWorker.inspect_info),
@@ -178,10 +182,13 @@ urlpatterns = [
     url(r'^batch_install_delete/',
         install.ClassInstallSystem.batchInstallDelete),
     # url(r'^install_time_query/', views.ClassInstallSystem.installInfoQuery),
+    url(r'^install_process/', install.ClassInstallSystem.installProcess),
+    url(r'^install_sucess/', install.ClassInstallSystem.installSuccess),
+    url(r'^install_fail/', install.ClassInstallSystem.installFail),
 
     #for django-excel
     url(r'^django_excel', port.upload, name='uplink'),
-    url(r'^download/(.*)', port.download, name="download"),
+    url(r'^download/', port.download, name="download"),
     url(r'^download_attachment/(.*)/(.*)',
         port.download_as_attachment,
         name="download_attachment"),
@@ -190,6 +197,7 @@ urlpatterns = [
     url(r'^import/', port.import_data, name="import"),
     url(r'^import_sheet/', port.import_sheet, name="import_sheet"),
     url(r'^export/(.*)', port.export_data, name="export"),
+    url(r'^dump_data/',port.dump_data),
     url(r'^handson_view/', port.handson_table, name="handson_view"),
 
     # handson table view
